@@ -37,7 +37,8 @@ merch <- purrr::map2_dfr(
                    min_date = .y,
                    max_date = .x,
                    merch_lookup = lookup)
-)
+) %>%
+  dplyr::arrange(.data$date)
 
 merch <- merch %>%
   mutate_if(is.character, as.factor)
