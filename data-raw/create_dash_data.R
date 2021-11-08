@@ -20,9 +20,11 @@ lookup <- create_merch_lookup()
 # the current date
 last_year <- year(Sys.Date()) - 1
 
-prior_years <- seq.Date(from = ymd(paste0(last_year, "-12-01")),
-                        to = ymd(paste0(min_merch_year, "-12-01")),
-                        by = "-1 year")
+prior_years <- seq.Date(
+  from = ymd(paste0(last_year, "-12-01")),
+  to = ymd(paste0(min_merch_year, "-12-01")),
+  by = "-1 year"
+)
 
 merch_end_dates <- c(Sys.Date(), prior_years)
 merch_start_dates <- floor_date(merch_end_dates, "year")
@@ -32,11 +34,15 @@ merch_start_dates <- floor_date(merch_end_dates, "year")
 merch <- purrr::map2_dfr(
   .x = merch_end_dates,
   .y = merch_start_dates,
-  .f = ~read_merch(path = here::here("data-raw",
-                                     "abs_merch_raw"),
-                   min_date = .y,
-                   max_date = .x,
-                   merch_lookup = lookup)
+  .f = ~ read_merch(
+    path = here::here(
+      "data-raw",
+      "abs_merch_raw"
+    ),
+    min_date = .y,
+    max_date = .x,
+    merch_lookup = lookup
+  )
 ) %>%
   dplyr::arrange(.data$date)
 

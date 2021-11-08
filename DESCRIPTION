@@ -14,7 +14,8 @@ Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.1.2
 Suggests: 
-    covr
+    covr,
+    rmarkdown
 Imports: 
     djprtheme (>= 0.0.2.903),
     djprshiny (>= 0.0.6.905),
@@ -25,6 +26,7 @@ Imports:
     ggplot2,
     rlang,
     shiny,
+    slider,
     shinyWidgets
 Remotes: 
     djpr-data/djprshiny,

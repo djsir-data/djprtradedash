@@ -1,0 +1,11 @@
+name: djprtradedash
+title:
+username:
+account: djpr-spp
+server: shinyapps.io
+hostUrl: https://api.shinyapps.io/v1
+appId: 5065350
+bundleId: 5225151
+url: https://djpr-spp.shinyapps.io/djprtradedash/
+when: 1636340945.44227
+lastSyncTime: 1636340945.44227

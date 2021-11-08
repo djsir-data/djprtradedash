@@ -10,7 +10,7 @@ page_launchpad <- function(...) {
     br(),
     centred_row(
       span("DJPR Trade Dashboard",
-           style = "font-size: 40px; color: #1F1547; font-family: 'Roboto Slab'"
+        style = "font-size: 40px; color: #1F1547; font-family: 'Roboto Slab'"
       )
     ),
     br(),
