@@ -5,6 +5,7 @@ library(dplyr)
 
 options("timeout" = 180)
 
+# Merchandise trade data ------
 # SET MINIMUM YEAR TO INCLUDE IN MERCH DATA
 min_merch_year <- 2010
 
@@ -58,8 +59,14 @@ merch_tests <- c(
 
 stopifnot(all(merch_tests))
 
+# ABS International Trade Supplementary Information data ------
+supp_cy <- read_supp("cy")
+supp_fy <- read_supp("fy")
+
 use_data(
   merch,
+  supp_cy,
+  supp_fy,
   internal = TRUE,
   overwrite = TRUE,
   version = 3
