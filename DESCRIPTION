@@ -19,7 +19,6 @@ Suggests:
 Imports: 
     djprtheme (>= 0.0.2.903),
     djprshiny (>= 0.0.6.905),
-    djprtradedata (>= 0.0.0.9003),
     lubridate,
     cachem,
     dplyr,
@@ -30,7 +29,6 @@ Imports:
     shinyWidgets
 Remotes: 
     djpr-data/djprshiny,
-    djpr-data/djprtheme,
-    djpr-data/djprtradedata
+    djpr-data/djprtheme
 Depends: 
     R (>= 3.5.0)
