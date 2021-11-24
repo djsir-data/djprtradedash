@@ -1,6 +1,6 @@
 Package: djprtradedash
 Title: DJPR Trade Dashboard
-Version: 0.0.0.9000
+Version: 0.0.1.9000
 Authors@R: 
     c(
     person("Matt", "Cowgill", , "mattcowgill@gmail.com", role = c("aut", "cre"),
@@ -15,7 +15,8 @@ Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.1.2
 Suggests: 
     covr,
-    rmarkdown
+    rmarkdown,
+    testthat (>= 3.0.0)
 Imports: 
     djprtheme (>= 0.0.2.903),
     djprshiny (>= 0.0.6.905),
@@ -26,9 +27,17 @@ Imports:
     rlang,
     shiny,
     slider,
-    shinyWidgets
+    shinyWidgets,
+    readsdmx,
+    readabs (>= 0.4.10.901),
+    tidyr,
+    purrr,
+    stringr,
+    rvest
 Remotes: 
     djpr-data/djprshiny,
-    djpr-data/djprtheme
+    djpr-data/djprtheme,
+    MattCowgill/readabs
 Depends: 
     R (>= 3.5.0)
+Config/testthat/edition: 3
