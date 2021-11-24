@@ -10,3 +10,5 @@
 images
 ^app-cache$
 ^codecov\.yml$
+.rcsignore
+.DS_store
