@@ -23,4 +23,4 @@ jobs:
       - name: authorise-shiny
         run: |
          Rscript -e "rsconnect::setAccountInfo(name = 'djpr-spp', token = '${{secrets.SHINYAPPS_TOKEN}}', secret = '${{secrets.SHINYAPPS_SECRET}}')"
-         Rscript -e "rsconnect::deployApp(appName = 'djprlabourdash')"
+         Rscript -e "rsconnect::deployApp(appName = 'djprtradedash')"
