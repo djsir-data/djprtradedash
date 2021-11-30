@@ -39,5 +39,7 @@ time worth of data using this function, as this is around the point at which
 the 1m row limit is reached.
 }
 \examples{
+\dontrun{
 read_merch()
+}
 }
