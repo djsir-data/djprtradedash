@@ -20,7 +20,7 @@
 #' @return A tibble containing merchandise export data
 
 
-read_merch <- function(path = tempdir(),
+read_merch_old <- function(path = tempdir(),
                        max_date = Sys.Date(),
                        min_date = max_date - 180,
                        check_local = TRUE,
