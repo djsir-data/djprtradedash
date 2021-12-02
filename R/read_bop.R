@@ -13,20 +13,29 @@
 #' @importFrom dplyr .data
 
 read_bop <- function(path = tempdir()) {
+  readabs::download_abs_data_cube(
+      "balance-payments-and-international-investment-position-australia",
+      "21.xls",
+      path
+      )
+
   credits <- suppressMessages(
-    readabs::read_abs("5302.0", 21,
-      path = path,
-      check_local = FALSE,
-      show_progress_bars = FALSE
+    readabs::read_abs_local(path = path,
+      filenames = list.files(path)[grepl("21.xls", list.files(path))]
     )
   ) %>%
     dplyr::mutate(series = paste("Exports", .data$series, sep = " ; "))
+  unlink(file.path(path, list.files(path)[grepl("21.xls", list.files(path))]))
+
+  readabs::download_abs_data_cube(
+      "balance-payments-and-international-investment-position-australia",
+      "22.xls",
+      path
+      )
 
   debits <- suppressMessages(
-    readabs::read_abs("5302.0", 22,
-      path = path,
-      check_local = FALSE,
-      show_progress_bars = FALSE
+    readabs::read_abs_local(path = path,
+      filenames = list.files(path)[grepl("22.xls", list.files(path))]
     )
   ) %>%
     dplyr::mutate(series = paste("Imports", .data$series, sep = " ; "))
