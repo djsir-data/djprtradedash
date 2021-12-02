@@ -165,7 +165,7 @@ read_merch <- function(path = tempdir(),
 
     merch <- merch %>% 
       filter(!is.na(country_dest)) %>%
-      mutate(series = series)
+      mutate(export_import = series)
   }
 
   if (series == "import") {
@@ -293,7 +293,7 @@ read_merch <- function(path = tempdir(),
 
     merch <- merch %>% 
       filter(!is.na(country_origin)) %>%
-      mutate(series = series)
+      mutate(export_import = series)
   }
   merch
 }
