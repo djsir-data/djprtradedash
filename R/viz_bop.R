@@ -1,4 +1,4 @@
-viz_bop_line_chart <- function(data = bob)
+viz_good_bop_line_chart <- function(data = bob)
                                {
 
 
@@ -25,7 +25,23 @@ viz_bop_line_chart <- function(data = bob)
               round2(.data$value, 1), "%")
 
 
+  latest_export <- df %>%
+                dplyr::filter(
+                  .data$exports_imports == "Export",
+                  .data$date == max(.data$date)
+                ) %>%
+                dplyr::pull(.data$value) %>%
+                round2(1)
 
+    title <- paste0(
+                "Victorian goods export is ",
+                dplyr::case_when(
+                  latest_export  > 0 ~ paste0(latest_export , " per cent higher than "),
+                  latest_export  == 0 ~ "the same as ",
+                  latest_export  < 0 ~ paste0(latest_export , " per cent lower than ")
+                ),
+                "it was in December 2019"
+              )
 
 
 
@@ -40,7 +56,7 @@ viz_bop_line_chart <- function(data = bob)
     ) +
     labs(
       title = "title",
-      subtitle = "Cumulative change in export and import of good since December2020, Victoria",
+      subtitle = "Cumulative change in export and import of goods since December 2019 in Victoria",
      caption = paste0("Seasonally Adjusted Chain Volume Measures")
     )
 }
