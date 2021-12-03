@@ -1,4 +1,4 @@
-viz_good_bop_line_chart <- function(data = bob)
+viz_good_bop_line_chart <- function(data = bop)
                                {
 
 
@@ -59,7 +59,7 @@ viz_good_bop_line_chart <- function(data = bob)
 }
 
 
-viz_services_bop_line_chart <- function(data = bob)
+viz_services_bop_line_chart <- function(data = bop)
                                               {
 
 
