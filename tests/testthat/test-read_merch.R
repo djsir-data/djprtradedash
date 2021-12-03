@@ -3,7 +3,7 @@ test_that("read_merch() works", {
 
   dir <- tempdir()
   m <- read_merch(
-    min_date = Sys.Date() - 90,
+    min_date = Sys.Date() - 180,
     path = dir
   )
 
@@ -13,14 +13,14 @@ test_that("read_merch() works", {
   expect_gte(nrow(m), 10000)
   expect_message(
     read_merch(
-      min_date = Sys.Date() - 90,
+      min_date = Sys.Date() - 180,
       path = dir
     ),
     "local file"
   )
   expect_message(
     read_merch(
-      min_date = Sys.Date() - 90,
+      min_date = Sys.Date() - 180,
       path = dir,
       check_local = FALSE
     ),

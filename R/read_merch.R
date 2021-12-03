@@ -15,7 +15,9 @@
 #' @param merch_lookup A list of tibbles containing short and long versions
 #' of various data entries; see `create_merch_lookup()`.
 #' @examples
+#' \dontrun{
 #' read_merch()
+#' }
 #' @export
 #' @return A tibble containing merchandise export data
 

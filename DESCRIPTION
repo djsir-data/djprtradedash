@@ -16,6 +16,7 @@ RoxygenNote: 7.1.2
 Suggests: 
     covr,
     rmarkdown,
+    memoise,
     testthat (>= 3.0.0)
 Imports: 
     djprtheme (>= 0.0.2.903),
@@ -23,6 +24,7 @@ Imports:
     lubridate,
     cachem,
     dplyr,
+    ggrepel,
     ggplot2,
     rlang,
     shiny,
