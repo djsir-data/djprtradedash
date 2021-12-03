@@ -29,7 +29,6 @@ remotes::install_github("djpr-data/djprtradedash", dependencies = TRUE)
 
 ``` r
 library(djprtradedash)
-#> Loading required namespace: memoise
 ```
 
 ## Data functions
@@ -42,20 +41,20 @@ Import ABS balance of payments data by State/Territory with
 
 ``` r
 read_bop()
-#> # A tibble: 4,992 × 8
-#>    exports_imports indicator     goods_services state date       value series_id
-#>    <chr>           <chr>         <chr>          <chr> <date>     <dbl> <chr>    
-#>  1 Exports         Current Price Goods          New … 2011-09-01 11350 A8509274…
-#>  2 Exports         Current Price Goods          Vict… 2011-09-01  5756 A8509275…
-#>  3 Exports         Current Price Goods          Quee… 2011-09-01 14302 A8509270…
-#>  4 Exports         Current Price Goods          Sout… 2011-09-01  2959 A8509267…
-#>  5 Exports         Current Price Goods          West… 2011-09-01 31871 A8509275…
-#>  6 Exports         Current Price Goods          Aust… 2011-09-01     3 A8509274…
-#>  7 Exports         Current Price Services       New … 2011-09-01  5804 A8509274…
-#>  8 Exports         Current Price Services       Vict… 2011-09-01  3256 A8509271…
-#>  9 Exports         Current Price Services       Quee… 2011-09-01  2424 A8509268…
-#> 10 Exports         Current Price Services       Sout… 2011-09-01   565 A8509270…
-#> # … with 4,982 more rows, and 1 more variable: unit <chr>
+#> # A tibble: 5,136 x 8
+#>    exports_imports indicator goods_services state date       value series_id unit 
+#>    <chr>           <chr>     <chr>          <chr> <date>     <dbl> <chr>     <chr>
+#>  1 Exports         Current ~ Goods          New ~ 2011-09-01 11349 A8509274~ $ Mi~
+#>  2 Exports         Current ~ Goods          Vict~ 2011-09-01  5756 A8509275~ $ Mi~
+#>  3 Exports         Current ~ Goods          Quee~ 2011-09-01 14302 A8509270~ $ Mi~
+#>  4 Exports         Current ~ Goods          Sout~ 2011-09-01  2959 A8509267~ $ Mi~
+#>  5 Exports         Current ~ Goods          West~ 2011-09-01 31872 A8509275~ $ Mi~
+#>  6 Exports         Current ~ Goods          Aust~ 2011-09-01     3 A8509274~ $ Mi~
+#>  7 Exports         Current ~ Services       New ~ 2011-09-01  5832 A8509274~ $ Mi~
+#>  8 Exports         Current ~ Services       Vict~ 2011-09-01  3280 A8509271~ $ Mi~
+#>  9 Exports         Current ~ Services       Quee~ 2011-09-01  2440 A8509268~ $ Mi~
+#> 10 Exports         Current ~ Services       Sout~ 2011-09-01   574 A8509270~ $ Mi~
+#> # ... with 5,126 more rows
 ```
 
 Import ABS merchandise exports data with `read_merch()`:
@@ -63,21 +62,22 @@ Import ABS merchandise exports data with `read_merch()`:
 ``` r
 read_merch(min_date = as.Date("2021-01-01"),
                           max_date = as.Date("2021-02-01"))
-#> Downloading merchandise trade data from 2021-01 to 2021-02
-#> # A tibble: 40,757 × 7
-#>    date       country_dest   sitc_rev3        sitc_rev3_code origin unit   value
-#>    <date>     <chr>          <chr>            <chr>          <chr>  <chr>  <dbl>
-#>  1 2021-01-01 Austria        Agricultural ma… 721            Austr… 000s    3.15
-#>  2 2021-01-01 Bangladesh     Agricultural ma… 721            Austr… 000s   24.0 
-#>  3 2021-01-01 Belgium        Agricultural ma… 721            Austr… 000s   36.3 
-#>  4 2021-01-01 Brazil         Agricultural ma… 721            Austr… 000s    4.45
-#>  5 2021-02-01 Brazil         Agricultural ma… 721            Austr… 000s    8.54
-#>  6 2021-01-01 Canada         Agricultural ma… 721            Austr… 000s  179.  
-#>  7 2021-01-01 China          Agricultural ma… 721            Austr… 000s  166.  
-#>  8 2021-02-01 China          Agricultural ma… 721            Austr… 000s   85.6 
-#>  9 2021-02-01 Christmas Isl… Agricultural ma… 721            Austr… 000s   17.0 
-#> 10 2021-02-01 Cocos (Keelin… Agricultural ma… 721            Austr… 000s    5.37
-#> # … with 40,747 more rows
+#> Loading merchandise trade from local file:
+#> C:\Users\victaxc\AppData\Local\Temp\Rtmpu4hOdV/abs_merch_2021-01-01_2021-02-01.xml
+#> # A tibble: 40,757 x 7
+#>    date       country_dest           sitc_rev3  sitc_rev3_code origin unit   value
+#>    <date>     <chr>                  <chr>      <chr>          <chr>  <chr>  <dbl>
+#>  1 2021-01-01 Austria                Agricultu~ 721            Austr~ 000s    3.15
+#>  2 2021-01-01 Bangladesh             Agricultu~ 721            Austr~ 000s   24.0 
+#>  3 2021-01-01 Belgium                Agricultu~ 721            Austr~ 000s   36.3 
+#>  4 2021-01-01 Brazil                 Agricultu~ 721            Austr~ 000s    4.45
+#>  5 2021-02-01 Brazil                 Agricultu~ 721            Austr~ 000s    8.54
+#>  6 2021-01-01 Canada                 Agricultu~ 721            Austr~ 000s  179.  
+#>  7 2021-01-01 China                  Agricultu~ 721            Austr~ 000s  166.  
+#>  8 2021-02-01 China                  Agricultu~ 721            Austr~ 000s   85.6 
+#>  9 2021-02-01 Christmas Island       Agricultu~ 721            Austr~ 000s   17.0 
+#> 10 2021-02-01 Cocos (Keeling) Island Agricultu~ 721            Austr~ 000s    5.37
+#> # ... with 40,747 more rows
 ```
 
 Import ABS International Trade Supplementary Information with
@@ -85,21 +85,21 @@ Import ABS International Trade Supplementary Information with
 
 ``` r
 read_supp("cy", 3)
-#> File downloaded in /var/folders/_4/ngvkm2811nbd8b_v66wytw1r0000gn/T//Rtmp31KVzz/cy_3/All%20data%20cubes.zip
-#> # A tibble: 9,702 × 5
-#>    item                     year  value subset abs_series                       
-#>    <chr>                    <chr> <dbl> <chr>  <chr>                            
-#>  1 Manufacturing services … 1999     NA NSW    Table 3.1 International Trade in…
-#>  2 Maintenance and repair … 1999     29 NSW    Table 3.1 International Trade in…
-#>  3 Transport                1999   2724 NSW    Table 3.1 International Trade in…
-#>  4 Passenger (b)            1999   1563 NSW    Table 3.1 International Trade in…
-#>  5 Freight                  1999    235 NSW    Table 3.1 International Trade in…
-#>  6 Other                    1999    728 NSW    Table 3.1 International Trade in…
-#>  7 Postal and courier serv… 1999    198 NSW    Table 3.1 International Trade in…
-#>  8 Travel                   1999   5132 NSW    Table 3.1 International Trade in…
-#>  9 Business                 1999    623 NSW    Table 3.1 International Trade in…
-#> 10 Personal                 1999   4509 NSW    Table 3.1 International Trade in…
-#> # … with 9,692 more rows
+#> File downloaded in C:\Users\victaxc\AppData\Local\Temp\Rtmpu4hOdV/cy_3/All%20data%20cubes.zip
+#> # A tibble: 9,702 x 5
+#>    item                     year  value subset abs_series                         
+#>    <chr>                    <chr> <dbl> <chr>  <chr>                              
+#>  1 Manufacturing services ~ 1999     NA NSW    Table 3.1 International Trade in S~
+#>  2 Maintenance and repair ~ 1999     29 NSW    Table 3.1 International Trade in S~
+#>  3 Transport                1999   2724 NSW    Table 3.1 International Trade in S~
+#>  4 Passenger (b)            1999   1563 NSW    Table 3.1 International Trade in S~
+#>  5 Freight                  1999    235 NSW    Table 3.1 International Trade in S~
+#>  6 Other                    1999    728 NSW    Table 3.1 International Trade in S~
+#>  7 Postal and courier serv~ 1999    198 NSW    Table 3.1 International Trade in S~
+#>  8 Travel                   1999   5132 NSW    Table 3.1 International Trade in S~
+#>  9 Business                 1999    623 NSW    Table 3.1 International Trade in S~
+#> 10 Personal                 1999   4509 NSW    Table 3.1 International Trade in S~
+#> # ... with 9,692 more rows
 ```
 
 ## Data objects
