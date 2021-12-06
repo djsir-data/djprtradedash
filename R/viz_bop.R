@@ -57,7 +57,7 @@ viz_good_bop_line_chart <- function(data = bop)
     labs(
       title = title,
       subtitle = "Cumulative change in export and import of goods since December 2019 in Victoria",
-     caption = paste0("Seasonally Adjusted Chain Volume Measures")
+     caption = caption
     )
 }
 
