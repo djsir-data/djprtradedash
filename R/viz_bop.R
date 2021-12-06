@@ -11,7 +11,7 @@ viz_good_bop_line_chart <- function(data = bop)
     dplyr::filter(.data$goods_services == "Goods", .data$indicator == "Chain Volume Measures") %>%
     dplyr::mutate(value = abs(.data$value))
 
-
+  latest_month <- format(max(df$date), "%B %Y")
 
 
   df <- df %>%
@@ -44,8 +44,11 @@ viz_good_bop_line_chart <- function(data = bop)
                 "it was in December 2019"
               )
 
+    caption <- paste0("ABS Balnce of Payment quarterly, Seasonally Adjusted Chain Volume Measures latest data is from ", latest_month)
 
-  df %>%
+
+
+     df %>%
     djpr_ts_linechart(
       col_var = .data$exports_imports,
       label_num = paste0(round2(.data$value, 1),"%"),
@@ -72,7 +75,7 @@ viz_services_bop_line_chart <- function(data = bop)
     dplyr::filter(.data$goods_services == "Services", .data$indicator == "Chain Volume Measures") %>%
     dplyr::mutate(value = abs(.data$value))
 
-
+  latest_month <- format(max(df$date), "%B %Y")
 
 
   df <- df %>%
@@ -165,8 +168,10 @@ viz_service_bop_bar_chart <- function(data = bop)
     dplyr::pull(.data$value) %>%
     round2(1)
 
+  latest_month <- format(max(df$date), "%B %Y")
 
 
+  caption <- paste0("ABS Balnce of Payment quarterly, Seasonally Adjusted Chain Volume Measures latest data is from ", latest_month)
 
   df <- df %>%
     dplyr::group_by(.data$state) %>%
@@ -260,8 +265,10 @@ viz_goods_bop_bar_chart <- function(data = bop)
     dplyr::pull(.data$value) %>%
     round2(1)
 
+  latest_month <- format(max(df$date), "%B %Y")
 
 
+  caption <- paste0("ABS Balnce of Payment quarterly, Seasonally Adjusted Chain Volume Measures latest data is from ", latest_month)
 
   df <- df %>%
     dplyr::group_by(.data$state) %>%
@@ -308,4 +315,80 @@ viz_goods_bop_bar_chart <- function(data = bop)
     ) +
   facet_wrap(~exports_imports, ncol = 2, scales = "free_y")
 }
+
+
+
+viz_goods_export_import_line <- viz_goods_bop_bar_chart <- function(data = bop){
+
+
+  df <- data %>%
+    dplyr::filter(
+      .data$state == "Victoria",
+    ) %>%
+    dplyr::select(-.data$series_id, -.data$unit) %>%
+    dplyr::filter(.data$goods_services == "Goods and Services", .data$indicator == "Chain Volume Measures") %>%
+    dplyr::mutate(value = abs(.data$value))
+
+
+    df <- df %>%
+    dplyr::group_by(.data$exports_imports) %>%
+    dplyr::mutate(
+     value = 100 * ((.data$value / lag(.data$value, 4) - 1))) %>%
+      dplyr::filter(!is.na(.data$value)) %>%
+      dplyr::ungroup()
+
+    #   tooltip = paste0(
+    #     .data$sex, "\n",
+    #     format(.data$date, "%b %Y"), "\n",
+    #     round2(.data$value, 1), "%"
+    #   )
+    # ) %>%
+    # dplyr::filter(!is.na(.data$value)) %>%
+    # dplyr::ungroup()
+
+    latest_month <- format(max(df$date), "%B %Y")
+
+    export_latest <- df %>%
+      dplyr::filter(.data$exports_imports == "Exports" &
+                      .data$date == max(.data$date)) %>%
+      dplyr::mutate(value = round2(.data$value, 1)) %>%
+      dplyr::pull(.data$value)
+
+    import_latest <- df %>%
+      dplyr::filter(.data$exports_imports == "Imports" &
+                      .data$date == max(.data$date)) %>%
+      dplyr::mutate(value = round2(.data$value, 1)) %>%
+      dplyr::pull(.data$value)
+
+
+
+    title <- dplyr::case_when(
+      export_latest  > import_latest ~
+        paste0("Export of goods and services grew faster than imports in the year to ", latest_month),
+      export_latest  < import_latest ~
+        paste0("Imports of goods and services grew faster than exports in the year to ", latest_month),
+      export_latest  == import_latest ~
+        paste0("Export of goods and services grew at around the same pace imports in the year to ", latest_month),
+      TRUE ~ paste0("Export and imports of goods and services annual")
+    )
+
+    caption <- paste0("ABS Balnce of Payment quarterly, Seasonally Adjusted Chain Volume Measures latest data is from ", latest_month)
+
+
+    df %>%
+      djpr_ts_linechart(
+        col_var = .data$exports_imports,
+        label_num = paste0(round2(.data$value, 1), "%"),
+        y_labels = function(x) paste0(x, "%"),
+        hline = 0
+      ) +
+      labs(
+        title = title,
+        subtitle = "Annual growth in goods and services export and import in Victoria",
+        caption = caption
+      ) +
+      facet_wrap(~exports_imports, ncol = 1, scales = "free_y")
+
+  }
+
 
