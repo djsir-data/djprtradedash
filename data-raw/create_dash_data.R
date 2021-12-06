@@ -55,10 +55,12 @@ merch <- merch %>%
 # We always want to download fresh XML files for the current calendar year
 current_year_xml_files <- list.files(
   merch_xml_path,
-  pattern = paste0("abs_merch_",
-                   year(Sys.Date())),
+  pattern = paste0(
+    "abs_merch_",
+    year(Sys.Date())
+  ),
   full.names = TRUE
-  )
+)
 
 file.remove(current_year_xml_files)
 

@@ -37,6 +37,8 @@ test_that("table 9 is ignored by read_supp()", {
   t9 <- read_supp(table_no = 9)
   expect_length(t9, 0)
   expect_equal(nrow(t9), 0)
-  expect_identical(read_supp(table_no = c(3, 9)),
-                   read_supp(table_no = 3))
+  expect_identical(
+    read_supp(table_no = c(3, 9)),
+    read_supp(table_no = 3)
+  )
 })
