@@ -223,7 +223,7 @@ viz_goods_bop_bar_chart <- function(data = bop)
 
   df <- data %>%
     dplyr::select(-.data$series_id, -.data$unit) %>%
-    dplyr::filter(.data$goods_services == "Services", .data$indicator == "Chain Volume Measures") %>%
+    dplyr::filter(.data$goods_services == "Goods", .data$indicator == "Chain Volume Measures") %>%
     dplyr::mutate(value = abs(.data$value)) %>%
     dplyr::mutate(state=dplyr::case_when(.data$state == "Australian Capital Territory"~
                                            "ACT",
@@ -291,7 +291,7 @@ viz_goods_bop_bar_chart <- function(data = bop)
       axis.title = element_blank(),
       panel.grid = element_blank(),
       axis.line = element_blank(),
-      legend.position = c(0.2, 0.1),
+      legend.position = c(0.8, 0.85),
       legend.key.height = unit(1.5, "lines"),
       legend.key.width = unit(1.5, "lines"),
       legend.direction = "horizontal",
@@ -299,13 +299,13 @@ viz_goods_bop_bar_chart <- function(data = bop)
     ) +
 
     labs(
-      title = "title",
+      title = "Victoria's exports and imports of goods compared to other states and territories",
       subtitle = paste0(
-        "Growth in export and import of services between December 2019 and ",
+        "Growth in export and import of goods between December 2019 and ",
         format(max(data$date), "%B %Y")
       ),
       caption = paste0("Seasonally Adjusted Chain Volume Measures")
-    )
-
+    ) +
+  facet_wrap(~exports_imports, ncol = 2, scales = "free_y")
 }
 
