@@ -125,74 +125,94 @@ viz_good_bop_bar_chart <- function(data = bop)
 
 
 
+
   df <- data %>%
     dplyr::select(-.data$series_id, -.data$unit) %>%
     dplyr::filter(.data$goods_services == "Services", .data$indicator == "Chain Volume Measures") %>%
     dplyr::mutate(value = abs(.data$value)) %>%
-    dplyr::mutate(state = dplyr::case_when(.data$state == "Australian Capital Territory",
+    dplyr::mutate(state=dplyr::case_when(.data$state == "Australian Capital Territory"~
                                        "ACT",
-                                       .data$state
+                                       .data$state == "New South Wales" ~"NSW",
+                                       .data$state == "Victoria"~ "Vic",
+                                       .data$state == "Queensland"~ "Qld",
+                                       .data$state == "Northern Territory"~"NT",
+                                       .data$state == "South Australia"~ "SA",
+                                       .data$state == "Western Australia"~ "WA",
+                                       .data$state == "Tasmania"~ "Tas",
+
   ))
 
+
+  # % change of export and export since Dec 2029
   df <- df %>%
     dplyr::group_by(.data$state, .data$exports_imports) %>%
     dplyr::mutate(value = 100 * ((.data$value / .data$value[date == as.Date("2019-12-01")]) - 1)) %>%
     dplyr::ungroup()
+
+  latest_export <- df %>%
+    dplyr::filter( .data$state == "Vic",
+      .data$exports_imports == "Exports",
+      .data$date == max(.data$date)
+    ) %>%
+    dplyr::pull(.data$value) %>%
+    round2(1)
+
+  latest_import <- df %>%
+    dplyr::filter( .data$state == "Vic",
+                   .data$exports_imports == "Imports",
+                   .data$date == max(.data$date)
+    ) %>%
+    dplyr::pull(.data$value) %>%
+    round2(1)
+
+
+
 
   df <- df %>%
     dplyr::group_by(.data$state) %>%
     dplyr::filter(.data$date == max(.data$date)) %>%
     dplyr::ungroup()
 
-
-  lab_df <- data %>%
-    dplyr::select(.data$state, .data$value) %>%
-    dplyr::mutate(
-      lab_y = dplyr::if_else(.data$value >= 0, .data$value + 0.1, .data$value - 0.75),
-      lab_hjust = dplyr::if_else(.data$value >= 0, 0, 1)
-    )
-
-
-
   # draw bar chart for all state
   df %>%
-    ggplot(aes(
-      x = stats::reorder(.data$state, .data$value),
-      y = .data$value
-    )) +
-    geom_col(
-      aes(fill = -.data$value)
-    ) +
+    ggplot(aes(x =.data$state, y = .data$value, fill=factor(.data$exports_imports))) +
+    geom_bar(stat = "identity", position = "dodge") +
+    coord_flip() +
+    theme_djpr(flipped = TRUE ) +
+    djpr_fill_manual(2) +
     geom_text(
-      data = lab_df,
-      aes(
-        y = .data$lab_y,
-        hjust = .data$lab_hjust,
-        label = paste0(round2(.data$value, 1), "%")
-      ),
-      colour = "black",
-      size = 11 / .pt
-    ) +
-    geom_hline(
-      yintercept = 0
-    ) +
-    coord_flip(clip = "off") +
-    scale_y_continuous(expand = expansion(mult = c(0.2, 0.15))) +
-    scale_fill_distiller(palette = "Blues") +
-    djprtheme::theme_djpr(flipped = TRUE) +
+    position = position_dodge(width = 1),
+    aes(label = paste0(round2(.data$value, 1),"%")),
+    vjust = 0.5,
+    colour = "black",
+    hjust = 1,
+    size = 12 / .pt
+  ) +
+
+  scale_x_discrete(expand = expansion(add = c(0.5, 0.85))) +
+    djpr_y_continuous() +
     theme(
-      axis.title.x = element_blank(),
+      axis.text.x = element_blank(),
+      axis.title = element_blank(),
       panel.grid = element_blank(),
-      axis.text.y = element_text(size = 12),
-      axis.text.x = element_blank()
+      axis.line = element_blank(),
+      legend.position = c(0.2, 0.1),
+      legend.key.height = unit(1.5, "lines"),
+      legend.key.width = unit(1.5, "lines"),
+      legend.direction = "horizontal",
+      axis.ticks = element_blank()
     ) +
+
     labs(
       title = "title",
       subtitle = paste0(
         "Growth in export and import of services between December 2019 and ",
         format(max(data$date), "%B %Y")
       ),
-      paste0("Seasonally Adjusted Chain Volume Measures")
+      caption = paste0("Seasonally Adjusted Chain Volume Measures")
     )
+
 }
+
+
 
