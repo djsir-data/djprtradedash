@@ -76,7 +76,7 @@ viz_services_bop_line_chart <- function(data = bop)
     dplyr::mutate(value = abs(.data$value))
 
   latest_month <- format(max(df$date), "%B %Y")
-
+  caption <- paste0("ABS Balnce of Payment quarterly, Seasonally Adjusted Chain Volume Measures latest data is from ", latest_month)
 
   df <- df %>%
     dplyr::group_by(.data$exports_imports) %>%
@@ -118,7 +118,7 @@ viz_services_bop_line_chart <- function(data = bop)
     labs(
       title = title,
       subtitle = "Cumulative change in export and import of services since December 2019 in Victoria",
-      caption = paste0("Seasonally Adjusted Chain Volume Measures")
+      caption = caption
     )
 }
 
@@ -214,7 +214,7 @@ viz_service_bop_bar_chart <- function(data = bop)
         "Growth in export and import of services between December 2019 and ",
         format(max(data$date), "%B %Y")
       ),
-      caption = paste0("Seasonally Adjusted Chain Volume Measures")
+      caption = caption
     )
 
 }
@@ -311,7 +311,7 @@ viz_goods_bop_bar_chart <- function(data = bop)
         "Growth in export and import of goods between December 2019 and ",
         format(max(data$date), "%B %Y")
       ),
-      caption = paste0("Seasonally Adjusted Chain Volume Measures")
+      caption = caption
     ) +
   facet_wrap(~exports_imports, ncol = 2, scales = "free_y")
 }
