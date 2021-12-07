@@ -36,9 +36,9 @@ viz_good_bop_line_chart <- function(data = bop) {
   title <- paste0(
     "Victorian goods export is ",
     dplyr::case_when(
-      latest_export > 0 ~ paste0(latest_export, " per cent higher than "),
+      latest_export > 0 ~ paste0(abs(latest_export), " per cent higher than "),
       latest_export == 0 ~ "the same as ",
-      latest_export < 0 ~ paste0(latest_export, " per cent lower than ")
+      latest_export < 0 ~ paste0(abs(latest_export), " per cent lower than ")
     ),
     "it was in December 2019"
   )
@@ -372,4 +372,94 @@ viz_goods_export_import_line <- function(data = bop) {
       caption = caption
     ) +
     facet_wrap(~exports_imports, ncol = 1, scales = "free_y")
+}
+
+
+table_export_import <- function(data = bop) {
+
+  df <- data %>%
+    dplyr::select(-.data$series_id, -.data$unit) %>%
+    dplyr::filter(.data$indicator == "Chain Volume Measures") %>%
+    dplyr::filter(!.data$goods_services == "Goods and Services") %>%
+    dplyr::mutate(value = abs(.data$value))
+
+  current <- df %>%
+    dplyr::filter(
+      .data$state == "Victoria",
+    ) %>%
+    dplyr::filter(.data$date == max(.data$date)) %>%
+      mutate(indicator = dplyr::if_else(
+    .data$indicator == "Chain Volume Measures",
+    "current", .data$indicator
+  ))
+
+  # a year
+  df_year <- df %>%
+    dplyr::filter(
+      .data$state == "Victoria",
+    ) %>%
+    dplyr::group_by(.data$exports_imports) %>%
+    dplyr::mutate(
+      value= 100 * ((.data$value / lag(.data$value, 4) - 1))
+    ) %>%
+    dplyr::filter(!is.na(.data$value)) %>%
+    dplyr::filter(.data$date == max(.data$date)) %>%
+    dplyr::ungroup()
+
+
+  # a year
+    df_year <- df_year %>%
+    mutate(indicator = dplyr::if_else(
+    .data$indicator == "Chain Volume Measures",
+      "annual", .data$indicator
+      ))
+
+
+
+
+  df_month <- df %>%
+    dplyr::filter(
+      .data$state == "Victoria",
+    ) %>%
+    dplyr::group_by(.data$exports_imports) %>%
+    dplyr::mutate(
+      value = 100 * ((.data$value / lag(.data$value, 1) - 1))
+    ) %>%
+    dplyr::filter(!is.na(.data$value)) %>%
+    dplyr::filter (.data$date == max(.data$date)) %>%
+    dplyr::ungroup()
+
+  df_month <- df_month %>%
+    mutate(indicator = dplyr::if_else(
+      .data$indicator == "Chain Volume Measures",
+      "monthly", .data$indicator
+    ))
+
+
+
+
+  # Since Covid
+  df_covid <- df %>%
+    dplyr::filter(
+      .data$state == "Victoria",
+    ) %>%
+    dplyr::group_by(.data$exports_imports) %>%
+    dplyr::mutate(
+      value = 100 * (.data$value
+                     / .data$value[.data$date == as.Date("2019-12-01")] - 1)) %>%
+    dplyr::filter(!is.na(.data$value)) %>%
+    dplyr::filter (.data$date == max(.data$date)) %>%
+    dplyr::ungroup()
+
+  df_covid <-  df_covid %>%
+    mutate(indicator = dplyr::if_else(
+      .data$indicator == "Chain Volume Measures",
+      "Covid", .data$indicator
+    ))
+
+  df_vic <- rbind( current,df_month, df_year, df_covid) %>%
+    dplyr::group_by(.data$exports_imports)
+
+
+
 }
