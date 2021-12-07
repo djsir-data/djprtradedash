@@ -318,7 +318,7 @@ viz_goods_bop_bar_chart <- function(data = bop)
 
 
 
-viz_goods_export_import_line <- viz_goods_bop_bar_chart <- function(data = bop){
+viz_goods_export_import_line   <- function(data = bop){
 
 
   df <- data %>%
