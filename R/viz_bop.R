@@ -223,9 +223,6 @@ viz_goods_bop_bar_chart <- function(data = bop)
 {
 
 
-
-
-
   df <- data %>%
     dplyr::select(-.data$series_id, -.data$unit) %>%
     dplyr::filter(.data$goods_services == "Goods", .data$indicator == "Chain Volume Measures") %>%
@@ -298,7 +295,7 @@ viz_goods_bop_bar_chart <- function(data = bop)
       axis.title = element_blank(),
       panel.grid = element_blank(),
       axis.line = element_blank(),
-      legend.position = c(0.8, 0.85),
+      legend.position = c(0.85, 0.85),
       legend.key.height = unit(1.5, "lines"),
       legend.key.width = unit(1.5, "lines"),
       legend.direction = "horizontal",
@@ -306,7 +303,7 @@ viz_goods_bop_bar_chart <- function(data = bop)
     ) +
 
     labs(
-      title = "Victoria's exports and imports of goods compared to other states and territories",
+      title = "Victoria's goods exports and imports compared to other states and territories",
       subtitle = paste0(
         "Growth in export and import of goods between December 2019 and ",
         format(max(data$date), "%B %Y")
