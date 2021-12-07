@@ -27,7 +27,6 @@ viz_good_bop_line_chart <- function(data = bop) {
   latest_export <- df %>%
     dplyr::filter(
       .data$exports_imports == "Exports",
-      # .data$exports_imports == "Export",
       .data$date == max(.data$date)
     ) %>%
     dplyr::pull(.data$value) %>%
