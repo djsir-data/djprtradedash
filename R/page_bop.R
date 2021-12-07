@@ -5,7 +5,6 @@ page_bop <- function(...) {
     paste0("This page contains Victoria's international transactions, typically quarterly or
     yearly, over a particular period.  It shows the sum of the transactions of those involving
     goods or services."),
-
     h2(br(), "Goods"),
     h2(br(), "Sevices"),
     h2(br(), "Balance of Trade "),

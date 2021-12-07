@@ -5,5 +5,5 @@ ui <- function() {
     page_launchpad(),
     page_merch(),
     page_bop()
-    )
+  )
 }
