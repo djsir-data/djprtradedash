@@ -97,9 +97,9 @@ viz_services_bop_line_chart <- function(data = bop) {
   title <- paste0(
     "Victorian services export is ",
     dplyr::case_when(
-      latest_export > 0 ~ paste0(latest_export, " per cent higher than "),
+      latest_export > 0 ~ paste0(abs(latest_export), " per cent higher than "),
       latest_export == 0 ~ "the same as ",
-      latest_export < 0 ~ paste0(latest_export, " per cent lower than ")
+      latest_export < 0 ~ paste0(abs(latest_export), " per cent lower than ")
     ),
     "it was in December 2019"
   )
