@@ -171,6 +171,11 @@ viz_service_bop_bar_chart <- function(data = bop) {
     dplyr::filter(.data$date == max(.data$date)) %>%
     dplyr::ungroup()
 
+  # df<- df %>%
+  #   mutate(fill_col = dplyr::if_else(
+  #     .data$state %in% c("Vic", "NSW"), .data$state, "Other"
+  #   ))
+
   # draw bar chart for all state
   df %>%
     ggplot(aes(x = .data$state, y = .data$value, fill = factor(.data$exports_imports))) +
@@ -253,6 +258,16 @@ viz_goods_bop_bar_chart <- function(data = bop) {
 
   latest_month <- format(max(df$date), "%B %Y")
 
+  title <- dplyr::case_when(
+    latest_export > 0 & latest_import > 0 ~
+      paste0("Both exports and imports of goods increased between December 2019 and ",  latest_month," , in Victoria"),
+    latest_export > 0 & latest_import < 0 ~
+      paste0("While the exports of goods increased, imports of goods between December 2019 and ",  latest_month, ", in Victoria"),
+    latest_export < 0 & latest_import > 0 ~
+      paste0("While exports of goods declined, imports of goods increased between December 2019 and ",  latest_month, ", in Victoria"),
+    TRUE ~ "Changes in goods exports and imports, in Victoria"
+  )
+
 
   caption <- paste0("ABS Balnce of Payment quarterly, Seasonally Adjusted Chain Volume Measures latest data is from ", latest_month)
 
@@ -290,7 +305,7 @@ viz_goods_bop_bar_chart <- function(data = bop) {
       axis.ticks = element_blank()
     ) +
     labs(
-      title = "Victoria's goods exports and imports compared to other states and territories",
+      title = title,
       subtitle = paste0(
         "Growth in export and import of goods between December 2019 and ",
         format(max(data$date), "%B %Y")
