@@ -168,7 +168,7 @@ viz_service_bop_bar_chart <- function(data = bop) {
     latest_export > 0 & latest_import > 0 ~
       paste0("Both exports and imports of services increased between December 2019 and ",  latest_month," , in Victoria"),
     latest_export > 0 & latest_import < 0 ~
-      paste0("While the exports of services increased, imports of goods between December 2019 and ",  latest_month, ", in Victoria"),
+      paste0("While exports of services increased, imports of goods between December 2019 and ",  latest_month, ", in Victoria"),
     latest_export < 0 & latest_import < 0 ~
       paste0("Both exports and imports of services fell between December 2019 and ",  latest_month, ", in Victoria"),
     latest_export < 0 & latest_import > 0 ~
@@ -275,7 +275,7 @@ viz_goods_bop_bar_chart <- function(data = bop) {
     latest_export > 0 & latest_import > 0 ~
       paste0("Both exports and imports of goods increased between December 2019 and ",  latest_month," , in Victoria"),
     latest_export > 0 & latest_import < 0 ~
-      paste0("While the exports of goods increased, imports of goods between December 2019 and ",  latest_month, ", in Victoria"),
+      paste0("While exports of goods increased, imports of goods declined between December 2019 and ",  latest_month, ", in Victoria"),
     latest_export < 0 & latest_import < 0 ~
       paste0("Both exports and imports of goods fell between December 2019 and ",  latest_month, ", in Victoria"),
 
@@ -446,7 +446,6 @@ table_export_import <- function(data = bop) {
 
 
 
-
   df_month <- df %>%
     dplyr::filter(
       .data$state == "Victoria",
@@ -464,8 +463,6 @@ table_export_import <- function(data = bop) {
       .data$indicator == "Chain Volume Measures",
       "monthly", .data$indicator
     ))
-
-
 
 
   # Since Covid
