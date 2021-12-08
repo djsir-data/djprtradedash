@@ -164,6 +164,19 @@ viz_service_bop_bar_chart <- function(data = bop) {
   latest_month <- format(max(df$date), "%B %Y")
 
 
+  title <- dplyr::case_when(
+    latest_export > 0 & latest_import > 0 ~
+      paste0("Both exports and imports of services increased between December 2019 and ",  latest_month," , in Victoria"),
+    latest_export > 0 & latest_import < 0 ~
+      paste0("While the exports of services increased, imports of goods between December 2019 and ",  latest_month, ", in Victoria"),
+    latest_export < 0 & latest_import < 0 ~
+      paste0("Both exports and imports of services fell between December 2019 and ",  latest_month, ", in Victoria"),
+    latest_export < 0 & latest_import > 0 ~
+      paste0("While exports of services declined, imports of goods increased between December 2019 and ",  latest_month, ", in Victoria"),
+    TRUE ~ "Changes in services exports and imports, in Victoria"
+  )
+
+
   caption <- paste0("ABS Balnce of Payment quarterly, Seasonally Adjusted Chain Volume Measures latest data is from ", latest_month)
 
   df <- df %>%
@@ -205,7 +218,7 @@ viz_service_bop_bar_chart <- function(data = bop) {
       axis.ticks = element_blank()
     ) +
     labs(
-      title = "title",
+      title = title,
       subtitle = paste0(
         "Growth in export and import of services between December 2019 and ",
         format(max(data$date), "%B %Y")
@@ -263,6 +276,9 @@ viz_goods_bop_bar_chart <- function(data = bop) {
       paste0("Both exports and imports of goods increased between December 2019 and ",  latest_month," , in Victoria"),
     latest_export > 0 & latest_import < 0 ~
       paste0("While the exports of goods increased, imports of goods between December 2019 and ",  latest_month, ", in Victoria"),
+    latest_export < 0 & latest_import < 0 ~
+      paste0("Both exports and imports of goods fell between December 2019 and ",  latest_month, ", in Victoria"),
+
     latest_export < 0 & latest_import > 0 ~
       paste0("While exports of goods declined, imports of goods increased between December 2019 and ",  latest_month, ", in Victoria"),
     TRUE ~ "Changes in goods exports and imports, in Victoria"
