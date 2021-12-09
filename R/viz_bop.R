@@ -346,7 +346,7 @@ viz_goods_export_import_line <- function(data = bop) {
   df <- df %>%
     dplyr::group_by(.data$exports_imports) %>%
     dplyr::mutate(
-      value = 100 * ((.data$value / lag(.data$value, 4) - 1))
+      value = 100 *((.data$value / lag(.data$value, 4) - 1))
     ) %>%
     dplyr::filter(!is.na(.data$value)) %>%
     dplyr::ungroup()
@@ -487,6 +487,78 @@ table_export_import <- function(data = bop) {
   df_vic %>%
     gt::gt() %>%
     gt::tab_header( title = "Export and Imports of Goods and Services ")
+
+
+
+
+
+}
+
+viz_trade_balance_line_chart <- function(data = bop) {
+
+
+  df <- data %>%
+    dplyr::filter(date >= as.Date("2017-12-01")) %>%
+    dplyr::filter(
+      .data$state == "Victoria",
+    ) %>%
+    dplyr::select(-.data$series_id, -.data$unit) %>%
+    dplyr::filter(.data$indicator == "Chain Volume Measures") %>%
+    dplyr::mutate(value = abs(.data$value))
+
+    df<- df %>%
+    tidyr::pivot_wider(
+      names_from = .data$exports_imports,
+      values_from = .data$value) %>%
+    dplyr::mutate(value =.data$Exports -.data$Imports)
+
+
+    latest_month <- format(max(df$date), "%B %Y")
+    caption <- paste0("ABS Balnce of Payment quarterly, Seasonally Adjusted Chain Volume Measures latest data is from ", latest_month)
+
+     df <- df %>%
+      dplyr::group_by(.data$goods_services) %>%
+      dplyr::mutate(
+        value = 100*(.data$value
+                       /.data$value[.data$date == as.Date("2019-12-01")]-1),
+        tooltip = paste0(
+          .data$goods_services, "\n",
+          format(.data$date, "%b %Y"), "\n",
+          round2(.data$value, 1), "%"
+        )
+      )
+
+     total_latest <- df %>%
+       dplyr::filter(.data$goods_services == "Goods and Services" &
+                       .data$date == max(.data$date)) %>%
+       dplyr::mutate(value = round2(.data$value, 1)) %>%
+       dplyr::pull(.data$value)
+
+
+     title <- paste0(
+       "Victorian total trade balance is ",
+       dplyr::case_when(
+         total_latest  > 0 ~ paste0(abs( total_latest), " per cent higher than "),
+         total_latest  == 0 ~ "the same as ",
+         total_latest  < 0 ~ paste0(abs(total_latest), " per cent lower than ")
+       ),
+       "it was in December 2019"
+     )
+
+
+
+     df %>%
+       djpr_ts_linechart(
+         col_var = .data$goods_services,
+         label_num = paste0(round2(.data$value, 1), "%"),
+         y_labels = function(x) paste0(x, "%"),
+         hline = 0
+       ) +
+       labs(
+         title = title,
+         subtitle = "Cumulative change in total trade balance since December 2019 in Victoria",
+         caption = caption
+       )
 
 
 
