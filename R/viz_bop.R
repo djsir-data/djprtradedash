@@ -410,82 +410,85 @@ table_export_import <- function(data = bop) {
   df <- data %>%
     dplyr::select(-.data$series_id, -.data$unit) %>%
     dplyr::filter(.data$indicator == "Chain Volume Measures") %>%
-    dplyr::filter(!.data$goods_services == "Goods and Services") %>%
-    dplyr::mutate(value = abs(.data$value))
+    dplyr::mutate(value = abs(.data$value)) %>%
+    dplyr::mutate( value= round2(.data$value, 1)
+  )
 
   current <- df %>%
     dplyr::filter(
       .data$state == "Victoria",
     ) %>%
     dplyr::filter(.data$date == max(.data$date)) %>%
-      mutate(indicator = dplyr::if_else(
-    .data$indicator == "Chain Volume Measures",
-    "current", .data$indicator
-  ))
+    dplyr::rename("Current figures" = value) %>%
+    dplyr::select(.data$exports_imports,.data$`Current figures`)%>%
+    dplyr::rename(recent = exports_imports)
 
-  # a year
+
   df_year <- df %>%
     dplyr::filter(
       .data$state == "Victoria",
     ) %>%
-    dplyr::group_by(.data$exports_imports) %>%
+    dplyr::group_by(.data$exports_imports,.data$goods_services) %>%
     dplyr::mutate(
-      value= 100 * ((.data$value / lag(.data$value, 4) - 1))
+      "Change in the past year"= 100 * ((.data$value / lag(.data$value, 4) - 1))
     ) %>%
     dplyr::filter(!is.na(.data$value)) %>%
     dplyr::filter(.data$date == max(.data$date)) %>%
     dplyr::ungroup()
 
-
-  # a year
     df_year <- df_year %>%
-    mutate(indicator = dplyr::if_else(
-    .data$indicator == "Chain Volume Measures",
-      "annual", .data$indicator
-      ))
-
+      dplyr::select(.data$exports_imports,.data$`Change in the past year`)%>%
+      dplyr::rename("Change in the past year" = exports_imports)
 
 
   df_month <- df %>%
     dplyr::filter(
       .data$state == "Victoria",
     ) %>%
-    dplyr::group_by(.data$exports_imports) %>%
+    dplyr::group_by(.data$exports_imports,.data$goods_services) %>%
     dplyr::mutate(
-      value = 100 * ((.data$value / lag(.data$value, 1) - 1))
+    "Change in the latest period" = 100 * ((.data$value / lag(.data$value, 1) - 1))
     ) %>%
     dplyr::filter(!is.na(.data$value)) %>%
     dplyr::filter (.data$date == max(.data$date)) %>%
     dplyr::ungroup()
 
   df_month <- df_month %>%
-    mutate(indicator = dplyr::if_else(
-      .data$indicator == "Chain Volume Measures",
-      "monthly", .data$indicator
-    ))
-
+    dplyr::select(.data$exports_imports,.data$`Change in the latest period`)%>%
+    dplyr::rename(monthly = exports_imports)
 
   # Since Covid
   df_covid <- df %>%
     dplyr::filter(
       .data$state == "Victoria",
     ) %>%
-    dplyr::group_by(.data$exports_imports) %>%
+    dplyr::group_by(.data$exports_imports,.data$goods_services) %>%
     dplyr::mutate(
-      value = 100 * (.data$value
+      "Change since COVID" = 100 * (.data$value
                      / .data$value[.data$date == as.Date("2019-12-01")] - 1)) %>%
     dplyr::filter(!is.na(.data$value)) %>%
     dplyr::filter (.data$date == max(.data$date)) %>%
     dplyr::ungroup()
 
-  df_covid <-  df_covid %>%
-    mutate(indicator = dplyr::if_else(
-      .data$indicator == "Chain Volume Measures",
-      "Covid", .data$indicator
-    ))
 
-  df_vic <- rbind( current,df_month, df_year, df_covid) %>%
-    dplyr::group_by(.data$exports_imports)
+  df_covid <-  df_covid %>%
+    dplyr::select(.data$goods_services,.data$`Change since COVID`) %>%
+    dplyr::rename(Trade = goods_services)
+
+
+
+  df_vic <- cbind( current,df_month, df_year, df_covid) %>%
+    dplyr::select(.data$recent,.data$Trade,.data$`Current figures`,.data$`Change in the latest period`,.data$`Change since COVID`) %>%
+    dplyr::rename("Export/Import"=recent)
+
+
+
+
+  df_vic %>%
+    gt::gt() %>%
+    gt::tab_header( title = "Export and Imports of Goods and Services ")
+
+
 
 
 
