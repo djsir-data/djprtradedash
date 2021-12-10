@@ -487,7 +487,7 @@ table_export_import <- function(data = bop) {
 
   df_vic %>%
     gt::gt() %>%
-    gt::tab_header( title = "Export and Imports of Goods and Services ")
+    gt::tab_header( title = "Victoria's Export and Imports of Goods and Services")
 
 
 }
