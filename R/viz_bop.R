@@ -410,9 +410,7 @@ table_export_import <- function(data = bop) {
   df <- data %>%
     dplyr::select(-.data$series_id, -.data$unit) %>%
     dplyr::filter(.data$indicator == "Chain Volume Measures") %>%
-    dplyr::mutate(value = abs(.data$value)) %>%
-    dplyr::mutate( value= round2(.data$value, 1)
-  )
+    dplyr::mutate(value = abs(.data$value))
 
   current <- df %>%
     dplyr::filter(
@@ -424,7 +422,7 @@ table_export_import <- function(data = bop) {
 
 
   current <-  current%>%
-    dplyr::rename("Current figures" = value)
+    dplyr::rename("Current figures (millions)" = value)
 
   #per cent change
   df_year <- df %>%
@@ -441,7 +439,7 @@ table_export_import <- function(data = bop) {
 
     df_year <- df_year %>%
       dplyr::select(.data$value)%>%
-      dplyr::rename("Change in the past year" = value)
+      dplyr::rename("Change in the past year (%)" = value)
 
 
   df_quarterly <- df %>%
@@ -458,7 +456,7 @@ table_export_import <- function(data = bop) {
 
   df_quarterly <- df_quarterly%>%
     dplyr::select(.data$value)%>%
-    dplyr::rename("Change in the latest period" = value)
+    dplyr::rename("Change in the latest period (%)" = value)
 
   # Since Covid
   df_covid <- df %>%
@@ -475,13 +473,11 @@ table_export_import <- function(data = bop) {
 
   df_covid  <-  df_covid  %>%
     dplyr::select(.data$value)%>%
-    dplyr::rename( "Change since COVID" = value)
+    dplyr::rename( "Change since COVID (%)" = value)
 
-
-
-
-  df_vic <- cbind( current,df_quarterly, df_year, df_covid) %>%
-    dplyr::select(.data$goods_services,.data$exports_imports,.data$`Current figures`,.data$`Change in the latest period`,.data$`Change in the past year`, .data$`Change since COVID`)
+  df_vic <- cbind(current, df_quarterly, df_year, df_covid) %>%
+    dplyr::select(.data$goods_services,.data$exports_imports,.data$`Current figures (millions)`,.data$`Change in the latest period (%)`,.data$`Change in the past year (%)`, .data$`Change since COVID (%)`) %>%
+    dplyr::rename("Goods/Services" = goods_services, "Exports/Imports" = exports_imports)
 
 
 
