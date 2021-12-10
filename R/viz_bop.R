@@ -419,43 +419,46 @@ table_export_import <- function(data = bop) {
       .data$state == "Victoria",
     ) %>%
     dplyr::filter(.data$date == max(.data$date)) %>%
-    dplyr::rename("Current figures" = value) %>%
-    dplyr::select(.data$exports_imports,.data$`Current figures`)%>%
-    dplyr::rename(recent = exports_imports)
+    dplyr::select(.data$exports_imports,.data$goods_services,.data$value)%>%
+    dplyr::mutate(value = round2(.data$value, 1))
 
 
+  current <-  current%>%
+    dplyr::rename("Current figures" = value)
+
+  #per cent change
   df_year <- df %>%
     dplyr::filter(
       .data$state == "Victoria",
     ) %>%
     dplyr::group_by(.data$exports_imports,.data$goods_services) %>%
     dplyr::mutate(
-      "Change in the past year"= 100 * ((.data$value / lag(.data$value, 4) - 1))
+      value = 100 * ((.data$value / lag(.data$value, 4) - 1))
     ) %>%
-    dplyr::filter(!is.na(.data$value)) %>%
+    dplyr::mutate(value = round2(.data$value, 1)) %>%
     dplyr::filter(.data$date == max(.data$date)) %>%
     dplyr::ungroup()
 
     df_year <- df_year %>%
-      dplyr::select(.data$exports_imports,.data$`Change in the past year`)%>%
-      dplyr::rename("Change in the past year" = exports_imports)
+      dplyr::select(.data$value)%>%
+      dplyr::rename("Change in the past year" = value)
 
 
-  df_month <- df %>%
+  df_quarterly <- df %>%
     dplyr::filter(
       .data$state == "Victoria",
     ) %>%
     dplyr::group_by(.data$exports_imports,.data$goods_services) %>%
     dplyr::mutate(
-    "Change in the latest period" = 100 * ((.data$value / lag(.data$value, 1) - 1))
+    value = 100 * ((.data$value / lag(.data$value, 1) - 1))
     ) %>%
-    dplyr::filter(!is.na(.data$value)) %>%
+    dplyr::mutate(value = round2(.data$value, 1)) %>%
     dplyr::filter (.data$date == max(.data$date)) %>%
     dplyr::ungroup()
 
-  df_month <- df_month %>%
-    dplyr::select(.data$exports_imports,.data$`Change in the latest period`)%>%
-    dplyr::rename(monthly = exports_imports)
+  df_quarterly <- df_quarterly%>%
+    dplyr::select(.data$value)%>%
+    dplyr::rename("Change in the latest period" = value)
 
   # Since Covid
   df_covid <- df %>%
@@ -464,32 +467,27 @@ table_export_import <- function(data = bop) {
     ) %>%
     dplyr::group_by(.data$exports_imports,.data$goods_services) %>%
     dplyr::mutate(
-      "Change since COVID" = 100 * (.data$value
+      value = 100 * (.data$value
                      / .data$value[.data$date == as.Date("2019-12-01")] - 1)) %>%
-    dplyr::filter(!is.na(.data$value)) %>%
+    dplyr::mutate(value = round2(.data$value, 1)) %>%
     dplyr::filter (.data$date == max(.data$date)) %>%
     dplyr::ungroup()
 
-
-  df_covid <-  df_covid %>%
-    dplyr::select(.data$goods_services,.data$`Change since COVID`) %>%
-    dplyr::rename(Trade = goods_services)
-
+  df_covid  <-  df_covid  %>%
+    dplyr::select(.data$value)%>%
+    dplyr::rename( "Change since COVID" = value)
 
 
-  df_vic <- cbind( current,df_month, df_year, df_covid) %>%
-    dplyr::select(.data$recent,.data$Trade,.data$`Current figures`,.data$`Change in the latest period`,.data$`Change since COVID`) %>%
-    dplyr::rename("Export/Import"=recent)
 
+
+  df_vic <- cbind( current,df_quarterly, df_year, df_covid) %>%
+    dplyr::select(.data$goods_services,.data$exports_imports,.data$`Current figures`,.data$`Change in the latest period`,.data$`Change in the past year`, .data$`Change since COVID`)
 
 
 
   df_vic %>%
     gt::gt() %>%
     gt::tab_header( title = "Export and Imports of Goods and Services ")
-
-
-
 
 
 }
