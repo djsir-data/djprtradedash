@@ -405,6 +405,7 @@ viz_goods_export_import_line <- function(data = bop) {
 
 
 table_export_import <- function(data = bop) {
+
   df <- data %>%
     dplyr::select(-.data$series_id, -.data$unit) %>%
     dplyr::filter(.data$indicator == "Chain Volume Measures") %>%
@@ -478,12 +479,15 @@ table_export_import <- function(data = bop) {
     dplyr::select(.data$goods_services, .data$exports_imports, .data$`Current figures (millions)`, .data$`Change in the latest period (%)`, .data$`Change in the past year (%)`, .data$`Change since COVID (%)`) %>%
     dplyr::rename("Goods/Services" = goods_services, "Exports/Imports" = exports_imports)
 
-
+  latest_month <- format(max(df$date), "%B %Y")
 
   df_vic %>%
     gt::gt() %>%
-    gt::tab_header(title = "Victoria's Export and Imports of Goods and Services")
-}
+    gt::tab_header(paste0(title = "Victoria's Export and Imports of Goods and Services"),latest_month) %>%
+    gt::tab_source_note(source_note ="Source: ABS: Balance of payment, Chain Volume measure")
+
+
+  }
 
 viz_trade_balance_line_chart <- function(data = bop) {
   df <- data %>%
@@ -549,4 +553,17 @@ viz_trade_balance_line_chart <- function(data = bop) {
       subtitle = "Cumulative change in total trade balance since December 2019 in Victoria",
       caption = caption
     )
+}
+
+
+viz_NSW_Vic_lin_chart <- function(data = bop,
+                               states = c("New South Wales", "Victoria ")
+                              )
+{
+  df <- data %>%
+    dplyr::filter(
+      .data$state %in% .env$states
+    )
+
+
 }
