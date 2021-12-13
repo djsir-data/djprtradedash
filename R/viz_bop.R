@@ -629,9 +629,8 @@ viz_NSW_Vic_goods_line_chart <- function(data = bop)
 }
 
 
-viz_NSW_Vic_Services_line_chart <- function(data = bop)
+viz_NSW_Vic_Services_line_chart <- function(data = bop){
 
-{
   df <- data %>%
     dplyr::select(-.data$series_id, -.data$unit) %>%
     dplyr::filter(.data$goods_services == "Services", .data$indicator == "Chain Volume Measures") %>%
@@ -668,8 +667,6 @@ viz_NSW_Vic_Services_line_chart <- function(data = bop)
     round2(1)
 
   latest_month <- format(max(df$date), "%B %Y")
-
-
 
   title <- dplyr::case_when(
     latest_vic_export > latest_NSW_export  ~
