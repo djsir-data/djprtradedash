@@ -698,3 +698,109 @@ viz_NSW_Vic_Services_line_chart <- function(data = bop){
 
 
 }
+
+viz_total_bop_bar_chart <- function(data = bop) {
+  df <- data %>%
+    dplyr::select(-.data$series_id, -.data$unit) %>%
+    dplyr::filter(.data$indicator == "Chain Volume Measures",.data$exports_imports == "Exports") %>%
+    dplyr::mutate(value = abs(.data$value)) %>%
+    dplyr::filter(.data$date == max(.data$date)) %>%
+    dplyr::filter(!.data$state == "Australian Capital Territory",
+                   !.data$state == "Northern Territory" ) %>%
+    dplyr::mutate(state = dplyr::case_when(
+      .data$state == "New South Wales" ~ "NSW",
+      .data$state == "Victoria" ~ "Vic",
+      .data$state == "Queensland" ~ "Qld",
+      .data$state == "South Australia" ~ "SA",
+      .data$state == "Western Australia" ~ "WA",
+      .data$state == "Tasmania" ~ "Tas",
+    ))
+
+
+  # % change of export and export since Dec 2029
+
+
+
+  latest_export <- df %>%
+    dplyr::filter(
+      .data$state == "Vic",
+      .data$exports_imports == "Exports",
+      .data$date == max(.data$date)
+    ) %>%
+    dplyr::pull(.data$value) %>%
+    round2(1)
+
+  latest_import <- df %>%
+    dplyr::filter(
+      .data$state == "Vic",
+      .data$exports_imports == "Imports",
+      .data$date == max(.data$date)
+    ) %>%
+    dplyr::pull(.data$value) %>%
+    round2(1)
+
+  latest_month <- format(max(df$date), "%B %Y")
+
+
+  title <- dplyr::case_when(
+    latest_export > 0 & latest_import > 0 ~
+      paste0("Both exports and imports of services increased between December 2019 and ", latest_month, " , in Victoria"),
+    latest_export > 0 & latest_import < 0 ~
+      paste0("While exports of services increased, imports of goods between December 2019 and ", latest_month, ", in Victoria"),
+    latest_export < 0 & latest_import < 0 ~
+      paste0("Both exports and imports of services fell between December 2019 and ", latest_month, ", in Victoria"),
+    latest_export < 0 & latest_import > 0 ~
+      paste0("While exports of services declined, imports of goods increased between December 2019 and ", latest_month, ", in Victoria"),
+    TRUE ~ "Changes in services exports and imports, in Victoria"
+  )
+
+
+  caption <- paste0("ABS Balnce of Payment quarterly, Seasonally Adjusted Chain Volume Measures latest data is from ", latest_month)
+
+  # df <- df %>%
+  #   dplyr::group_by(.data$state) %>%
+  #   dplyr::filter(.data$date == max(.data$date)) %>%
+  #   dplyr::ungroup()
+
+  # df<- df %>%
+  #   mutate(fill_col = dplyr::if_else(
+  #     .data$state %in% c("Vic", "NSW"), .data$state, "Other"
+  #   ))
+
+  # draw bar chart for all state
+  df %>%
+    ggplot(aes(x = .data$state, y = .data$value, fill = factor(.data$goods_services))) +
+    geom_bar(stat = "identity", position = "dodge") +
+    coord_flip() +
+    theme_djpr(flipped = TRUE) +
+    djpr_fill_manual(3) +
+    geom_text(
+      position = position_dodge(width = 1),
+      aes(label = paste0(round2(.data$value, 1))),
+      vjust = 0.5,
+      colour = "black",
+      hjust = 1,
+      size = 12 / .pt
+    ) +
+    scale_x_discrete(expand = expansion(add = c(0.5, 0.85))) +
+    djpr_y_continuous() +
+    theme(
+      axis.text.x = element_blank(),
+      axis.title = element_blank(),
+      panel.grid = element_blank(),
+      axis.line = element_blank(),
+      legend.position = c(0.6, 0.6),
+      legend.key.height = unit(1.5, "lines"),
+      legend.key.width = unit(1.5, "lines"),
+      legend.direction = "horizontal",
+      axis.ticks = element_blank()
+    ) +
+    labs(
+      title = "title",
+      subtitle = paste0(
+        "Growth in export and import of services between December 2019 and ",
+        format(max(data$date), "%B %Y")
+      ),
+      caption = caption
+    )
+}
