@@ -481,11 +481,10 @@ table_export_import <- function(data = bop) {
 
   latest_month <- format(max(df$date), "%B %Y")
 
-   table_trade <- df_vic %>%
+  df_vic %>%
     gt::gt() %>%
     gt::tab_header(paste0(title = "Victoria's Export and Imports of Goods and Services"),latest_month) %>%
-    gt::tab_source_note(source_note ="Source: ABS: Balance of payment, Chain Volume measure")
-  table_trade %>%
+    gt::tab_source_note(source_note ="Source: ABS: Balance of payment, Chain Volume measure") %>%
     gt::tab_options(column_labels.background.color= "grey")
   }
 
@@ -556,14 +555,76 @@ viz_trade_balance_line_chart <- function(data = bop) {
 }
 
 
-viz_NSW_Vic_lin_chart <- function(data = bop,
-                               states = c("New South Wales", "Victoria ")
-                              )
+viz_NSW_Vic_goods_line_chart <- function(data = bop)
+
 {
   df <- data %>%
+    dplyr::select(-.data$series_id, -.data$unit) %>%
+    dplyr::filter(.data$goods_services == "Goods", .data$indicator == "Chain Volume Measures") %>%
+    dplyr::filter(.data$state %in% c("New South Wales","Victoria")) %>%
+    dplyr::mutate(value = abs(.data$value)) %>%
+    dplyr::mutate(state = dplyr::case_when(
+      .data$state == "New South Wales" ~ "NSW",
+      .data$state == "Victoria" ~ "Vic", )) %>%
+    dplyr::group_by(.data$exports_imports, .data$goods_services, .data$state) %>%
+    dplyr::mutate(
+      value = 100 * ((.data$value / lag(.data$value, 4) - 1))
+    ) %>%
+    dplyr::mutate(value = round2(.data$value, 1)) %>%
+    dplyr::filter(!is.na(.data$value)) %>%
+    dplyr::ungroup()
+
+
+  latest_vic_export <- df %>%
     dplyr::filter(
-      .data$state %in% .env$states
-    )
+      .data$state == "Vic",
+      .data$exports_imports == "Exports",
+      .data$date == max(.data$date)
+    ) %>%
+    dplyr::pull(.data$value) %>%
+    round2(1)
+
+  latest_NSW_export <- df %>%
+    dplyr::filter(
+      .data$state == "NSW",
+      .data$exports_imports == "Exports",
+      .data$date == max(.data$date)
+    ) %>%
+    dplyr::pull(.data$value) %>%
+    round2(1)
+
+  latest_month <- format(max(df$date), "%B %Y")
+
+
+
+  title <- dplyr::case_when(
+    latest_vic_export > latest_NSW_export  ~
+      paste0("Victoria's exports of goods grew faster than NSW exports in the year to ", latest_month),
+    latest_vic_export <  latest_NSW_export  ~
+      paste0("Victoria's exports of goods grew lower than NSW exports in the year to ", latest_month),
+    latest_vic_export == latest_NSW_export ~
+      paste0("Victoria's exports of goods grew at the same rate as NSW expors in the year to  ", latest_month),
+    TRUE ~ "Annual growth exporst and imports in goods"
+  )
+
+
+
+  caption <- paste0("ABS Balnce of Payment quarterly, Seasonally Adjusted Chain Volume Measures latest data is from ", latest_month)
+
+  df %>%
+    djpr_ts_linechart(
+      col_var = .data$exports_imports,
+      label_num = paste0(round2(.data$value, 1), "%"),
+      y_labels = function(x) paste0(x, "%"),
+      hline = 0
+    ) +
+    labs(
+      title = title,
+      subtitle = "Annual growth in goods exports and imports",
+      caption = caption
+    ) +
+  facet_wrap(~state, ncol = 1, scales = "free_y")
 
 
 }
+
