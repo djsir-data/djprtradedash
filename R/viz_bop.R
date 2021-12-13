@@ -481,12 +481,12 @@ table_export_import <- function(data = bop) {
 
   latest_month <- format(max(df$date), "%B %Y")
 
-  df_vic %>%
+   table_trade <- df_vic %>%
     gt::gt() %>%
     gt::tab_header(paste0(title = "Victoria's Export and Imports of Goods and Services"),latest_month) %>%
     gt::tab_source_note(source_note ="Source: ABS: Balance of payment, Chain Volume measure")
-
-
+  table_trade %>%
+    gt::tab_options(column_labels.background.color= "grey")
   }
 
 viz_trade_balance_line_chart <- function(data = bop) {
