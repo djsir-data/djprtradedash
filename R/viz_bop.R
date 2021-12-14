@@ -797,30 +797,32 @@ viz_total_bop_bar_chart <- function(data = bop) {
 }
 
 
-viz_good_services_line_chart <- function(data = bop) {
+viz_good_services_export_chart <- function(data = bop) {
+
   df <- data %>%
-    dplyr::filter(date >= as.Date("2018-12-01")) %>%
     dplyr::filter(
       .data$state == "Victoria",
     ) %>%
     dplyr::select(-.data$series_id, -.data$unit) %>%
-    dplyr::filter(.data$goods_services == "Goods and Services", .data$indicator == "Chain Volume Measures") %>%
-    dplyr::mutate(value = abs(.data$value))
+    dplyr::filter(.data$exports_imports == "Exports", .data$indicator == "Chain Volume Measures") %>%
+  dplyr::mutate(goods_services = dplyr::if_else(.data$goods_services == "Goods and Services", "Total", .data$goods_services)) %>%
+  dplyr::mutate(value = abs(.data$value))
+
 
   latest_month <- format(max(df$date), "%B %Y")
 
 
-  df <- df %>%
-    dplyr::group_by(.data$exports_imports) %>%
-    dplyr::mutate(
-      value = 100 * (.data$value
-                     / .data$value[.data$date == as.Date("2019-12-01")] - 1),
-      tooltip = paste0(
-        .data$exports_imports, "\n",
-        format(.data$date, "%b %Y"), "\n",
-        round2(.data$value, 1), "%"
-      )
-    )
+  # df <- df %>%
+  #   dplyr::group_by(.data$exports_imports) %>%
+  #   dplyr::mutate(
+  #     value = 100 * (.data$value
+  #                    / .data$value[.data$date == as.Date("2019-12-01")] - 1),
+  #     tooltip = paste0(
+  #       .data$exports_imports, "\n",
+  #       format(.data$date, "%b %Y"), "\n",
+  #       round2(.data$value, 1), "%"
+  #     )
+  #   )
 
 
   latest_export <- df %>%
@@ -845,13 +847,76 @@ viz_good_services_line_chart <- function(data = bop) {
 
   df %>%
     djpr_ts_linechart(
-      col_var = .data$exports_imports,
-      label_num = paste0(round2(.data$value, 1), "%"),
-      y_labels = function(x) paste0(x, "%"),
+      col_var = .data$goods_services,
+      label_num = paste0(scales::comma(round2(.data$value, 1))),
+      # y_labels = function(x) paste0(x, "%"),
     ) +
     labs(
-      title = title,
-      subtitle = "Cumulative change in export and import of goods and services since December 2019 in Victoria",
+      title = "title",
+      subtitle = "Victoria's exports of goods and services in million dollars",
       caption = caption
     )
 }
+
+
+viz_good_services_import_chart <- function(data = bop) {
+
+  df <- data %>%
+    dplyr::filter(
+      .data$state == "Victoria",
+    ) %>%
+    dplyr::select(-.data$series_id, -.data$unit) %>%
+    dplyr::filter(.data$exports_imports == "Imports", .data$indicator == "Chain Volume Measures") %>%
+    dplyr::mutate(goods_services = dplyr::if_else(.data$goods_services == "Goods and Services", "Total", .data$goods_services)) %>%
+    dplyr::mutate(value = abs(.data$value))
+
+
+  latest_month <- format(max(df$date), "%B %Y")
+
+
+  # df <- df %>%
+  #   dplyr::group_by(.data$exports_imports) %>%
+  #   dplyr::mutate(
+  #     value = 100 * (.data$value
+  #                    / .data$value[.data$date == as.Date("2019-12-01")] - 1),
+  #     tooltip = paste0(
+  #       .data$exports_imports, "\n",
+  #       format(.data$date, "%b %Y"), "\n",
+  #       round2(.data$value, 1), "%"
+  #     )
+  #   )
+
+
+  latest_export <- df %>%
+    dplyr::filter(
+      .data$exports_imports == "Exports",
+      .data$date == max(.data$date)
+    ) %>%
+    dplyr::pull(.data$value) %>%
+    round2(1)
+
+  title <- paste0(
+    "Victorian goods and services export is ",
+    dplyr::case_when(
+      latest_export > 0 ~ paste0(abs(latest_export), " per cent higher than "),
+      latest_export == 0 ~ "the same as ",
+      latest_export < 0 ~ paste0(abs(latest_export), " per cent lower than ")
+    ),
+    "it was in December 2019"
+  )
+
+  caption <- paste0("ABS Balnce of Payment quarterly, Seasonally Adjusted Chain Volume Measures latest data is from ", latest_month)
+
+  df %>%
+    djpr_ts_linechart(
+      col_var = .data$goods_services,
+      label_num = paste0(scales::comma(round2(.data$value, 1))),
+      # y_labels = function(x) paste0(x, "%"),
+    ) +
+    labs(
+      title = "title",
+      subtitle = "Victoria's export of goods and services in millions",
+      caption = caption
+    )
+}
+
