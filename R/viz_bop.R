@@ -889,7 +889,7 @@ viz_good_services_import_chart <- function(data = bop) {
 
   latest_export <- df %>%
     dplyr::filter(
-      .data$exports_imports == "Exports",
+      .data$exports_imports == "Imports",
       .data$date == max(.data$date)
     ) %>%
     dplyr::pull(.data$value) %>%
@@ -915,7 +915,7 @@ viz_good_services_import_chart <- function(data = bop) {
     ) +
     labs(
       title = "title",
-      subtitle = "Victoria's export of goods and services in millions",
+      subtitle = "Victoria's imports of goods and services in millions",
       caption = caption
     )
 }
