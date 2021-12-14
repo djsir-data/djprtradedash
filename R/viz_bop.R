@@ -714,8 +714,8 @@ viz_total_bop_bar_chart <- function(data = bop) {
       .data$state == "South Australia" ~ "SA",
       .data$state == "Western Australia" ~ "WA",
       .data$state == "Tasmania" ~ "Tas",
-    ))
-
+    )) %>%
+    dplyr::mutate(goods_services = dplyr::if_else(.data$goods_services == "Goods and Services", "Total", .data$goods_services))
 
   # % change of export and export since Dec 2029
 
@@ -754,18 +754,9 @@ viz_total_bop_bar_chart <- function(data = bop) {
     TRUE ~ "Changes in services exports and imports, in Victoria"
   )
 
-
+  #djpr_y_continuous() +
   caption <- paste0("ABS Balnce of Payment quarterly, Seasonally Adjusted Chain Volume Measures latest data is from ", latest_month)
 
-  # df <- df %>%
-  #   dplyr::group_by(.data$state) %>%
-  #   dplyr::filter(.data$date == max(.data$date)) %>%
-  #   dplyr::ungroup()
-
-  # df<- df %>%
-  #   mutate(fill_col = dplyr::if_else(
-  #     .data$state %in% c("Vic", "NSW"), .data$state, "Other"
-  #   ))
 
   # draw bar chart for all state
   df %>%
@@ -776,14 +767,14 @@ viz_total_bop_bar_chart <- function(data = bop) {
     djpr_fill_manual(3) +
     geom_text(
       position = position_dodge(width = 1),
-      aes(label = paste0(round2(.data$value, 1))),
+      aes(label = paste0(scales::comma(round2(.data$value, 1)))),
       vjust = 0.5,
       colour = "black",
-      hjust = 1,
+      hjust = 0,
       size = 12 / .pt
     ) +
     scale_x_discrete(expand = expansion(add = c(0.5, 0.85))) +
-    djpr_y_continuous() +
+    scale_y_continuous(expand = expansion(mult = c(0, 0.15)))+
     theme(
       axis.text.x = element_blank(),
       axis.title = element_blank(),
@@ -798,7 +789,7 @@ viz_total_bop_bar_chart <- function(data = bop) {
     labs(
       title = "title",
       subtitle = paste0(
-        "Growth in export and import of services between December 2019 and ",
+        "Export of goods and services in millions by Australian states ",
         format(max(data$date), "%B %Y")
       ),
       caption = caption
