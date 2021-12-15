@@ -920,7 +920,7 @@ viz_good_services_import_chart <- function(data = bop) {
     )
 }
 
-viz_total_bop_bar_chart <- function(data = bop) {
+viz_Vic_total_bop_bar_chart <- function(data = bop) {
   df <- data %>%
     dplyr::select(-.data$series_id, -.data$unit) %>%
     dplyr::filter(.data$indicator == "Chain Volume Measures",.data$exports_imports == "Exports") %>%
