@@ -920,3 +920,99 @@ viz_good_services_import_chart <- function(data = bop) {
     )
 }
 
+viz_total_bop_bar_chart <- function(data = bop) {
+  df <- data %>%
+    dplyr::select(-.data$series_id, -.data$unit) %>%
+    dplyr::filter(.data$indicator == "Chain Volume Measures",.data$exports_imports == "Exports") %>%
+    dplyr::mutate(value = abs(.data$value)) %>%
+    dplyr::group_by(.data$goods_services) %>%
+    dplyr::arrange(.data$date) %>%
+    dplyr::filter(.data$state == "Victoria") %>%
+    dplyr::slice_tail( n= 5) %>%
+    dplyr::ungroup()
+
+
+  df <- df %>%
+    dplyr::mutate(goods_services = dplyr::if_else(.data$goods_services == "Goods and Services", "Total", .data$goods_services))
+
+  # % change of export and export since Dec 2029
+
+
+
+  latest_export <- df %>%
+    dplyr::filter(
+      .data$state == "Vic",
+      .data$exports_imports == "Exports",
+      .data$date == max(.data$date)
+    ) %>%
+    dplyr::pull(.data$value) %>%
+    round2(1)
+
+  latest_import <- df %>%
+    dplyr::filter(
+      .data$state == "Vic",
+      .data$exports_imports == "Imports",
+      .data$date == max(.data$date)
+    ) %>%
+    dplyr::pull(.data$value) %>%
+    round2(1)
+
+  latest_month <- format(max(df$date), "%B %Y")
+
+
+  title <- dplyr::case_when(
+    latest_export > 0 & latest_import > 0 ~
+      paste0("Both exports and imports of services increased between December 2019 and ", latest_month, " , in Victoria"),
+    latest_export > 0 & latest_import < 0 ~
+      paste0("While exports of services increased, imports of goods between December 2019 and ", latest_month, ", in Victoria"),
+    latest_export < 0 & latest_import < 0 ~
+      paste0("Both exports and imports of services fell between December 2019 and ", latest_month, ", in Victoria"),
+    latest_export < 0 & latest_import > 0 ~
+      paste0("While exports of services declined, imports of goods increased between December 2019 and ", latest_month, ", in Victoria"),
+    TRUE ~ "Changes in services exports and imports, in Victoria"
+  )
+
+  #djpr_y_continuous() +
+  caption <- paste0("ABS Balnce of Payment quarterly, Seasonally Adjusted Chain Volume Measures latest data is from ", latest_month)
+
+
+  # draw bar chart for all state
+  df %>%
+    dplyr::mutate(date= format(.data$date, "%B %Y")) %>%
+    ggplot(aes(x = .data$date, y = .data$value, fill = factor(.data$goods_services))) +
+    geom_bar(stat = "identity", position = "dodge") +
+    coord_flip() +
+    theme_djpr(flipped = TRUE) +
+    djpr_fill_manual(3) +
+    geom_text(
+      position = position_dodge(width = 1),
+      aes(label = paste0(scales::comma(round2(.data$value, 1)))),
+      vjust = 0.5,
+      colour = "black",
+      hjust = 0,
+      size = 12 / .pt
+    ) +
+    scale_x_discrete(expand = expansion(add = c(0.25, 0.85))) +
+    scale_y_continuous(expand = expansion(mult = c(0, 0.15)))+
+    theme(
+      axis.text.x = element_blank(),
+      axis.title = element_blank(),
+      panel.grid = element_blank(),
+      axis.line = element_blank(),
+      legend.position = c(0.65,1),
+      legend.key.height = unit(1.5, "lines"),
+      legend.key.width = unit(0.8, "lines"),
+      legend.direction = "horizontal",
+      axis.ticks = element_blank()
+    ) +
+    labs(
+      title = "title",
+      subtitle = paste0(
+        "Victoria's export of goods and services in millions dollars  ",
+        format(max(data$date), "%B %Y")
+      ),
+      caption = caption
+    )
+}
+
+
