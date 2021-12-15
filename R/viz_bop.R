@@ -33,13 +33,13 @@ viz_good_trade_line_chart <- function(data = bop) {
     round2(1)
 
   title <- paste0(
-    "Victoria's goods exports is ",
+    "Victoria's goods exports are ",
     dplyr::case_when(
       latest_export > 0 ~ paste0(abs(latest_export), " per cent higher than "),
       latest_export == 0 ~ "the same as ",
       latest_export < 0 ~ paste0(abs(latest_export), " per cent lower than ")
     ),
-    "it was in December 2019"
+    "they were in December 2019"
   )
 
   caption <- paste0("ABS Balnce of Payment quarterly, Seasonally Adjusted Chain Volume Measures latest data is from ", latest_month)
@@ -96,13 +96,13 @@ viz_services_trade_line_chart <- function(data = bop) {
     round2(1)
 
   title <- paste0(
-    "Victoria's services exports is ",
+    "Victoria's services exports are ",
     dplyr::case_when(
       latest_export > 0 ~ paste0(abs(latest_export), " per cent higher than "),
       latest_export == 0 ~ "the same as ",
       latest_export < 0 ~ paste0(abs(latest_export), " per cent lower than ")
     ),
-    "it was in December 2019"
+    "they were in December 2019"
   )
 
 
