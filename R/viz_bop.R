@@ -1,4 +1,4 @@
-viz_good_bop_line_chart <- function(data = bop) {
+viz_good_trade_line_chart <- function(data = bop) {
   df <- data %>%
     dplyr::filter(date >= as.Date("2018-12-01")) %>%
     dplyr::filter(
@@ -33,7 +33,7 @@ viz_good_bop_line_chart <- function(data = bop) {
     round2(1)
 
   title <- paste0(
-    "Victorian goods export is ",
+    "Victoria's goods exports is ",
     dplyr::case_when(
       latest_export > 0 ~ paste0(abs(latest_export), " per cent higher than "),
       latest_export == 0 ~ "the same as ",
@@ -60,7 +60,7 @@ viz_good_bop_line_chart <- function(data = bop) {
 }
 
 
-viz_services_bop_line_chart <- function(data = bop) {
+viz_services_trade_line_chart <- function(data = bop) {
   df <- data %>%
     dplyr::filter(date >= as.Date("2018-12-01")) %>%
     dplyr::filter(
@@ -350,14 +350,12 @@ viz_goods_export_import_line <- function(data = bop) {
     dplyr::filter(!is.na(.data$value)) %>%
     dplyr::ungroup()
 
-  #   tooltip = paste0(
-  #     .data$sex, "\n",
-  #     format(.data$date, "%b %Y"), "\n",
-  #     round2(.data$value, 1), "%"
-  #   )
-  # ) %>%
-  # dplyr::filter(!is.na(.data$value)) %>%
-  # dplyr::ungroup()
+  df <- df %>%
+    dplyr::mutate(tooltip = paste0(
+      .data$exports_imports, "\n",
+      format(.data$date, "%b %Y"), "\n",
+      round2(.data$value, 1), "%"
+    ))
 
   latest_month <- format(max(df$date), "%B %Y")
 
@@ -574,6 +572,14 @@ viz_NSW_Vic_goods_line_chart <- function(data = bop)
     dplyr::filter(!is.na(.data$value)) %>%
     dplyr::ungroup()
 
+  df <- df %>%
+    dplyr::mutate(tooltip = paste0(
+      .data$exports_imports, "\n",
+      format(.data$date, "%b %Y"), "\n",
+      round2(.data$value, 1), "%"
+    ))
+
+
 
   latest_vic_export <- df %>%
     dplyr::filter(
@@ -717,9 +723,6 @@ viz_total_bop_bar_chart <- function(data = bop) {
     )) %>%
     dplyr::mutate(goods_services = dplyr::if_else(.data$goods_services == "Goods and Services", "Total", .data$goods_services))
 
-  # % change of export and export since Dec 2029
-
-
 
   latest_export <- df %>%
     dplyr::filter(
@@ -812,17 +815,12 @@ viz_good_services_export_chart <- function(data = bop) {
   latest_month <- format(max(df$date), "%B %Y")
 
 
-  # df <- df %>%
-  #   dplyr::group_by(.data$exports_imports) %>%
-  #   dplyr::mutate(
-  #     value = 100 * (.data$value
-  #                    / .data$value[.data$date == as.Date("2019-12-01")] - 1),
-  #     tooltip = paste0(
-  #       .data$exports_imports, "\n",
-  #       format(.data$date, "%b %Y"), "\n",
-  #       round2(.data$value, 1), "%"
-  #     )
-  #   )
+  df <- df %>%
+    dplyr::mutate(tooltip = paste0(
+      .data$goods_services, "\n",
+      format(.data$date, "%b %Y"), "\n",
+      round2(.data$value, 1), "%"
+    ))
 
 
   latest_export <- df %>%
@@ -873,18 +871,13 @@ viz_good_services_import_chart <- function(data = bop) {
 
   latest_month <- format(max(df$date), "%B %Y")
 
+  df <- df %>%
+    dplyr::mutate(tooltip = paste0(
+      .data$state, "\n",
+      format(.data$date, "%b %Y"), "\n",
+      round2(.data$value, 1), "%"
+    ))
 
-  # df <- df %>%
-  #   dplyr::group_by(.data$exports_imports) %>%
-  #   dplyr::mutate(
-  #     value = 100 * (.data$value
-  #                    / .data$value[.data$date == as.Date("2019-12-01")] - 1),
-  #     tooltip = paste0(
-  #       .data$exports_imports, "\n",
-  #       format(.data$date, "%b %Y"), "\n",
-  #       round2(.data$value, 1), "%"
-  #     )
-  #   )
 
 
   latest_export <- df %>%
@@ -935,9 +928,6 @@ viz_Vic_total_bop_bar_chart <- function(data = bop) {
   df <- df %>%
     dplyr::mutate(goods_services = dplyr::if_else(.data$goods_services == "Goods and Services", "Total", .data$goods_services))
 
-  # % change of export and export since Dec 2029
-
-
 
   latest_export <- df %>%
     dplyr::filter(
@@ -978,7 +968,7 @@ viz_Vic_total_bop_bar_chart <- function(data = bop) {
 
   # draw bar chart for all state
   df <-df %>%
-    dplyr::mutate(date= format(.data$date, "%B %Y"),
+    dplyr::mutate(date= format(.data$date, "%b %Y"),
                   date=factor(.data$date,levels=sort(unique(.data$date)),
                               ordered = TRUE))
   df %>%
@@ -1003,8 +993,8 @@ viz_Vic_total_bop_bar_chart <- function(data = bop) {
       panel.grid = element_blank(),
       axis.line = element_blank(),
       legend.position = c(0.65,1),
-      legend.key.height = unit(1.5, "lines"),
-      legend.key.width = unit(0.8, "lines"),
+      legend.key.height = unit(1, "lines"),
+      legend.key.width = unit(1, "lines"),
       legend.direction = "horizontal",
       axis.ticks = element_blank()
     ) +
