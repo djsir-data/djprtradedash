@@ -1007,10 +1007,8 @@ viz_Vic_total_bop_bar_chart <- function(data = bop) {
     ) +
     labs(
       title = "title",
-      subtitle = paste0(
-        "Victoria's export of goods and services in millions dollars  ",
-        format(max(data$date), "%B %Y")
-      ),
+      subtitle = "Victoria's exports of goods and services in millions dollars ",
+
       caption = caption
     )
 }
