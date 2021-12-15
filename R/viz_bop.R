@@ -313,9 +313,9 @@ viz_goods_bop_bar_chart <- function(data = bop) {
       axis.title = element_blank(),
       panel.grid = element_blank(),
       axis.line = element_blank(),
-      legend.position = c(0.85, 0.85),
-      legend.key.height = unit(1.5, "lines"),
-      legend.key.width = unit(1.5, "lines"),
+      legend.position = c(0.45, 1),
+      legend.key.height = unit(1, "lines"),
+      legend.key.width = unit(1, "lines"),
       legend.direction = "horizontal",
       axis.ticks = element_blank()
     ) +
