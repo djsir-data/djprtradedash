@@ -977,13 +977,16 @@ viz_Vic_total_bop_bar_chart <- function(data = bop) {
 
 
   # draw bar chart for all state
+  df <-df %>%
+    dplyr::mutate(date= format(.data$date, "%B %Y"),
+                  date=factor(.data$date,levels=sort(unique(.data$date)),
+                              ordered = TRUE))
   df %>%
-    dplyr::mutate(date= format(.data$date, "%B %Y")) %>%
-    ggplot(aes(x = .data$date, y = .data$value, fill = factor(.data$goods_services))) +
+  ggplot(aes(x = .data$date, y = .data$value, fill = factor(.data$goods_services))) +
     geom_bar(stat = "identity", position = "dodge") +
     coord_flip() +
     theme_djpr(flipped = TRUE) +
-    djpr_fill_manual(3) +
+    djpr_fill_manual(3)+
     geom_text(
       position = position_dodge(width = 1),
       aes(label = paste0(scales::comma(round2(.data$value, 1)))),
