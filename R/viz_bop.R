@@ -54,7 +54,7 @@ viz_good_trade_line_chart <- function(data = bop) {
     ) +
     labs(
       title = title,
-      subtitle = "Cumulative change in export and import of goods since December 2019 in Victoria",
+      subtitle = "Cumulative change in exports and imports of goods since December 2019 in Victoria",
       caption = caption
     )
 }
@@ -71,6 +71,7 @@ viz_services_trade_line_chart <- function(data = bop) {
     dplyr::mutate(value = abs(.data$value))
 
   latest_month <- format(max(df$date), "%B %Y")
+
   caption <- paste0("ABS Balnce of Payment quarterly, Seasonally Adjusted Chain Volume Measures latest data is from ", latest_month)
 
   df <- df %>%
@@ -95,7 +96,7 @@ viz_services_trade_line_chart <- function(data = bop) {
     round2(1)
 
   title <- paste0(
-    "Victorian services export is ",
+    "Victoria's services exports is ",
     dplyr::case_when(
       latest_export > 0 ~ paste0(abs(latest_export), " per cent higher than "),
       latest_export == 0 ~ "the same as ",
@@ -114,7 +115,7 @@ viz_services_trade_line_chart <- function(data = bop) {
     ) +
     labs(
       title = title,
-      subtitle = "Cumulative change in export and import of services since December 2019 in Victoria",
+      subtitle = "Cumulative change in exports and imports of services since December 2019 in Victoria",
       caption = caption
     )
 }
@@ -212,8 +213,8 @@ viz_service_bop_bar_chart <- function(data = bop) {
       panel.grid = element_blank(),
       axis.line = element_blank(),
       legend.position = c(0.2, 0.1),
-      legend.key.height = unit(1.5, "lines"),
-      legend.key.width = unit(1.5, "lines"),
+      legend.key.height = unit(1, "lines"),
+      legend.key.width = unit(1, "lines"),
       legend.direction = "horizontal",
       axis.ticks = element_blank()
     ) +
