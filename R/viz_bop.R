@@ -233,13 +233,12 @@ viz_goods_bop_bar_chart <- function(data = bop) {
     dplyr::select(-.data$series_id, -.data$unit) %>%
     dplyr::filter(.data$goods_services == "Goods", .data$indicator == "Chain Volume Measures") %>%
     dplyr::mutate(value = abs(.data$value)) %>%
+    dplyr::filter(!.data$state == "Australian Capital Territory",
+                  !.data$state == "Northern Territory" ) %>%
     dplyr::mutate(state = dplyr::case_when(
-      .data$state == "Australian Capital Territory" ~
-      "ACT",
       .data$state == "New South Wales" ~ "NSW",
       .data$state == "Victoria" ~ "Vic",
       .data$state == "Queensland" ~ "Qld",
-      .data$state == "Northern Territory" ~ "NT",
       .data$state == "South Australia" ~ "SA",
       .data$state == "Western Australia" ~ "WA",
       .data$state == "Tasmania" ~ "Tas",
@@ -304,10 +303,10 @@ viz_goods_bop_bar_chart <- function(data = bop) {
       aes(label = paste0(round2(.data$value, 1), "%")),
       vjust = 0.5,
       colour = "black",
-      hjust = 1,
+      hjust = 0.6,
       size = 12 / .pt
     ) +
-    scale_x_discrete(expand = expansion(add = c(0.5, 0.85))) +
+    scale_x_discrete(expand = expansion(add = c(0.7, 0.85))) +
     djpr_y_continuous() +
     theme(
       axis.text.x = element_blank(),
@@ -323,7 +322,7 @@ viz_goods_bop_bar_chart <- function(data = bop) {
     labs(
       title = title,
       subtitle = paste0(
-        "Growth in export and import of goods between December 2019 and ",
+        "Growth in exports and imports of goods between December 2019 and ",
         format(max(data$date), "%B %Y")
       ),
       caption = caption
