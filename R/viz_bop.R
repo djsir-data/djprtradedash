@@ -607,11 +607,11 @@ viz_NSW_Vic_goods_line_chart <- function(data = bop)
 
   title <- dplyr::case_when(
     latest_vic_export > latest_NSW_export  ~
-      paste0("Victoria's exports of goods grew faster than New South Wales  in the year to ", latest_month),
+      paste0("Victoria's exports of goods grew faster than NSW in the year to ", latest_month),
     latest_vic_export <  latest_NSW_export  ~
-      paste0("Victoria's exports of goods grew lower than New South Wales in the year to ", latest_month),
+      paste0("Victoria's exports of goods grew lower than NSW in the year to ", latest_month),
     latest_vic_export == latest_NSW_export ~
-      paste0("Victoria's exports of goods grew at the same rate as New South Wales in the year to  ", latest_month),
+      paste0("Victoria's exports of goods grew at the same rate as NSW in the year to  ", latest_month),
     TRUE ~ "Annual growth exporst and imports in goods"
   )
 
