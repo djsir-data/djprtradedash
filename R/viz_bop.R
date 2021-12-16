@@ -497,6 +497,7 @@ viz_trade_balance_line_chart <- function(data = bop) {
     dplyr::filter(.data$indicator == "Chain Volume Measures") %>%
     dplyr::mutate(value = abs(.data$value))
 
+  #trade balance
   df <- df %>%
     tidyr::pivot_wider(
       names_from = .data$exports_imports,
@@ -506,7 +507,7 @@ viz_trade_balance_line_chart <- function(data = bop) {
 
 
   latest_month <- format(max(df$date), "%B %Y")
-  caption <- paste0("ABS Balnce of Payment quarterly, Seasonally Adjusted Chain Volume Measures latest data is from ", latest_month)
+  caption <- paste0("ABS Balance of Payment quarterly, Seasonally Adjusted Chain Volume Measures latest data is from ", latest_month)
 
   df <- df %>%
     dplyr::group_by(.data$goods_services) %>%
@@ -606,11 +607,11 @@ viz_NSW_Vic_goods_line_chart <- function(data = bop)
 
   title <- dplyr::case_when(
     latest_vic_export > latest_NSW_export  ~
-      paste0("Victoria's exports of goods grew faster than NSW exports in the year to ", latest_month),
+      paste0("Victoria's exports of goods grew faster than New South Wales  in the year to ", latest_month),
     latest_vic_export <  latest_NSW_export  ~
-      paste0("Victoria's exports of goods grew lower than NSW exports in the year to ", latest_month),
+      paste0("Victoria's exports of goods grew lower than New South Wales in the year to ", latest_month),
     latest_vic_export == latest_NSW_export ~
-      paste0("Victoria's exports of goods grew at the same rate as NSW expors in the year to  ", latest_month),
+      paste0("Victoria's exports of goods grew at the same rate as New South Wales in the year to  ", latest_month),
     TRUE ~ "Annual growth exporst and imports in goods"
   )
 
@@ -627,7 +628,7 @@ viz_NSW_Vic_goods_line_chart <- function(data = bop)
     ) +
     labs(
       title = title,
-      subtitle = "Annual growth in goods exports and imports",
+      subtitle = "Annual growth in goods exports and imports in New South Wales and VIctoria",
       caption = caption
     ) +
   facet_wrap(~state, ncol = 1, scales = "free_y")
@@ -698,7 +699,7 @@ viz_NSW_Vic_Services_line_chart <- function(data = bop){
     ) +
     labs(
       title = title,
-      subtitle = "Annual growth in services exports and imports",
+      subtitle = "Annual growth in services exports and imports in NSW and Victoria",
       caption = caption
     ) +
     facet_wrap(~state, ncol = 1, scales = "free_y")
