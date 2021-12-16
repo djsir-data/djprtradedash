@@ -726,23 +726,6 @@ viz_total_bop_bar_chart <- function(data = bop) {
     dplyr::mutate(goods_services = dplyr::if_else(.data$goods_services == "Goods and Services", "Total", .data$goods_services))
 
 
-  # latest_export <- df %>%
-  #   dplyr::filter(
-  #     .data$state == "Vic",
-  #     .data$exports_imports == "Exports",
-  #     .data$date == max(.data$date)
-  #   ) %>%
-  #   dplyr::pull(.data$value) %>%
-  #   round2(1)
-
-  # latest_import <- df %>%
-  #   dplyr::filter(
-  #     .data$state == "Vic",
-  #     .data$exports_imports == "Imports",
-  #     .data$date == max(.data$date)
-  #   ) %>%
-  #   dplyr::pull(.data$value) %>%
-  #   round2(1)
 
   latest_month <- format(max(df$date), "%B %Y")
 
@@ -756,8 +739,6 @@ viz_total_bop_bar_chart <- function(data = bop) {
 
 
   vic_rank <- latest$rank[latest$state == "Vic"]
-  nsw_rank <- latest$rank[latest$state_abbr == "NSW"]
-  vic_level <- paste0(round2(latest$value[latest$state_abbr == "Vic"], 1), "%")
 
 
   title <- dplyr::case_when(
@@ -769,7 +750,6 @@ viz_total_bop_bar_chart <- function(data = bop) {
   )
 
 
-  #djpr_y_continuous() +
   caption <- paste0("ABS Balnce of Payment quarterly, Seasonally Adjusted Chain Volume Measures latest data is from ", latest_month)
 
 
@@ -926,55 +906,42 @@ viz_good_services_import_chart <- function(data = bop) {
 }
 
 viz_Vic_total_bop_bar_chart <- function(data = bop) {
+
+
   df <- data %>%
     dplyr::select(-.data$series_id, -.data$unit) %>%
-    dplyr::filter(.data$indicator == "Chain Volume Measures",.data$exports_imports == "Exports") %>%
+    dplyr::filter(.data$state == "Victoria",.data$indicator == "Chain Volume Measures",.data$exports_imports == "Exports") %>%
     dplyr::mutate(value = abs(.data$value)) %>%
-    dplyr::group_by(.data$goods_services) %>%
+    dplyr::ungroup()
+
+  latest_month <- format(max(df$date), "%B %Y")
+
+  df <- df %>%
+    dplyr::mutate(date = format(.data$date, "%Y"))%>%
+    dplyr::group_by(.data$goods_services,.data$date) %>%
+    dplyr::summarise(value = sum(.data$value)) %>%
     dplyr::arrange(.data$date) %>%
-    dplyr::filter(.data$state == "Victoria") %>%
     dplyr::slice_tail( n= 5) %>%
     dplyr::ungroup()
 
+
+  df_title <- df %>%
+    dplyr::filter(.data$goods_services == "Total") %>%
+    dplyr::mutate(change = .data$value - lag(.data$value, 1)) %>%
+    dplyr::filter(!is.na(.data$change)) %>%
+    dplyr::filter(.data$date == max(.data$date))
 
   df <- df %>%
     dplyr::mutate(goods_services = dplyr::if_else(.data$goods_services == "Goods and Services", "Total", .data$goods_services))
 
 
-  latest_export <- df %>%
-    dplyr::filter(
-      .data$state == "Vic",
-      .data$exports_imports == "Exports",
-      .data$date == max(.data$date)
-    ) %>%
-    dplyr::pull(.data$value) %>%
-    round2(1)
-
-  latest_import <- df %>%
-    dplyr::filter(
-      .data$state == "Vic",
-      .data$exports_imports == "Imports",
-      .data$date == max(.data$date)
-    ) %>%
-    dplyr::pull(.data$value) %>%
-    round2(1)
-
-  latest_month <- format(max(df$date), "%B %Y")
-
-
   title <- dplyr::case_when(
-    latest_export > 0 & latest_import > 0 ~
-      paste0("Both exports and imports of services increased between December 2019 and ", latest_month, " , in Victoria"),
-    latest_export > 0 & latest_import < 0 ~
-      paste0("While exports of services increased, imports of goods between December 2019 and ", latest_month, ", in Victoria"),
-    latest_export < 0 & latest_import < 0 ~
-      paste0("Both exports and imports of services fell between December 2019 and ", latest_month, ", in Victoria"),
-    latest_export < 0 & latest_import > 0 ~
-      paste0("While exports of services declined, imports of goods increased between December 2019 and ", latest_month, ", in Victoria"),
-    TRUE ~ "Changes in services exports and imports, in Victoria"
+    df_title$change  > 0  ~ "Victorian total exports has risen over the past year",
+    df_title$change  < 0 ~ "Victorian total exports has fallen over the past year ",
+    df_title$change == 0  ~ "Victorian total exports hasn't changed over  the past year ",
+    TRUE ~ "Victoria's total export over the year"
   )
 
-  #djpr_y_continuous() +
   caption <- paste0("ABS Balnce of Payment quarterly, Seasonally Adjusted Chain Volume Measures latest data is from ", latest_month)
 
 
@@ -1011,9 +978,8 @@ viz_Vic_total_bop_bar_chart <- function(data = bop) {
       axis.ticks = element_blank()
     ) +
     labs(
-      title = "title",
+      title = title,
       subtitle = "Victoria's exports of goods and services in millions dollars ",
-
       caption = caption
     )
 }
