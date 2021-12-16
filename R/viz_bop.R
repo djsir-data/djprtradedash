@@ -341,6 +341,7 @@ viz_goods_export_import_line <- function(data = bop) {
     dplyr::filter(.data$goods_services == "Goods and Services", .data$indicator == "Chain Volume Measures") %>%
     dplyr::mutate(value = abs(.data$value))
 
+  #Annual growth
 
   df <- df %>%
     dplyr::group_by(.data$exports_imports) %>%
@@ -375,15 +376,15 @@ viz_goods_export_import_line <- function(data = bop) {
 
   title <- dplyr::case_when(
     export_latest > import_latest ~
-    paste0("Export of goods and services grew faster than imports in the year to ", latest_month),
+    paste0("Exports of goods and services grew faster than imports in the year to ", latest_month),
     export_latest < import_latest ~
     paste0("Imports of goods and services grew faster than exports in the year to ", latest_month),
     export_latest == import_latest ~
-    paste0("Export of goods and services grew at around the same pace imports in the year to ", latest_month),
-    TRUE ~ paste0("Export and imports of goods and services annual")
+    paste0("Exports of goods and services grew at around the same pace imports in the year to ", latest_month),
+    TRUE ~ paste0("Exports and imports of goods and services annual")
   )
 
-  caption <- paste0("ABS Balnce of Payment quarterly, Seasonally Adjusted Chain Volume Measures latest data is from ", latest_month)
+  caption <- paste0("ABS Balnce of Payment quarterly, Seasonally Adjusted and Chain Volume Measures latest data is from ", latest_month)
 
 
   df %>%
