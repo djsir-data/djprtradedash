@@ -924,6 +924,9 @@ viz_Vic_total_bop_bar_chart <- function(data = bop) {
     dplyr::slice_tail( n= 5) %>%
     dplyr::ungroup()
 
+  df <- df %>%
+    dplyr::mutate(goods_services = dplyr::if_else(.data$goods_services == "Goods and Services", "Total", .data$goods_services))
+
 
   df_title <- df %>%
     dplyr::filter(.data$goods_services == "Total") %>%
@@ -931,14 +934,11 @@ viz_Vic_total_bop_bar_chart <- function(data = bop) {
     dplyr::filter(!is.na(.data$change)) %>%
     dplyr::filter(.data$date == max(.data$date))
 
-  df <- df %>%
-    dplyr::mutate(goods_services = dplyr::if_else(.data$goods_services == "Goods and Services", "Total", .data$goods_services))
-
 
   title <- dplyr::case_when(
-    df_title$change  > 0  ~ "Victorian total exports has risen over the past year",
+    df_title$change  > 0 ~ "Victorian total exports has risen over the past year",
     df_title$change  < 0 ~ "Victorian total exports has fallen over the past year ",
-    df_title$change == 0  ~ "Victorian total exports hasn't changed over  the past year ",
+    df_title$change == 0 ~ "Victorian total exports hasn't changed over  the past year ",
     TRUE ~ "Victoria's total export over the year"
   )
 
@@ -946,10 +946,6 @@ viz_Vic_total_bop_bar_chart <- function(data = bop) {
 
 
   # draw bar chart for all state
-  df <-df %>%
-    dplyr::mutate(date= format(.data$date, "%b %Y"),
-                  date=factor(.data$date,levels=sort(unique(.data$date)),
-                              ordered = TRUE))
   df %>%
   ggplot(aes(x = .data$date, y = .data$value, fill = factor(.data$goods_services))) +
     geom_bar(stat = "identity", position = "dodge") +
