@@ -483,7 +483,7 @@ table_export_import <- function(data = bop) {
   df_vic %>%
     gt::gt() %>%
     gt::tab_header(paste0(title = "Victoria's Export and Imports of Goods and Services"),latest_month) %>%
-    gt::tab_source_note(source_note ="Source: ABS: Balance of payment, Chain Volume measure") %>%
+    gt::tab_source_note(source_note ="Source: ABS, Balance of payment, Chain Volume measure, Change Since COVID(Since December 2019)") %>%
     gt::tab_options(column_labels.background.color= "grey")
   }
 
