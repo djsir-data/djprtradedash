@@ -726,38 +726,48 @@ viz_total_bop_bar_chart <- function(data = bop) {
     dplyr::mutate(goods_services = dplyr::if_else(.data$goods_services == "Goods and Services", "Total", .data$goods_services))
 
 
-  latest_export <- df %>%
-    dplyr::filter(
-      .data$state == "Vic",
-      .data$exports_imports == "Exports",
-      .data$date == max(.data$date)
-    ) %>%
-    dplyr::pull(.data$value) %>%
-    round2(1)
+  # latest_export <- df %>%
+  #   dplyr::filter(
+  #     .data$state == "Vic",
+  #     .data$exports_imports == "Exports",
+  #     .data$date == max(.data$date)
+  #   ) %>%
+  #   dplyr::pull(.data$value) %>%
+  #   round2(1)
 
-  latest_import <- df %>%
-    dplyr::filter(
-      .data$state == "Vic",
-      .data$exports_imports == "Imports",
-      .data$date == max(.data$date)
-    ) %>%
-    dplyr::pull(.data$value) %>%
-    round2(1)
+  # latest_import <- df %>%
+  #   dplyr::filter(
+  #     .data$state == "Vic",
+  #     .data$exports_imports == "Imports",
+  #     .data$date == max(.data$date)
+  #   ) %>%
+  #   dplyr::pull(.data$value) %>%
+  #   round2(1)
 
   latest_month <- format(max(df$date), "%B %Y")
 
 
+  latest <- df %>%
+    dplyr::filter(
+      .data$date == max(.data$date)) %>%
+    dplyr::filter(.data$goods_services == "Total") %>%
+    dplyr::select(.data$state, .data$value) %>%
+    dplyr::mutate(rank = dplyr::min_rank(-.data$value))
+
+
+  vic_rank <- latest$rank[latest$state == "Vic"]
+  nsw_rank <- latest$rank[latest$state_abbr == "NSW"]
+  vic_level <- paste0(round2(latest$value[latest$state_abbr == "Vic"], 1), "%")
+
+
   title <- dplyr::case_when(
-    latest_export > 0 & latest_import > 0 ~
-      paste0("Both exports and imports of services increased between December 2019 and ", latest_month, " , in Victoria"),
-    latest_export > 0 & latest_import < 0 ~
-      paste0("While exports of services increased, imports of goods between December 2019 and ", latest_month, ", in Victoria"),
-    latest_export < 0 & latest_import < 0 ~
-      paste0("Both exports and imports of services fell between December 2019 and ", latest_month, ", in Victoria"),
-    latest_export < 0 & latest_import > 0 ~
-      paste0("While exports of services declined, imports of goods increased between December 2019 and ", latest_month, ", in Victoria"),
-    TRUE ~ "Changes in services exports and imports, in Victoria"
+    vic_rank == 1 ~ paste0( "Victorian total exports of goods and services are the highes exports of any Australian state"),
+    vic_rank == 2 ~ paste0( "Victorian total exports of goods and services are the second highest exports of any Australian state"),
+    vic_rank == 3 ~ paste0("Victorian total exports of goods and services are the third highest exports of any Australian state"),
+    vic_rank <= 4 ~ paste0("Victorian total exports of goods and services are the fourth highest exports of any Australian state in the year to ", format(max(df$date), "%B %Y")),
+    TRUE ~ "Victoria's total exports of goods and services compared to other states and territories"
   )
+
 
   #djpr_y_continuous() +
   caption <- paste0("ABS Balnce of Payment quarterly, Seasonally Adjusted Chain Volume Measures latest data is from ", latest_month)
@@ -786,13 +796,13 @@ viz_total_bop_bar_chart <- function(data = bop) {
       panel.grid = element_blank(),
       axis.line = element_blank(),
       legend.position = c(0.6, 0.6),
-      legend.key.height = unit(1.5, "lines"),
-      legend.key.width = unit(1.5, "lines"),
+      legend.key.height = unit(1, "lines"),
+      legend.key.width = unit(1, "lines"),
       legend.direction = "horizontal",
       axis.ticks = element_blank()
     ) +
     labs(
-      title = "title",
+      title = title,
       subtitle = paste0(
         "Export of goods and services in millions by Australian states ",
         format(max(data$date), "%B %Y")
