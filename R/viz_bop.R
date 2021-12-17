@@ -924,9 +924,9 @@ viz_Vic_total_bop_bar_chart <- function(data = bop) {
 
   title <-
     dplyr::case_when(
-      latest_change$change > 0 ~ paste0("Victorian total exports rose by ",  scales::comma(latest_change$change)," millions dollars over the past year"),
-     latest_change$change < 0 ~ paste0("Victorian total exports fell by ", scales::comma(abs(latest_change$change))," millions dollars over the past year"),
-      latest_change$change == 0 ~ "Victorian total exports the same as over the past year ",
+      latest_change$change > 0 ~ paste0("Victoria's total exports rose by ",  scales::comma(latest_change$change)," millions dollars over the past year"),
+     latest_change$change < 0 ~ paste0("Victoria's total exports fell by ", scales::comma(abs(latest_change$change))," millions dollars over the past year"),
+      latest_change$change == 0 ~ "Victoria's total exports the same as over the past year ",
       TRUE ~ "Victoria's total exports over the past year"
     )
 
