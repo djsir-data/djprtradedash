@@ -233,8 +233,10 @@ viz_goods_bop_bar_chart <- function(data = bop) {
     dplyr::select(-.data$series_id, -.data$unit) %>%
     dplyr::filter(.data$goods_services == "Goods", .data$indicator == "Chain Volume Measures") %>%
     dplyr::mutate(value = abs(.data$value)) %>%
-    dplyr::filter(!.data$state == "Australian Capital Territory",
-                  !.data$state == "Northern Territory" ) %>%
+    dplyr::filter(
+      !.data$state == "Australian Capital Territory",
+      !.data$state == "Northern Territory"
+    ) %>%
     dplyr::mutate(state = dplyr::case_when(
       .data$state == "New South Wales" ~ "NSW",
       .data$state == "Victoria" ~ "Vic",
@@ -341,7 +343,7 @@ viz_goods_export_import_line <- function(data = bop) {
     dplyr::filter(.data$goods_services == "Goods and Services", .data$indicator == "Chain Volume Measures") %>%
     dplyr::mutate(value = abs(.data$value))
 
-  #Annual growth
+  # Annual growth
 
   df <- df %>%
     dplyr::group_by(.data$exports_imports) %>%
@@ -404,7 +406,6 @@ viz_goods_export_import_line <- function(data = bop) {
 
 
 table_export_import <- function(data = bop) {
-
   df <- data %>%
     dplyr::select(-.data$series_id, -.data$unit) %>%
     dplyr::filter(.data$indicator == "Chain Volume Measures") %>%
@@ -482,10 +483,10 @@ table_export_import <- function(data = bop) {
 
   df_vic %>%
     gt::gt() %>%
-    gt::tab_header(paste0(title = "Victoria's Export and Imports of Goods and Services"),latest_month) %>%
-    gt::tab_source_note(source_note ="Source: ABS, Balance of payment, Chain Volume measure, Change Since COVID(Since December 2019)") %>%
-    gt::tab_options(column_labels.background.color= "grey")
-  }
+    gt::tab_header(paste0(title = "Victoria's Export and Imports of Goods and Services"), latest_month) %>%
+    gt::tab_source_note(source_note = "Source: ABS, Balance of payment, Chain Volume measure, Change Since COVID(Since December 2019)") %>%
+    gt::tab_options(column_labels.background.color = "grey")
+}
 
 viz_trade_balance_line_chart <- function(data = bop) {
   df <- data %>%
@@ -497,7 +498,7 @@ viz_trade_balance_line_chart <- function(data = bop) {
     dplyr::filter(.data$indicator == "Chain Volume Measures") %>%
     dplyr::mutate(value = abs(.data$value))
 
-  #trade balance
+  # trade balance
   df <- df %>%
     tidyr::pivot_wider(
       names_from = .data$exports_imports,
@@ -555,17 +556,16 @@ viz_trade_balance_line_chart <- function(data = bop) {
 }
 
 
-viz_NSW_Vic_goods_line_chart <- function(data = bop)
-
-{
+viz_NSW_Vic_goods_line_chart <- function(data = bop) {
   df <- data %>%
     dplyr::select(-.data$series_id, -.data$unit) %>%
     dplyr::filter(.data$goods_services == "Goods", .data$indicator == "Chain Volume Measures") %>%
-    dplyr::filter(.data$state %in% c("New South Wales","Victoria")) %>%
+    dplyr::filter(.data$state %in% c("New South Wales", "Victoria")) %>%
     dplyr::mutate(value = abs(.data$value)) %>%
     dplyr::mutate(state = dplyr::case_when(
       .data$state == "New South Wales" ~ "NSW",
-      .data$state == "Victoria" ~ "Vic", )) %>%
+      .data$state == "Victoria" ~ "Vic",
+    )) %>%
     dplyr::group_by(.data$exports_imports, .data$goods_services, .data$state) %>%
     dplyr::mutate(
       value = 100 * ((.data$value / lag(.data$value, 4) - 1))
@@ -606,12 +606,12 @@ viz_NSW_Vic_goods_line_chart <- function(data = bop)
 
 
   title <- dplyr::case_when(
-    latest_vic_export > latest_NSW_export  ~
-      paste0("Victoria's exports of goods grew faster than NSW in the year to ", latest_month),
-    latest_vic_export <  latest_NSW_export  ~
-      paste0("Victoria's exports of goods grew lower than NSW in the year to ", latest_month),
+    latest_vic_export > latest_NSW_export ~
+    paste0("Victoria's exports of goods grew faster than NSW in the year to ", latest_month),
+    latest_vic_export < latest_NSW_export ~
+    paste0("Victoria's exports of goods grew lower than NSW in the year to ", latest_month),
     latest_vic_export == latest_NSW_export ~
-      paste0("Victoria's exports of goods grew at the same rate as NSW in the year to  ", latest_month),
+    paste0("Victoria's exports of goods grew at the same rate as NSW in the year to  ", latest_month),
     TRUE ~ "Annual growth exporst and imports in goods"
   )
 
@@ -631,22 +631,20 @@ viz_NSW_Vic_goods_line_chart <- function(data = bop)
       subtitle = "Annual growth in goods exports and imports in New South Wales and VIctoria",
       caption = caption
     ) +
-  facet_wrap(~state, ncol = 1, scales = "free_y")
-
-
+    facet_wrap(~state, ncol = 1, scales = "free_y")
 }
 
 
-viz_NSW_Vic_Services_line_chart <- function(data = bop){
-
+viz_NSW_Vic_Services_line_chart <- function(data = bop) {
   df <- data %>%
     dplyr::select(-.data$series_id, -.data$unit) %>%
     dplyr::filter(.data$goods_services == "Services", .data$indicator == "Chain Volume Measures") %>%
-    dplyr::filter(.data$state %in% c("New South Wales","Victoria")) %>%
+    dplyr::filter(.data$state %in% c("New South Wales", "Victoria")) %>%
     dplyr::mutate(value = abs(.data$value)) %>%
     dplyr::mutate(state = dplyr::case_when(
       .data$state == "New South Wales" ~ "NSW",
-      .data$state == "Victoria" ~ "Vic", )) %>%
+      .data$state == "Victoria" ~ "Vic",
+    )) %>%
     dplyr::group_by(.data$exports_imports, .data$goods_services, .data$state) %>%
     dplyr::mutate(
       value = 100 * ((.data$value / lag(.data$value, 4) - 1))
@@ -677,12 +675,12 @@ viz_NSW_Vic_Services_line_chart <- function(data = bop){
   latest_month <- format(max(df$date), "%B %Y")
 
   title <- dplyr::case_when(
-    latest_vic_export > latest_NSW_export  ~
-      paste0("Victoria's exports of Services grew faster than NSW exports in the year to ", latest_month),
-    latest_vic_export <  latest_NSW_export  ~
-      paste0("Victoria's exports of services grew lower than NSW exports in the year to ", latest_month),
+    latest_vic_export > latest_NSW_export ~
+    paste0("Victoria's exports of Services grew faster than NSW exports in the year to ", latest_month),
+    latest_vic_export < latest_NSW_export ~
+    paste0("Victoria's exports of services grew lower than NSW exports in the year to ", latest_month),
     latest_vic_export == latest_NSW_export ~
-      paste0("Victoria's exports of services grew at the same rate as NSW expors in the year to  ", latest_month),
+    paste0("Victoria's exports of services grew at the same rate as NSW expors in the year to  ", latest_month),
     TRUE ~ "Annual growth exporst and imports in services"
   )
 
@@ -703,18 +701,18 @@ viz_NSW_Vic_Services_line_chart <- function(data = bop){
       caption = caption
     ) +
     facet_wrap(~state, ncol = 1, scales = "free_y")
-
-
 }
 
 viz_total_bop_bar_chart <- function(data = bop) {
   df <- data %>%
     dplyr::select(-.data$series_id, -.data$unit) %>%
-    dplyr::filter(.data$indicator == "Chain Volume Measures",.data$exports_imports == "Exports") %>%
+    dplyr::filter(.data$indicator == "Chain Volume Measures", .data$exports_imports == "Exports") %>%
     dplyr::mutate(value = abs(.data$value)) %>%
     dplyr::filter(.data$date == max(.data$date)) %>%
-    dplyr::filter(!.data$state == "Australian Capital Territory",
-                   !.data$state == "Northern Territory" ) %>%
+    dplyr::filter(
+      !.data$state == "Australian Capital Territory",
+      !.data$state == "Northern Territory"
+    ) %>%
     dplyr::mutate(state = dplyr::case_when(
       .data$state == "New South Wales" ~ "NSW",
       .data$state == "Victoria" ~ "Vic",
@@ -732,7 +730,8 @@ viz_total_bop_bar_chart <- function(data = bop) {
 
   latest <- df %>%
     dplyr::filter(
-      .data$date == max(.data$date)) %>%
+      .data$date == max(.data$date)
+    ) %>%
     dplyr::filter(.data$goods_services == "Total") %>%
     dplyr::select(.data$state, .data$value) %>%
     dplyr::mutate(rank = dplyr::min_rank(-.data$value))
@@ -742,8 +741,8 @@ viz_total_bop_bar_chart <- function(data = bop) {
 
 
   title <- dplyr::case_when(
-    vic_rank == 1 ~ paste0( "Victorian total exports of goods and services are the highes exports of any Australian state"),
-    vic_rank == 2 ~ paste0( "Victorian total exports of goods and services are the second highest exports of any Australian state"),
+    vic_rank == 1 ~ paste0("Victorian total exports of goods and services are the highes exports of any Australian state"),
+    vic_rank == 2 ~ paste0("Victorian total exports of goods and services are the second highest exports of any Australian state"),
     vic_rank == 3 ~ paste0("Victorian total exports of goods and services are the third highest exports of any Australian state"),
     vic_rank <= 4 ~ paste0("Victorian total exports of goods and services are the fourth highest exports of any Australian state in the year to ", format(max(df$date), "%B %Y")),
     TRUE ~ "Victoria's total exports of goods and services compared to other states and territories"
@@ -769,7 +768,7 @@ viz_total_bop_bar_chart <- function(data = bop) {
       size = 12 / .pt
     ) +
     scale_x_discrete(expand = expansion(add = c(0.5, 0.85))) +
-    scale_y_continuous(expand = expansion(mult = c(0, 0.15)))+
+    scale_y_continuous(expand = expansion(mult = c(0, 0.15))) +
     theme(
       axis.text.x = element_blank(),
       axis.title = element_blank(),
@@ -793,15 +792,14 @@ viz_total_bop_bar_chart <- function(data = bop) {
 
 
 viz_good_services_export_chart <- function(data = bop) {
-
   df <- data %>%
     dplyr::filter(
       .data$state == "Victoria",
     ) %>%
     dplyr::select(-.data$series_id, -.data$unit) %>%
     dplyr::filter(.data$exports_imports == "Exports", .data$indicator == "Chain Volume Measures") %>%
-  dplyr::mutate(goods_services = dplyr::if_else(.data$goods_services == "Goods and Services", "Total", .data$goods_services)) %>%
-  dplyr::mutate(value = abs(.data$value))
+    dplyr::mutate(goods_services = dplyr::if_else(.data$goods_services == "Goods and Services", "Total", .data$goods_services)) %>%
+    dplyr::mutate(value = abs(.data$value))
 
 
   latest_month <- format(max(df$date), "%B %Y")
@@ -850,7 +848,6 @@ viz_good_services_export_chart <- function(data = bop) {
 
 
 viz_good_services_import_chart <- function(data = bop) {
-
   df <- data %>%
     dplyr::filter(
       .data$state == "Victoria",
@@ -906,22 +903,20 @@ viz_good_services_import_chart <- function(data = bop) {
 }
 
 viz_Vic_total_bop_bar_chart <- function(data = bop) {
-
-
   df <- data %>%
     dplyr::select(-.data$series_id, -.data$unit) %>%
-    dplyr::filter(.data$state == "Victoria",.data$indicator == "Chain Volume Measures",.data$exports_imports == "Exports") %>%
+    dplyr::filter(.data$state == "Victoria", .data$indicator == "Chain Volume Measures", .data$exports_imports == "Exports") %>%
     dplyr::mutate(value = abs(.data$value)) %>%
     dplyr::ungroup()
 
   latest_month <- format(max(df$date), "%B %Y")
 
   df <- df %>%
-    dplyr::mutate(date = format(.data$date, "%Y"))%>%
-    dplyr::group_by(.data$goods_services,.data$date) %>%
+    dplyr::mutate(date = format(.data$date, "%Y")) %>%
+    dplyr::group_by(.data$goods_services, .data$date) %>%
     dplyr::summarise(value = sum(.data$value)) %>%
     dplyr::arrange(.data$date) %>%
-    dplyr::slice_tail( n= 5) %>%
+    dplyr::slice_tail(n = 5) %>%
     dplyr::ungroup()
 
   df <- df %>%
@@ -936,8 +931,8 @@ viz_Vic_total_bop_bar_chart <- function(data = bop) {
 
 
   title <- dplyr::case_when(
-    df_title$change  > 0 ~ "Victorian total exports has risen over the past year",
-    df_title$change  < 0 ~ "Victorian total exports has fallen over the past year ",
+    df_title$change > 0 ~ "Victorian total exports has risen over the past year",
+    df_title$change < 0 ~ "Victorian total exports has fallen over the past year ",
     df_title$change == 0 ~ "Victorian total exports hasn't changed over  the past year ",
     TRUE ~ "Victoria's total export over the year"
   )
@@ -947,11 +942,11 @@ viz_Vic_total_bop_bar_chart <- function(data = bop) {
 
   # draw bar chart for all state
   df %>%
-  ggplot(aes(x = .data$date, y = .data$value, fill = factor(.data$goods_services))) +
+    ggplot(aes(x = .data$date, y = .data$value, fill = factor(.data$goods_services))) +
     geom_bar(stat = "identity", position = "dodge") +
     coord_flip() +
     theme_djpr(flipped = TRUE) +
-    djpr_fill_manual(3)+
+    djpr_fill_manual(3) +
     geom_text(
       position = position_dodge(width = 1),
       aes(label = paste0(scales::comma(round2(.data$value, 1)))),
@@ -961,13 +956,13 @@ viz_Vic_total_bop_bar_chart <- function(data = bop) {
       size = 12 / .pt
     ) +
     scale_x_discrete(expand = expansion(add = c(0.25, 0.85))) +
-    scale_y_continuous(expand = expansion(mult = c(0, 0.15)))+
+    scale_y_continuous(expand = expansion(mult = c(0, 0.15))) +
     theme(
       axis.text.x = element_blank(),
       axis.title = element_blank(),
       panel.grid = element_blank(),
       axis.line = element_blank(),
-      legend.position = c(0.65,1),
+      legend.position = c(0.65, 1),
       legend.key.height = unit(1, "lines"),
       legend.key.width = unit(1, "lines"),
       legend.direction = "horizontal",
@@ -979,5 +974,3 @@ viz_Vic_total_bop_bar_chart <- function(data = bop) {
       caption = caption
     )
 }
-
-
