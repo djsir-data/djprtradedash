@@ -916,19 +916,20 @@ viz_Vic_total_bop_bar_chart <- function(data = bop) {
     dplyr::mutate(goods_services = dplyr::if_else(.data$goods_services == "Goods and Services", "Total", .data$goods_services))
 
 
-  df_title <- df %>%
+  latest_change <- df %>%
     dplyr::filter(.data$goods_services == "Total") %>%
     dplyr::mutate(change = .data$value - lag(.data$value, 1)) %>%
     dplyr::filter(!is.na(.data$change)) %>%
     dplyr::filter(.data$date == max(.data$date))
 
+  title <-
+    dplyr::case_when(
+      latest_change$change > 0 ~ paste0("Victorian total exports rose by ", latest_change$change," millions dollars over the past year"),
+      latest_change$change < 0 ~ paste0("Victorian total exports fell by ", abs(latest_change$change)," millions dollars over the past quarter"),
+      latest_change$change == 0 ~ "Victorian total exports the same as over the past year ",
+      TRUE ~ "Victoria's total exports over the past year"
+    )
 
-  title <- dplyr::case_when(
-    df_title$change > 0 ~ "Victorian total exports has risen over the past year",
-    df_title$change < 0 ~ "Victorian total exports has fallen over the past year ",
-    df_title$change == 0 ~ "Victorian total exports hasn't changed over  the past year ",
-    TRUE ~ "Victoria's total export over the year"
-  )
 
   caption <- paste0("ABS Balnce of Payment quarterly, Seasonally Adjusted Chain Volume Measures latest data is from ", latest_month)
 
