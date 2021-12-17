@@ -812,24 +812,21 @@ viz_good_services_export_chart <- function(data = bop) {
       round2(.data$value, 1), "%"
     ))
 
+  latest_change <- df %>%
+    dplyr::filter(.data$goods_services == "Total") %>%
+    dplyr::mutate(change = .data$value - lag(.data$value, 1)) %>%
+    dplyr::filter(!is.na(.data$change)) %>%
+    dplyr::filter(.data$date == max(.data$date))
 
-  latest_export <- df %>%
-    dplyr::filter(
-      .data$exports_imports == "Exports",
-      .data$date == max(.data$date)
-    ) %>%
-    dplyr::pull(.data$value) %>%
-    round2(1)
 
-  title <- paste0(
-    "Victorian goods and services export is ",
+  title <-
     dplyr::case_when(
-      latest_export > 0 ~ paste0(abs(latest_export), " per cent higher than "),
-      latest_export == 0 ~ "the same as ",
-      latest_export < 0 ~ paste0(abs(latest_export), " per cent lower than ")
-    ),
-    "it was in December 2019"
-  )
+      latest_change$change > 0 ~ paste0("Victorian total exports rose by ", latest_change$change," millions dollars over the past quarter"),
+      latest_change$change < 0 ~ paste0("Victorian total exports fell by ", abs(latest_change$change)," millions dollars over the past quarter"),
+      latest_change$change == 0 ~ "Victorian total exports the same as over the past quarter ",
+      TRUE ~ "Victoria's total exports over the past quarter"
+    )
+
 
   caption <- paste0("ABS Balnce of Payment quarterly, Seasonally Adjusted Chain Volume Measures latest data is from ", latest_month)
 
@@ -840,7 +837,7 @@ viz_good_services_export_chart <- function(data = bop) {
       # y_labels = function(x) paste0(x, "%"),
     ) +
     labs(
-      title = "title",
+      title = title,
       subtitle = "Victoria's exports of goods and services in million dollars",
       caption = caption
     )
