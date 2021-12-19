@@ -1,3 +1,4 @@
+#Cumulative Change in Victoria's goods exports and imports since COVID
 viz_good_trade_line_chart <- function(data = bop) {
   df <- data %>%
     dplyr::filter(date >= as.Date("2018-12-01")) %>%
@@ -59,7 +60,7 @@ viz_good_trade_line_chart <- function(data = bop) {
     )
 }
 
-
+# Cumulative change in Victoria's Services' exports and imports since COVID
 viz_services_trade_line_chart <- function(data = bop) {
   df <- data %>%
     dplyr::filter(date >= as.Date("2018-12-01")) %>%
@@ -120,6 +121,7 @@ viz_services_trade_line_chart <- function(data = bop) {
     )
 }
 
+# Change in services exports and imports since COVID by the state
 viz_service_bop_bar_chart <- function(data = bop) {
   df <- data %>%
     dplyr::select(-.data$series_id, -.data$unit) %>%
@@ -185,10 +187,6 @@ viz_service_bop_bar_chart <- function(data = bop) {
     dplyr::filter(.data$date == max(.data$date)) %>%
     dplyr::ungroup()
 
-  # df<- df %>%
-  #   mutate(fill_col = dplyr::if_else(
-  #     .data$state %in% c("Vic", "NSW"), .data$state, "Other"
-  #   ))
 
   # draw bar chart for all state
   df %>%
@@ -228,6 +226,7 @@ viz_service_bop_bar_chart <- function(data = bop) {
     )
 }
 
+#Change in goods exports and imports by the state since COVID
 viz_goods_bop_bar_chart <- function(data = bop) {
   df <- data %>%
     dplyr::select(-.data$series_id, -.data$unit) %>%
@@ -333,7 +332,7 @@ viz_goods_bop_bar_chart <- function(data = bop) {
 }
 
 
-
+#Annual growth of Victoria's imports and exports of services
 viz_goods_export_import_line <- function(data = bop) {
   df <- data %>%
     dplyr::filter(
@@ -404,7 +403,7 @@ viz_goods_export_import_line <- function(data = bop) {
     facet_wrap(~exports_imports, ncol = 1, scales = "free_y")
 }
 
-
+#The table that shows the change in exports and imports of goods and services
 table_export_import <- function(data = bop) {
   df <- data %>%
     dplyr::select(-.data$series_id, -.data$unit) %>%
@@ -488,6 +487,7 @@ table_export_import <- function(data = bop) {
     gt::tab_options(column_labels.background.color = "grey")
 }
 
+#Balance of trade in goods and services since COVID
 viz_trade_balance_line_chart <- function(data = bop) {
   df <- data %>%
     dplyr::filter(date >= as.Date("2017-12-01")) %>%
@@ -555,7 +555,7 @@ viz_trade_balance_line_chart <- function(data = bop) {
     )
 }
 
-
+#Annual growth of Victoria's and NSW's imports and exports of goods
 viz_NSW_Vic_goods_line_chart <- function(data = bop) {
   df <- data %>%
     dplyr::select(-.data$series_id, -.data$unit) %>%
@@ -634,7 +634,7 @@ viz_NSW_Vic_goods_line_chart <- function(data = bop) {
     facet_wrap(~state, ncol = 1, scales = "free_y")
 }
 
-
+#Annual growth of Victoria's and NSW's imports and exports of services
 viz_NSW_Vic_Services_line_chart <- function(data = bop) {
   df <- data %>%
     dplyr::select(-.data$series_id, -.data$unit) %>%
@@ -703,6 +703,8 @@ viz_NSW_Vic_Services_line_chart <- function(data = bop) {
     facet_wrap(~state, ncol = 1, scales = "free_y")
 }
 
+
+#Latest period exports of goods and services by state
 viz_total_bop_bar_chart <- function(data = bop) {
   df <- data %>%
     dplyr::select(-.data$series_id, -.data$unit) %>%
@@ -790,7 +792,7 @@ viz_total_bop_bar_chart <- function(data = bop) {
     )
 }
 
-
+#Victoria's historical exports of goods and services
 viz_good_services_export_chart <- function(data = bop) {
   df <- data %>%
     dplyr::filter(
@@ -843,7 +845,7 @@ viz_good_services_export_chart <- function(data = bop) {
     )
 }
 
-
+#Victoria's historical imports of goods and services
 viz_good_services_import_chart <- function(data = bop) {
   df <- data %>%
     dplyr::filter(
@@ -895,6 +897,7 @@ viz_good_services_import_chart <- function(data = bop) {
     )
 }
 
+#Victoria's exports of goods and services by calendar year
 viz_Vic_total_bop_bar_chart <- function(data = bop) {
   df <- data %>%
     dplyr::select(-.data$series_id, -.data$unit) %>%
