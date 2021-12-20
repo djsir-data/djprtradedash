@@ -1,4 +1,4 @@
-#Cumulative Change in Victoria's goods exports and imports since COVID
+# Cumulative Change in Victoria's goods exports and imports since COVID
 viz_good_trade_line_chart <- function(data = bop) {
   df <- data %>%
     dplyr::filter(date >= as.Date("2018-12-01")) %>%
@@ -226,7 +226,7 @@ viz_service_bop_bar_chart <- function(data = bop) {
     )
 }
 
-#Change in goods exports and imports by the state since COVID
+# Change in goods exports and imports by the state since COVID
 viz_goods_bop_bar_chart <- function(data = bop) {
   df <- data %>%
     dplyr::select(-.data$series_id, -.data$unit) %>%
@@ -332,7 +332,7 @@ viz_goods_bop_bar_chart <- function(data = bop) {
 }
 
 
-#Annual growth of Victoria's imports and exports of services
+# Annual growth of Victoria's imports and exports of services
 viz_goods_export_import_line <- function(data = bop) {
   df <- data %>%
     dplyr::filter(
@@ -403,7 +403,7 @@ viz_goods_export_import_line <- function(data = bop) {
     facet_wrap(~exports_imports, ncol = 1, scales = "free_y")
 }
 
-#The table that shows the change in exports and imports of goods and services
+# The table that shows the change in exports and imports of goods and services
 table_export_import <- function(data = bop) {
   df <- data %>%
     dplyr::select(-.data$series_id, -.data$unit) %>%
@@ -487,7 +487,7 @@ table_export_import <- function(data = bop) {
     gt::tab_options(column_labels.background.color = "grey")
 }
 
-#Balance of trade in goods and services since COVID
+# Balance of trade in goods and services since COVID
 viz_trade_balance_line_chart <- function(data = bop) {
   df <- data %>%
     dplyr::filter(date >= as.Date("2017-12-01")) %>%
@@ -555,7 +555,7 @@ viz_trade_balance_line_chart <- function(data = bop) {
     )
 }
 
-#Annual growth of Victoria's and NSW's imports and exports of goods
+# Annual growth of Victoria's and NSW's imports and exports of goods
 viz_NSW_Vic_goods_line_chart <- function(data = bop) {
   df <- data %>%
     dplyr::select(-.data$series_id, -.data$unit) %>%
@@ -634,7 +634,7 @@ viz_NSW_Vic_goods_line_chart <- function(data = bop) {
     facet_wrap(~state, ncol = 1, scales = "free_y")
 }
 
-#Annual growth of Victoria's and NSW's imports and exports of services
+# Annual growth of Victoria's and NSW's imports and exports of services
 viz_NSW_Vic_Services_line_chart <- function(data = bop) {
   df <- data %>%
     dplyr::select(-.data$series_id, -.data$unit) %>%
@@ -704,7 +704,7 @@ viz_NSW_Vic_Services_line_chart <- function(data = bop) {
 }
 
 
-#Latest period exports of goods and services by state
+# Latest period exports of goods and services by state
 viz_total_bop_bar_chart <- function(data = bop) {
   df <- data %>%
     dplyr::select(-.data$series_id, -.data$unit) %>%
@@ -792,7 +792,7 @@ viz_total_bop_bar_chart <- function(data = bop) {
     )
 }
 
-#Victoria's historical exports of goods and services
+# Victoria's historical exports of goods and services
 viz_good_services_export_chart <- function(data = bop) {
   df <- data %>%
     dplyr::filter(
@@ -823,8 +823,8 @@ viz_good_services_export_chart <- function(data = bop) {
 
   title <-
     dplyr::case_when(
-      latest_change$change > 0 ~ paste0("Victorian total exports rose by ", latest_change$change," millions dollars over the past quarter"),
-      latest_change$change < 0 ~ paste0("Victorian total exports fell by ", abs(latest_change$change)," millions dollars over the past quarter"),
+      latest_change$change > 0 ~ paste0("Victorian total exports rose by ", latest_change$change, " millions dollars over the past quarter"),
+      latest_change$change < 0 ~ paste0("Victorian total exports fell by ", abs(latest_change$change), " millions dollars over the past quarter"),
       latest_change$change == 0 ~ "Victorian total exports the same as over the past quarter ",
       TRUE ~ "Victoria's total exports over the past quarter"
     )
@@ -845,7 +845,7 @@ viz_good_services_export_chart <- function(data = bop) {
     )
 }
 
-#Victoria's historical imports of goods and services
+# Victoria's historical imports of goods and services
 viz_good_services_import_chart <- function(data = bop) {
   df <- data %>%
     dplyr::filter(
@@ -875,11 +875,11 @@ viz_good_services_import_chart <- function(data = bop) {
 
   title <-
     dplyr::case_when(
-     latest_change$change > 0 ~ paste0("Victorian total imports rose by ", latest_change$change," millions dollars over the past quarter"),
-     latest_change$change < 0 ~ paste0("Victorian total imports fell by ", abs(latest_change$change)," millions dollars over the past quarter"),
-    latest_change$change == 0 ~ "Victorian total imports the same as over the past quarter ",
-       TRUE ~ "Victoria's total imports over the past quarter"
-  )
+      latest_change$change > 0 ~ paste0("Victorian total imports rose by ", latest_change$change, " millions dollars over the past quarter"),
+      latest_change$change < 0 ~ paste0("Victorian total imports fell by ", abs(latest_change$change), " millions dollars over the past quarter"),
+      latest_change$change == 0 ~ "Victorian total imports the same as over the past quarter ",
+      TRUE ~ "Victoria's total imports over the past quarter"
+    )
 
 
 
@@ -897,7 +897,7 @@ viz_good_services_import_chart <- function(data = bop) {
     )
 }
 
-#Victoria's exports of goods and services by calendar year
+# Victoria's exports of goods and services by calendar year
 viz_Vic_total_bop_bar_chart <- function(data = bop) {
   df <- data %>%
     dplyr::select(-.data$series_id, -.data$unit) %>%
@@ -927,8 +927,8 @@ viz_Vic_total_bop_bar_chart <- function(data = bop) {
 
   title <-
     dplyr::case_when(
-      latest_change$change > 0 ~ paste0("Victoria's total exports rose by ",  scales::comma(latest_change$change)," millions dollars over the past year"),
-     latest_change$change < 0 ~ paste0("Victoria's total exports fell by ", scales::comma(abs(latest_change$change))," millions dollars over the past year"),
+      latest_change$change > 0 ~ paste0("Victoria's total exports rose by ", scales::comma(latest_change$change), " millions dollars over the past year"),
+      latest_change$change < 0 ~ paste0("Victoria's total exports fell by ", scales::comma(abs(latest_change$change)), " millions dollars over the past year"),
       latest_change$change == 0 ~ "Victoria's total exports the same as over the past year ",
       TRUE ~ "Victoria's total exports over the past year"
     )
