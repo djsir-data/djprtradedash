@@ -35,7 +35,9 @@ Imports:
     tidyr,
     purrr,
     stringr,
-    rvest
+    rvest,
+    gt,
+    scales
 Remotes: 
     djpr-data/djprshiny,
     djpr-data/djprtheme,
