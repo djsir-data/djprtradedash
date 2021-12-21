@@ -410,6 +410,7 @@ table_export_import <- function(data = bop) {
     dplyr::filter(.data$indicator == "Chain Volume Measures") %>%
     dplyr::mutate(value = abs(.data$value))
 
+
   current <- df %>%
     dplyr::filter(
       .data$state == "Victoria",
@@ -420,7 +421,7 @@ table_export_import <- function(data = bop) {
 
 
   current <- current %>%
-    dplyr::rename("Current figures (millions)" = value)
+    dplyr::rename("Current figures (millions)" = .data$value)
 
   # per cent change
   df_year <- df %>%
@@ -437,7 +438,7 @@ table_export_import <- function(data = bop) {
 
   df_year <- df_year %>%
     dplyr::select(.data$value) %>%
-    dplyr::rename("Change in the past year (%)" = value)
+    dplyr::rename("Change in the past year (%)" =.data$value)
 
 
   df_quarterly <- df %>%
@@ -454,7 +455,7 @@ table_export_import <- function(data = bop) {
 
   df_quarterly <- df_quarterly %>%
     dplyr::select(.data$value) %>%
-    dplyr::rename("Change in the latest period (%)" = value)
+    dplyr::rename("Change in the latest period (%)" = .data$value)
 
   # Since Covid
   df_covid <- df %>%
@@ -472,11 +473,11 @@ table_export_import <- function(data = bop) {
 
   df_covid <- df_covid %>%
     dplyr::select(.data$value) %>%
-    dplyr::rename("Change since COVID (%)" = value)
+    dplyr::rename("Change since COVID (%)" = .data$value)
 
   df_vic <- cbind(current, df_quarterly, df_year, df_covid) %>%
     dplyr::select(.data$goods_services, .data$exports_imports, .data$`Current figures (millions)`, .data$`Change in the latest period (%)`, .data$`Change in the past year (%)`, .data$`Change since COVID (%)`) %>%
-    dplyr::rename("Goods/Services" = goods_services, "Exports/Imports" = exports_imports)
+    dplyr::rename("Goods/Services" = .data$goods_services, "Exports/Imports" = .data$exports_imports)
 
   latest_month <- format(max(df$date), "%B %Y")
 
