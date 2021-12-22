@@ -124,4 +124,44 @@ server <- function(input, output, session) {
                    width_percent = 45,
                    height_percent = 70
   )
+
+  #Balance of Payments---
+  #Services: services imports and exports since COVID
+  djpr_plot_server("service_bop_bar_chart",
+                   viz_service_bop_bar_chart,
+                   data = bop,
+                   height_percent = 75,
+                   plt_change = plt_change,
+                   date_slider = FALSE,
+                   interactive = FALSE
+        )
+
+  #Services: services imports and exports since COVID
+  djpr_plot_server("services_trade_line_chart",
+                   viz_services_trade_line_chart,
+                   data = bop %>%
+                     dplyr::filter(date >= as.Date("2018-12-01")),
+                   plt_change = plt_change,
+                   width_percent = 45,
+                   height_percent = 70
+  )
+
+  #Services: Annual growth in services exports and imports in NSW and Vic
+
+  djpr_plot_server("NSW_Vic_Services_line_chart",
+                   viz_NSW_Vic_Services_line_chart,
+                   data = bop,
+                   plt_change = plt_change,
+                   width_percent = 45,
+                   height_percent = 70
+  )
+
+  #Balance of trade:Cumulative change in total trade balance since December 2019
+  djpr_plot_server("trade_balance_line_chart()",
+                   viz_trade_balance_line_chart,
+                   data = bop %>%
+                     dplyr::filter(date >= as.Date("2018-12-01")),
+                   plt_change = plt_change
+
+  )
 }

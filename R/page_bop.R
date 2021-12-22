@@ -27,6 +27,15 @@ page_bop <- function(...) {
       column(6, djpr_plot_ui("NSW_Vic_goods_line_chart"))
     ),
     h2(br(), "Services"),
-    h2(br(), "Balance of Trade ")
+    djpr_plot_ui("service_bop_bar_chart",
+                 interactive=FALSE),
+    br(),
+    fluidRow(
+      column(6, djpr_plot_ui("services_trade_line_chart")),
+      column(6, djpr_plot_ui("NSW_Vic_Services_line_chart"))
+    ),
+    br(),
+    h2(br(), "Balance of Trade "),
+    djpr_plot_ui("trade_balance_line_chart")
   )
 }
