@@ -9,7 +9,23 @@ page_bop <- function(...) {
     djpr_plot_ui("total_bop_bar_chart",
                  interactive=FALSE),
     br(),
+    fluidRow(
+      column(6, djpr_plot_ui("good_services_export_chart")),
+      column(6, djpr_plot_ui("good_services_import_chart"))
+    ),
+    br(),
+    djpr_plot_ui("goods_export_import_line"),
+    br(),
+    djpr_plot_ui("Vic_total_bop_bar_chart",
+                 interactive=FALSE),
     h2(br(), "Goods"),
+    djpr_plot_ui("goods_bop_bar_chart",
+                 interactive=FALSE),
+    br(),
+    fluidRow(
+      column(6, djpr_plot_ui("good_trade_line_chart")),
+      column(6, djpr_plot_ui("NSW_Vic_goods_line_chart"))
+    ),
     h2(br(), "Services"),
     h2(br(), "Balance of Trade ")
   )

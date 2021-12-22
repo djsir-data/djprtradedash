@@ -50,7 +50,7 @@ server <- function(input, output, session) {
   )
 
   #Balance of Payments---
-  #BOP: Goods and Services----
+  #Goods and Services----
   djpr_plot_server("total_bop_bar_chart",
           viz_total_bop_bar_chart,
           data = bop,
@@ -59,5 +59,69 @@ server <- function(input, output, session) {
           plt_change = plt_change,
           date_slider = FALSE,
           interactive = FALSE
+  )
+
+  #Goods and Services: Goods and Services exports time series
+  djpr_plot_server("good_services_export_chart",
+                   viz_good_services_export_chart,
+                   data = bop,
+                   plt_change = plt_change,
+                   width_percent = 45,
+                   height_percent = 70
+  )
+
+  #Goods and Services: Goods and Services imports time series
+
+  djpr_plot_server("good_services_import_chart",
+                   viz_good_services_import_chart,
+                   data = bop,
+                   plt_change = plt_change,
+                   width_percent = 45,
+                   height_percent = 70
+  )
+
+  #Goods and Services: Annual growth in goods and services exports and imports
+  djpr_plot_server("goods_export_import_line",
+                   viz_goods_export_import_line,
+                   data = bop,
+                   plt_change = plt_change
+  )
+  #Goods and Services: Export of goods and services for Victoria by calendar year
+  djpr_plot_server("Vic_total_bop_bar_chart",
+                   viz_Vic_total_bop_bar_chart,
+                   data = bop,
+                   height_percent = 75,
+                   plt_change = plt_change,
+                   date_slider = FALSE,
+                   interactive = FALSE
+  )
+  #Balance of Payments---
+  #Goods:Goods imports and exports since COVID
+  djpr_plot_server("goods_bop_bar_chart",
+                   viz_goods_bop_bar_chart,
+                   data = bop,
+                   height_percent = 75,
+                   plt_change = plt_change,
+                   date_slider = FALSE,
+                   interactive = FALSE
+  )
+  #Goods: Goods imports and exports since covid
+  djpr_plot_server("good_trade_line_chart",
+                   viz_good_trade_line_chart,
+                   data = bop %>%
+                   dplyr::filter(date >= as.Date("2018-12-01")),
+                   plt_change = plt_change,
+                   width_percent = 45,
+                   height_percent = 70
+  )
+
+  #Goods: Annual growth in goods exports and imports in NSW and Vic
+
+  djpr_plot_server("NSW_Vic_goods_line_chart",
+                   viz_NSW_Vic_goods_line_chart,
+                   data = bop,
+                   plt_change = plt_change,
+                   width_percent = 45,
+                   height_percent = 70
   )
 }
