@@ -1,4 +1,4 @@
-# Cumulative Change in Victoria's goods exports and imports since COVID
+# Cumulative Change in Victoria's goods exports and imports since COVID (page layout goods side (1))
 viz_good_trade_line_chart <- function(data = bop) {
   df <- data %>%
     dplyr::filter(date >= as.Date("2018-12-01")) %>%
@@ -332,7 +332,7 @@ viz_goods_bop_bar_chart <- function(data = bop) {
 }
 
 
-# Annual growth of Victoria's imports and exports of services
+# Annual growth of Victoria's imports and exports of goods & services
 viz_goods_export_import_line <- function(data = bop) {
   df <- data %>%
     dplyr::filter(
@@ -824,8 +824,8 @@ viz_good_services_export_chart <- function(data = bop) {
 
   title <-
     dplyr::case_when(
-      latest_change$change > 0 ~ paste0("Victorian total exports rose by ", latest_change$change, " millions dollars over the past quarter"),
-      latest_change$change < 0 ~ paste0("Victorian total exports fell by ", abs(latest_change$change), " millions dollars over the past quarter"),
+      latest_change$change > 0 ~ paste0("Victorian total exports rose by ", scales::comma(latest_change$change), " millions dollars over the past quarter"),
+      latest_change$change < 0 ~ paste0("Victorian total exports fell by ", scales::comma(abs(latest_change$change)), " millions dollars over the past quarter"),
       latest_change$change == 0 ~ "Victorian total exports the same as over the past quarter ",
       TRUE ~ "Victoria's total exports over the past quarter"
     )
@@ -876,8 +876,8 @@ viz_good_services_import_chart <- function(data = bop) {
 
   title <-
     dplyr::case_when(
-      latest_change$change > 0 ~ paste0("Victorian total imports rose by ", latest_change$change, " millions dollars over the past quarter"),
-      latest_change$change < 0 ~ paste0("Victorian total imports fell by ", abs(latest_change$change), " millions dollars over the past quarter"),
+      latest_change$change > 0 ~ paste0("Victorian total imports rose by ", scales::comma(latest_change$change), " millions dollars over the past quarter"),
+      latest_change$change < 0 ~ paste0("Victorian total imports fell by ", scales::comma(abs(latest_change$change)), " millions dollars over the past quarter"),
       latest_change$change == 0 ~ "Victorian total imports the same as over the past quarter ",
       TRUE ~ "Victoria's total imports over the past quarter"
     )
