@@ -1,4 +1,4 @@
-# Cumulative Change in Victoria's goods exports and imports since COVID (page layout goods side (1))
+# Cumulative Change in Victoria's goods exports and imports since COVID
 viz_good_trade_line_chart <- function(data = bop) {
   df <- data %>%
     dplyr::filter(date >= as.Date("2018-12-01")) %>%
@@ -752,7 +752,7 @@ viz_total_bop_bar_chart <- function(data = bop) {
     vic_rank == 1 ~ paste0("Victorian total exports of goods and services are the highes exports of any Australian state"),
     vic_rank == 2 ~ paste0("Victorian total exports of goods and services are the second highest exports of any Australian state"),
     vic_rank == 3 ~ paste0("Victorian total exports of goods and services are the third highest exports of any Australian state"),
-    vic_rank <= 4 ~ paste0("Victorian total exports of goods and services are the fourth highest exports of any Australian state in the year to ", format(max(df$date), "%B %Y")),
+    vic_rank <= 4 ~ paste0("Victorian total exports of goods and services are the fourth highest exports of any Australian state in ", format(max(df$date), "%B %Y")),
     TRUE ~ "Victoria's total exports of goods and services compared to other states and territories"
   )
 
@@ -791,7 +791,7 @@ viz_total_bop_bar_chart <- function(data = bop) {
     labs(
       title = title,
       subtitle = paste0(
-        "Export of goods and services in millions by Australian states ",
+        "Export of goods and services in millions (AU$) by Australian states in ",
         format(max(data$date), "%B %Y")
       ),
       caption = caption
@@ -900,7 +900,7 @@ viz_good_services_import_chart <- function(data = bop) {
     ) +
     labs(
       title = title,
-      subtitle = "Victoria's imports of goods and services in millions",
+      subtitle = "Victoria's imports of goods and services in millions AU$",
       caption = caption
     )
 }
@@ -975,7 +975,7 @@ viz_Vic_total_bop_bar_chart <- function(data = bop) {
     ) +
     labs(
       title = title,
-      subtitle = "Victoria's exports of goods and services in millions dollars ",
+      subtitle = "Victoria's exports of goods and services in millions AU$ ",
       caption = caption
     )
 }
