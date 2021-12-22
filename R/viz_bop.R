@@ -775,7 +775,7 @@ viz_total_bop_bar_chart <- function(data = bop) {
       hjust = 0,
       size = 12 / .pt
     ) +
-    scale_x_discrete(expand = expansion(add = c(0.5, 0.85))) +
+    scale_x_discrete(expand = expansion(add = c(0.2, 0.85))) +
     scale_y_continuous(expand = expansion(mult = c(0, 0.15))) +
     theme(
       axis.text.x = element_blank(),
