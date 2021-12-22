@@ -48,4 +48,16 @@ server <- function(input, output, session) {
     plot = merch_explorer_plot(),
     plot_name = "merch_explorer_plot"
   )
+
+  #Balance of Payments---
+  #BOP: Goods and Services----
+  djpr_plot_server("total_bop_bar_chart",
+          viz_total_bop_bar_chart,
+          data = bop,
+          height_percent = 75,
+          #width_percent = 75,
+          plt_change = plt_change,
+          date_slider = FALSE,
+          interactive = FALSE
+  )
 }

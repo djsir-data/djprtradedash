@@ -5,8 +5,12 @@ page_bop <- function(...) {
     paste0("This page contains Victoria's international transactions, typically quarterly or
     yearly, over a particular period.  It shows the sum of the transactions of those involving
     goods or services."),
+    h2(br(), "Goods and Services"),
+    djpr_plot_ui("total_bop_bar_chart",
+                 interactive=FALSE),
+    br(),
     h2(br(), "Goods"),
     h2(br(), "Services"),
-    h2(br(), "Balance of Trade "),
+    h2(br(), "Balance of Trade ")
   )
 }
