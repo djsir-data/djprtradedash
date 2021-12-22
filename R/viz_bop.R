@@ -43,7 +43,7 @@ viz_good_trade_line_chart <- function(data = bop) {
     "they were in December 2019"
   )
 
-  caption <- paste0("ABS Balnce of Payment quarterly, Seasonally Adjusted Chain Volume Measures latest data is from ", latest_month)
+  caption <- paste0("Source:ABS Balance of Payment quarterly latest data is from", latest_month, "Note:Seasonally Adjusted Chain Volume Measures" )
 
 
 
@@ -73,7 +73,8 @@ viz_services_trade_line_chart <- function(data = bop) {
 
   latest_month <- format(max(df$date), "%B %Y")
 
-  caption <- paste0("ABS Balnce of Payment quarterly, Seasonally Adjusted Chain Volume Measures latest data is from ", latest_month)
+  caption <- paste0("Source:ABS Balance of Payment quarterly latest data is from", latest_month, "Note:Seasonally Adjusted Chain Volume Measures" )
+
 
   df <- df %>%
     dplyr::group_by(.data$exports_imports) %>%
@@ -180,7 +181,8 @@ viz_service_bop_bar_chart <- function(data = bop) {
   )
 
 
-  caption <- paste0("ABS Balnce of Payment quarterly, Seasonally Adjusted Chain Volume Measures latest data is from ", latest_month)
+  caption <- paste0("Source:ABS Balance of Payment quarterly latest data is from", latest_month, "Note:Seasonally Adjusted Chain Volume Measures" )
+
 
   df <- df %>%
     dplyr::group_by(.data$state) %>%
@@ -285,7 +287,8 @@ viz_goods_bop_bar_chart <- function(data = bop) {
   )
 
 
-  caption <- paste0("ABS Balnce of Payment quarterly, Seasonally Adjusted Chain Volume Measures latest data is from ", latest_month)
+  caption <- paste0("Source:ABS Balance of Payment quarterly latest data is from", latest_month, "Note:Seasonally Adjusted Chain Volume Measures" )
+
 
   df <- df %>%
     dplyr::group_by(.data$state) %>%
@@ -385,7 +388,8 @@ viz_goods_export_import_line <- function(data = bop) {
     TRUE ~ paste0("Exports and imports of goods and services annual")
   )
 
-  caption <- paste0("ABS Balnce of Payment quarterly, Seasonally Adjusted and Chain Volume Measures latest data is from ", latest_month)
+  caption <- paste0("Source:ABS Balance of Payment quarterly latest data is from", latest_month, "Note:Seasonally Adjusted Chain Volume Measures" )
+
 
 
   df %>%
@@ -484,7 +488,7 @@ table_export_import <- function(data = bop) {
   df_vic %>%
     gt::gt() %>%
     gt::tab_header(paste0(title = "Victoria's Export and Imports of Goods and Services"), latest_month) %>%
-    gt::tab_source_note(source_note = "Source: ABS, Balance of payment, Chain Volume measure, Change Since COVID(Since December 2019)") %>%
+    gt::tab_source_note(source_note = "Source: ABS, Balance of payment, Chain Volume measure, Change Since COVID (Since December 2019)") %>%
     gt::tab_options(column_labels.background.color = "grey")
 }
 
@@ -509,7 +513,8 @@ viz_trade_balance_line_chart <- function(data = bop) {
 
 
   latest_month <- format(max(df$date), "%B %Y")
-  caption <- paste0("ABS Balance of Payment quarterly, Seasonally Adjusted Chain Volume Measures latest data is from ", latest_month)
+  caption <- paste0("Source:ABS Balance of Payment quarterly latest data is from", latest_month, "Note:Seasonally Adjusted Chain Volume Measures" )
+
 
   df <- df %>%
     dplyr::group_by(.data$goods_services) %>%
@@ -618,7 +623,8 @@ viz_NSW_Vic_goods_line_chart <- function(data = bop) {
 
 
 
-  caption <- paste0("ABS Balnce of Payment quarterly, Seasonally Adjusted Chain Volume Measures latest data is from ", latest_month)
+  caption <- paste0("Source:ABS Balance of Payment quarterly latest data is from", latest_month, "Note:Seasonally Adjusted Chain Volume Measures" )
+
 
   df %>%
     djpr_ts_linechart(
@@ -686,8 +692,8 @@ viz_NSW_Vic_Services_line_chart <- function(data = bop) {
   )
 
 
+  caption <- paste0("Source:ABS Balance of Payment quarterly latest data is from", latest_month, "Note:Seasonally Adjusted Chain Volume Measures" )
 
-  caption <- paste0("ABS Balnce of Payment quarterly, Seasonally Adjusted Chain Volume Measures latest data is from ", latest_month)
 
   df %>%
     djpr_ts_linechart(
@@ -752,7 +758,8 @@ viz_total_bop_bar_chart <- function(data = bop) {
   )
 
 
-  caption <- paste0("ABS Balnce of Payment quarterly, Seasonally Adjusted Chain Volume Measures latest data is from ", latest_month)
+  caption <- paste0("Source:ABS Balance of Payment quarterly latest data is from", latest_month, "Note:Seasonally Adjusted Chain Volume Measures" )
+
 
 
   # draw bar chart for all state
@@ -831,7 +838,8 @@ viz_good_services_export_chart <- function(data = bop) {
     )
 
 
-  caption <- paste0("ABS Balnce of Payment quarterly, Seasonally Adjusted Chain Volume Measures latest data is from ", latest_month)
+  caption <- paste0("Source:ABS Balance of Payment quarterly latest data is from", latest_month, "Note:Seasonally Adjusted Chain Volume Measures" )
+
 
   df %>%
     djpr_ts_linechart(
@@ -884,7 +892,8 @@ viz_good_services_import_chart <- function(data = bop) {
 
 
 
-  caption <- paste0("ABS Balnce of Payment quarterly, Seasonally Adjusted Chain Volume Measures latest data is from ", latest_month)
+  caption <- paste0("Source:ABS Balance of Payment quarterly latest data is from", latest_month, "Note:Seasonally Adjusted Chain Volume Measures" )
+
 
   df %>%
     djpr_ts_linechart(
@@ -934,7 +943,8 @@ viz_Vic_total_bop_bar_chart <- function(data = bop) {
       TRUE ~ "Victoria's total exports over the past year"
     )
 
-  caption <- paste0("ABS Balnce of Payment quarterly, Seasonally Adjusted Chain Volume Measures latest data is from ", latest_month)
+  caption <- paste0("Source:ABS Balance of Payment quarterly latest data is from", latest_month, "Note:Seasonally Adjusted Chain Volume Measures" )
+
 
 
   # draw bar chart for all state
