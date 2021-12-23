@@ -157,7 +157,7 @@ server <- function(input, output, session) {
   )
 
   #Balance of trade:Cumulative change in total trade balance since December 2019
-  djpr_plot_server("trade_balance_line_chart()",
+  djpr_plot_server("trade_balance_line_chart",
                    viz_trade_balance_line_chart,
                    data = bop %>%
                      dplyr::filter(date >= as.Date("2018-12-01")),
