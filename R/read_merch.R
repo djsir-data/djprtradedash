@@ -117,18 +117,18 @@ read_merch <- function(path = tempdir(),
     #   dplyr::filter(.data$industry == "-1")
 
     merch <- merch %>%
-      transmute(sitc_rev3 = commodity_sitc,
-                country = country_dest,
+      transmute(sitc_rev3_code = commodity_sitc,
+                country_code = country_dest,
                 time = obsdimension,
                 obsvalue = obsvalue,
-                region = state_origin)
+                region_code = state_origin)
 
     merch <- merch %>%
-      dplyr::select(.data$country,
+      dplyr::select(.data$country_code,
         # .data$industry,
-        .data$sitc_rev3,
+        .data$sitc_rev3_code,
         .data$time,
-        .data$region,
+        .data$region_code,
         value = .data$obsvalue
       )
 
@@ -149,10 +149,10 @@ read_merch <- function(path = tempdir(),
     merch <- merch %>%
       dplyr::mutate(date = lubridate::ymd(paste0(.data$time, "-01"))) %>%
       dplyr::select(.data$date,
-        country_dest = .data$country_desc,
-        sitc_rev3 = .data$sitc_rev3_desc,
-        sitc_rev3_code = .data$sitc_rev3,
-        origin = .data$region_desc,
+        country_dest = .data$country,
+        sitc_rev3 = .data$sitc_rev3,
+        sitc_rev3_code = .data$sitc_rev3_code,
+        origin = .data$region,
         .data$unit,
         .data$value
       )
@@ -245,18 +245,18 @@ read_merch <- function(path = tempdir(),
     merch <- dplyr::bind_rows(agg_merch)
 
     merch <- merch %>%
-      transmute(sitc_rev3 = commodity_sitc,
-                country = country_origin,
+      transmute(sitc_rev3_code = commodity_sitc,
+                country_code = country_origin,
                 time = obsdimension,
                 obsvalue = obsvalue,
-                region = state_dest)
+                region_code = state_dest)
 
     merch <- merch %>%
-      dplyr::select(.data$country,
+      dplyr::select(.data$country_code,
         # .data$industry,
-        .data$sitc_rev3,
+        .data$sitc_rev3_code,
         .data$time,
-        .data$region,
+        .data$region_code,
         value = .data$obsvalue
       )
 
@@ -277,10 +277,10 @@ read_merch <- function(path = tempdir(),
     merch <- merch %>%
       dplyr::mutate(date = lubridate::ymd(paste0(.data$time, "-01"))) %>%
       dplyr::select(.data$date,
-        country_origin = .data$country_desc,
-        sitc_rev3 = .data$sitc_rev3_desc,
-        sitc_rev3_code = .data$sitc_rev3,
-        dest = .data$region_desc,
+        country_origin = .data$country,
+        sitc_rev3 = .data$sitc_rev3,
+        sitc_rev3_code = .data$sitc_rev3_code,
+        dest = .data$region,
         .data$unit,
         .data$value
       )

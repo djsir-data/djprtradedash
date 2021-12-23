@@ -11,7 +11,7 @@
 #' @examples
 #' create_merch_lookup()
 create_merch_lookup <- function(path = tempdir()) {
-  url <- "https://stat.data.abs.gov.au/restsdmx/sdmx.ashx/GetDataStructure/MERCH_EXP"
+  url <- "https://api.data.abs.gov.au/dataflow/ABS/MERCH_EXP/1.0.0?references=all&detail=referencepartial"
 
   file <- file.path(tempdir(), "lookup.xml")
 
@@ -27,22 +27,20 @@ create_merch_lookup <- function(path = tempdir()) {
 
   lookup <- lookup %>%
     dplyr::filter(.data$en %in% c(
-      "State of Origin",
-      "Commodity by SITC",
-      "Industry of Origin (ANZSIC06)",
-      "Country of Destination"
+      "Merchandise State",
+      "Merchandise Commodity by SITC revision 3",
+      "Merchandise Country"
     )) %>%
     dplyr::select(.data$en,
       desc = .data$en_description,
-      parent_code = .data$parentCode,
-      .data$value
+      code = .data$id_description
     )
 
   lookup <- lookup %>%
     dplyr::mutate(
       desc =
         dplyr::if_else(
-          .data$en == "State of Origin" &
+          .data$en == "Merchandise State" &
             .data$desc == "Total",
           "Australia",
           .data$desc
@@ -51,10 +49,9 @@ create_merch_lookup <- function(path = tempdir()) {
 
   lookup <- lookup %>%
     dplyr::mutate(en = dplyr::case_when(
-      .data$en == "Country of Destination" ~ "country",
-      .data$en == "State of Origin" ~ "region",
-      .data$en == "Industry of Origin (ANZSIC06)" ~ "industry",
-      .data$en == "Commodity by SITC" ~ "sitc_rev3"
+      .data$en == "Merchandise Country" ~ "country",
+      .data$en == "Merchandise State" ~ "region",
+      .data$en == "Merchandise Commodity by SITC revision 3" ~ "sitc_rev3"
     ))
 
   lookup <- lookup %>%
@@ -74,10 +71,9 @@ create_merch_lookup <- function(path = tempdir()) {
     ~ tidyr::pivot_wider(
       data = .x,
       names_from = "en",
-      values_from = "value"
+      values_from = "desc"
     ) %>%
-      dplyr::rename("{.y}_desc" := .data$desc) %>%
-      dplyr::select(-.data$parent_code) %>%
+      dplyr::rename("{.y}_code" := .data$code) %>%
       dplyr::distinct()
   )
 
