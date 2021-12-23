@@ -870,7 +870,7 @@ viz_good_services_import_chart <- function(data = bop) {
     dplyr::mutate(tooltip = paste0(
       .data$state, "\n",
       format(.data$date, "%b %Y"), "\n",
-      round2(.data$value, 1), "%"
+      round2(.data$value, 1)
     ))
 
   latest_change <- df %>%
