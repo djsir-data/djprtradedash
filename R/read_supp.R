@@ -12,14 +12,16 @@
 
 read_supp <- function(format = c("cy", "fy"),
                       table_no = c(1, 2, 3, 4, 5, 6, 7, 8), list = FALSE, path = tempdir()) {
-
   format <- match.arg(format)
 
   # Create a temp directory specific to this format + table no combination
-  temp_dir <- file.path(tempdir(),
-                        paste(format,
-                              paste0(table_no, collapse = ""),
-                              sep = "_"))
+  temp_dir <- file.path(
+    tempdir(),
+    paste(format,
+      paste0(table_no, collapse = ""),
+      sep = "_"
+    )
+  )
 
   if (!dir.exists(temp_dir)) dir.create(temp_dir)
 
@@ -47,9 +49,11 @@ read_supp <- function(format = c("cy", "fy"),
   utils::unzip(file.path(temp_dir, file_name), exdir = temp_dir)
   excel_files <- list.files(path = temp_dir, pattern = "*.xls", full.names = TRUE)
 
-  copy_result <- file.copy(from = excel_files,
-            to = path,
-            overwrite = TRUE)
+  copy_result <- file.copy(
+    from = excel_files,
+    to = path,
+    overwrite = TRUE
+  )
 
   stopifnot(all(copy_result))
 
