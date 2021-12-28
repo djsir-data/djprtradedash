@@ -128,6 +128,10 @@ viz_service_bop_bar_chart <- function(data = bop) {
     dplyr::select(-.data$series_id, -.data$unit) %>%
     dplyr::filter(.data$goods_services == "Services", .data$indicator == "Chain Volume Measures") %>%
     dplyr::mutate(value = abs(.data$value)) %>%
+    dplyr::filter(
+      !.data$state == "Australian Capital Territory",
+      !.data$state == "Northern Territory"
+    ) %>%
     dplyr::mutate(state = dplyr::case_when(
       .data$state == "Australian Capital Territory" ~
       "ACT",
@@ -204,17 +208,17 @@ viz_service_bop_bar_chart <- function(data = bop) {
       hjust = 1,
       size = 12 / .pt
     ) +
-    scale_x_discrete(expand = expansion(add = c(0.5, 0.85))) +
+    scale_x_discrete(expand = expansion(add = c(0.5, 0.65))) +
     djpr_y_continuous() +
     theme(
       axis.text.x = element_blank(),
       axis.title = element_blank(),
       panel.grid = element_blank(),
       axis.line = element_blank(),
-      legend.position = c(0.2, 0.1),
+      legend.position = c(0.1, 0.1),
       legend.key.height = unit(1, "lines"),
       legend.key.width = unit(1, "lines"),
-      legend.direction = "horizontal",
+      legend.direction = "vertical",
       axis.ticks = element_blank()
     ) +
     labs(
