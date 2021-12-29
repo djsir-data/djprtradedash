@@ -310,17 +310,17 @@ viz_goods_bop_bar_chart <- function(data = bop) {
       aes(label = paste0(round2(.data$value, 1), "%")),
       vjust = 0.5,
       colour = "black",
-      hjust = 0.6,
+      hjust = 0,
       size = 12 / .pt
     ) +
-    scale_x_discrete(expand = expansion(add = c(0.7, 0.85))) +
+    scale_x_discrete(expand = expansion(add = c(0.5, 0.85))) +
     djpr_y_continuous() +
     theme(
       axis.text.x = element_blank(),
       axis.title = element_blank(),
       panel.grid = element_blank(),
       axis.line = element_blank(),
-      legend.position = c(0.45, 1),
+      legend.position = c(0.8, 1),
       legend.key.height = unit(1, "lines"),
       legend.key.width = unit(1, "lines"),
       legend.direction = "horizontal",
@@ -333,8 +333,8 @@ viz_goods_bop_bar_chart <- function(data = bop) {
         format(max(data$date), "%B %Y")
       ),
       caption = caption
-    ) +
-    facet_wrap(~exports_imports, ncol = 2, scales = "free_y")
+    )
+    # facet_wrap(~exports_imports, ncol = 2, scales = "free_y")
 }
 
 
