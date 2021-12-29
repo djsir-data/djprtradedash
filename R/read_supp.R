@@ -28,18 +28,20 @@ read_supp <- function(format = c("cy", "fy"),
   on.exit(unlink(temp_dir))
 
   if (format == "cy") {
-    readabs::download_abs_data_cube(
-      "international-trade-supplementary-information-calendar-year",
-      "zip",
-      temp_dir
+    suppressMessages(
+      readabs::download_abs_data_cube(
+        "international-trade-supplementary-information-calendar-year",
+        "zip",
+        temp_dir)
     )
   }
 
   if (format == "fy") {
-    readabs::download_abs_data_cube(
-      "international-trade-supplementary-information-financial-year",
-      "zip",
-      temp_dir
+    suppressMessages(
+      readabs::download_abs_data_cube(
+        "international-trade-supplementary-information-financial-year",
+        "zip",
+        temp_dir)
     )
   }
 

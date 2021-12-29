@@ -69,7 +69,7 @@ read_merch <- function(path = tempdir(),
 
       if (isFALSE(check_local) || !file.exists(file)) {
         message(
-          "Downloading ", series, " merchandise trade data from ", min_month, " to ",
+          "Downloading ", code_names[i], " ", series, " merchandise trade data from ", min_month, " to ",
           max_month
         )
         utils::download.file(
@@ -200,7 +200,7 @@ read_merch <- function(path = tempdir(),
 
       if (isFALSE(check_local) || !file.exists(file)) {
         message(
-          "Downloading ", series, " merchandise trade data from ", min_month, " to ",
+          "Downloading ", code_names[i], " ", series, " merchandise trade data from ", min_month, " to ",
           max_month
         )
         utils::download.file(
