@@ -128,6 +128,10 @@ viz_service_bop_bar_chart <- function(data = bop) {
     dplyr::select(-.data$series_id, -.data$unit) %>%
     dplyr::filter(.data$goods_services == "Services", .data$indicator == "Chain Volume Measures") %>%
     dplyr::mutate(value = abs(.data$value)) %>%
+    dplyr::filter(
+      !.data$state == "Australian Capital Territory",
+      !.data$state == "Northern Territory"
+    ) %>%
     dplyr::mutate(state = dplyr::case_when(
       .data$state == "Australian Capital Territory" ~
       "ACT",
@@ -204,17 +208,17 @@ viz_service_bop_bar_chart <- function(data = bop) {
       hjust = 1,
       size = 12 / .pt
     ) +
-    scale_x_discrete(expand = expansion(add = c(0.5, 0.85))) +
+    scale_x_discrete(expand = expansion(add = c(0.5, 0.65))) +
     djpr_y_continuous() +
     theme(
       axis.text.x = element_blank(),
       axis.title = element_blank(),
       panel.grid = element_blank(),
       axis.line = element_blank(),
-      legend.position = c(0.2, 0.1),
+      legend.position = c(0.1, 0.1),
       legend.key.height = unit(1, "lines"),
       legend.key.width = unit(1, "lines"),
-      legend.direction = "horizontal",
+      legend.direction = "vertical",
       axis.ticks = element_blank()
     ) +
     labs(
@@ -247,7 +251,7 @@ viz_goods_bop_bar_chart <- function(data = bop) {
     ))
 
 
-  # % change of export and export since Dec 2029
+  # % change of export and export since Dec 2019
   df <- df %>%
     dplyr::group_by(.data$state, .data$exports_imports) %>%
     dplyr::mutate(value = 100 * ((.data$value / .data$value[date == as.Date("2019-12-01")]) - 1)) %>%
@@ -535,7 +539,7 @@ viz_trade_balance_line_chart <- function(data = bop) {
 
 
   title <- paste0(
-    "Victorian total trade balance is ",
+    "Victoria's total trade balance is ",
     dplyr::case_when(
       total_latest > 0 ~ paste0(abs(total_latest), " per cent higher than "),
       total_latest == 0 ~ "the same as ",
@@ -659,6 +663,13 @@ viz_NSW_Vic_Services_line_chart <- function(data = bop) {
     dplyr::filter(!is.na(.data$value)) %>%
     dplyr::ungroup()
 
+  df <- df %>%
+    dplyr::mutate(tooltip = paste0(
+      .data$exports_imports, "\n",
+      format(.data$date, "%b %Y"), "\n",
+      round2(.data$value, 1), "%"
+    ))
+
 
   latest_vic_export <- df %>%
     dplyr::filter(
@@ -749,10 +760,10 @@ viz_total_bop_bar_chart <- function(data = bop) {
 
 
   title <- dplyr::case_when(
-    vic_rank == 1 ~ paste0("Victorian total exports of goods and services are the highes exports of any Australian state"),
-    vic_rank == 2 ~ paste0("Victorian total exports of goods and services are the second highest exports of any Australian state"),
-    vic_rank == 3 ~ paste0("Victorian total exports of goods and services are the third highest exports of any Australian state"),
-    vic_rank <= 4 ~ paste0("Victorian total exports of goods and services are the fourth highest exports of any Australian state in ", format(max(df$date), "%B %Y")),
+    vic_rank == 1 ~ paste0("Victoria's total exports of goods and services are the highes exports of any Australian state"),
+    vic_rank == 2 ~ paste0("Victoria's total exports of goods and services are the second highest exports of any Australian state"),
+    vic_rank == 3 ~ paste0("Victoria's total exports of goods and services are the third highest exports of any Australian state"),
+    vic_rank <= 4 ~ paste0("Victoria's total exports of goods and services are the fourth highest exports of any Australian state in ", format(max(df$date), "%B %Y")),
     TRUE ~ "Victoria's total exports of goods and services compared to other states and territories"
   )
 
@@ -791,7 +802,7 @@ viz_total_bop_bar_chart <- function(data = bop) {
     labs(
       title = title,
       subtitle = paste0(
-        "Export of goods and services in millions (AU$) by Australian states in ",
+        "Export of goods and services in million dollars by Australian states in ",
         format(max(data$date), "%B %Y")
       ),
       caption = caption
@@ -817,7 +828,7 @@ viz_good_services_export_chart <- function(data = bop) {
     dplyr::mutate(tooltip = paste0(
       .data$goods_services, "\n",
       format(.data$date, "%b %Y"), "\n",
-      round2(.data$value, 1), "%"
+      round2(.data$value, 1)
     ))
 
   latest_change <- df %>%
@@ -829,9 +840,9 @@ viz_good_services_export_chart <- function(data = bop) {
 
   title <-
     dplyr::case_when(
-      latest_change$change > 0 ~ paste0("Victorian total exports rose by ", scales::comma(latest_change$change), " millions dollars over the past quarter"),
-      latest_change$change < 0 ~ paste0("Victorian total exports fell by ", scales::comma(abs(latest_change$change)), " millions dollars over the past quarter"),
-      latest_change$change == 0 ~ "Victorian total exports the same as over the past quarter ",
+      latest_change$change > 0 ~ paste0("Victoria's total exports rose by ", scales::comma(latest_change$change), " million dollars over the past quarter"),
+      latest_change$change < 0 ~ paste0("Victoria's total exports fell by ", scales::comma(abs(latest_change$change)), " million dollars over the past quarter"),
+      latest_change$change == 0 ~ "Victoria's total exports the same as over the past quarter ",
       TRUE ~ "Victoria's total exports over the past quarter"
     )
 
@@ -870,7 +881,7 @@ viz_good_services_import_chart <- function(data = bop) {
     dplyr::mutate(tooltip = paste0(
       .data$state, "\n",
       format(.data$date, "%b %Y"), "\n",
-      round2(.data$value, 1), "%"
+      round2(.data$value, 1)
     ))
 
   latest_change <- df %>%
@@ -882,9 +893,9 @@ viz_good_services_import_chart <- function(data = bop) {
 
   title <-
     dplyr::case_when(
-      latest_change$change > 0 ~ paste0("Victorian total imports rose by ", scales::comma(latest_change$change), " millions dollars over the past quarter"),
-      latest_change$change < 0 ~ paste0("Victorian total imports fell by ", scales::comma(abs(latest_change$change)), " millions dollars over the past quarter"),
-      latest_change$change == 0 ~ "Victorian total imports the same as over the past quarter ",
+      latest_change$change > 0 ~ paste0("Victoria's total imports rose by ", scales::comma(latest_change$change), " million dollars over the past quarter"),
+      latest_change$change < 0 ~ paste0("Victoria's total imports fell by ", scales::comma(abs(latest_change$change)), " million dollars over the past quarter"),
+      latest_change$change == 0 ~ "Victoria's total imports the same as over the past quarter ",
       TRUE ~ "Victoria's total imports over the past quarter"
     )
 
@@ -900,7 +911,7 @@ viz_good_services_import_chart <- function(data = bop) {
     ) +
     labs(
       title = title,
-      subtitle = "Victoria's imports of goods and services in millions AU$",
+      subtitle = "Victoria's imports of goods and services in million dollars",
       caption = caption
     )
 }
@@ -935,8 +946,8 @@ viz_Vic_total_bop_bar_chart <- function(data = bop) {
 
   title <-
     dplyr::case_when(
-      latest_change$change > 0 ~ paste0("Victoria's total exports rose by ", scales::comma(latest_change$change), " millions dollars over the past year"),
-      latest_change$change < 0 ~ paste0("Victoria's total exports fell by ", scales::comma(abs(latest_change$change)), " millions dollars over the past year"),
+      latest_change$change > 0 ~ paste0("Victoria's total exports rose by ", scales::comma(latest_change$change), " million dollars over the past year"),
+      latest_change$change < 0 ~ paste0("Victoria's total exports fell by ", scales::comma(abs(latest_change$change)), " million dollars over the past year"),
       latest_change$change == 0 ~ "Victoria's total exports the same as over the past year ",
       TRUE ~ "Victoria's total exports over the past year"
     )
@@ -975,7 +986,7 @@ viz_Vic_total_bop_bar_chart <- function(data = bop) {
     ) +
     labs(
       title = title,
-      subtitle = "Victoria's exports of goods and services in millions AU$ ",
+      subtitle = "Victoria's exports of goods and services in million dollars ",
       caption = caption
     )
 }

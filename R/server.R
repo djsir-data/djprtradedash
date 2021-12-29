@@ -65,9 +65,8 @@ server <- function(input, output, session) {
   djpr_plot_server("good_services_export_chart",
                    viz_good_services_export_chart,
                    data = bop,
-                   plt_change = plt_change,
-                   width_percent = 45,
-                   height_percent = 70
+                   plt_change = plt_change
+
   )
 
   #Goods and Services: Goods and Services imports time series
@@ -75,9 +74,8 @@ server <- function(input, output, session) {
   djpr_plot_server("good_services_import_chart",
                    viz_good_services_import_chart,
                    data = bop,
-                   plt_change = plt_change,
-                   width_percent = 45,
-                   height_percent = 70
+                   plt_change = plt_change
+
   )
 
   #Goods and Services: Annual growth in goods and services exports and imports
@@ -110,9 +108,8 @@ server <- function(input, output, session) {
                    viz_good_trade_line_chart,
                    data = bop %>%
                    dplyr::filter(date >= as.Date("2018-12-01")),
-                   plt_change = plt_change,
-                   width_percent = 45,
-                   height_percent = 70
+                   plt_change = plt_change
+
   )
 
   #Goods: Annual growth in goods exports and imports in NSW and Vic
@@ -120,9 +117,8 @@ server <- function(input, output, session) {
   djpr_plot_server("NSW_Vic_goods_line_chart",
                    viz_NSW_Vic_goods_line_chart,
                    data = bop,
-                   plt_change = plt_change,
-                   width_percent = 45,
-                   height_percent = 70
+                   plt_change = plt_change
+
   )
 
   #Balance of Payments---
@@ -141,9 +137,8 @@ server <- function(input, output, session) {
                    viz_services_trade_line_chart,
                    data = bop %>%
                      dplyr::filter(date >= as.Date("2018-12-01")),
-                   plt_change = plt_change,
-                   width_percent = 45,
-                   height_percent = 70
+                   plt_change = plt_change
+
   )
 
   #Services: Annual growth in services exports and imports in NSW and Vic
@@ -151,9 +146,8 @@ server <- function(input, output, session) {
   djpr_plot_server("NSW_Vic_Services_line_chart",
                    viz_NSW_Vic_Services_line_chart,
                    data = bop,
-                   plt_change = plt_change,
-                   width_percent = 45,
-                   height_percent = 70
+                   plt_change = plt_change
+
   )
 
   #Balance of trade:Cumulative change in total trade balance since December 2019
