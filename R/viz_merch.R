@@ -6,19 +6,19 @@ viz_merch_explorer <- function(data = merch,
                                smooth = FALSE) {
   df <- data %>%
     dplyr::filter(
-      .data$sitc_rev3 %in% .env$goods,
+      .data$sitc %in% .env$goods,
       .data$country_dest %in% .env$countries,
       .data$origin == .env$origin
     ) %>%
     dplyr::mutate(
-      group = paste(.data$country_dest, .data$sitc_rev3, sep = "-"),
-      sitc_rev3 = as.character(.data$sitc_rev3),
+      group = paste(.data$country_dest, .data$sitc, sep = "-"),
+      sitc = as.character(.data$sitc),
       country_dest = as.character(.data$country_dest)
     )
 
   if (facet_by == "country_dest") {
     df <- df %>%
-      dplyr::mutate(col = .data$sitc_rev3)
+      dplyr::mutate(col = .data$sitc)
   } else {
     df <- df %>%
       dplyr::mutate(col = .data$country_dest)
