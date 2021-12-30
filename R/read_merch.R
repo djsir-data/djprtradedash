@@ -52,7 +52,7 @@ read_merch <- function(path = tempdir(),
       export_import = series
       )]
 
-    merch[origin == "Total"] <- merch[, origin := "Australia"]
+    merch[origin == "Total"] <- merch[origin == "Total"][, origin := "Australia"]
 
     merch <- merch[order(origin, 
                    sitc, 
@@ -91,7 +91,7 @@ read_merch <- function(path = tempdir(),
       export_import = series
       )]
 
-    merch[dest == "Total"] <- merch[, dest := "Australia"]
+    merch[dest == "Total"] <- merch[dest == "Total"][, dest := "Australia"]
 
     merch <- merch[order(dest, 
                    sitc, 
