@@ -29,6 +29,9 @@ read_merch <- function(path = tempdir(),
                        series = "export",
                        check_local = TRUE,
                        merch_lookup = create_merch_lookup()) {
+
+  
+  
   if (max_date - min_date > 180) {
     message("WARNINGS: Downloading more than 6 months worth of data at a time may fail due to ABS server limits.")
   }
@@ -47,6 +50,7 @@ read_merch <- function(path = tempdir(),
     agg_merch <- vector(mode = "list", length = length(codes))
 
     for (i in 1:length(codes)){
+      tryCatch({
       url <- paste0(
         "https://api.data.abs.gov.au/data/ABS,MERCH_EXP,1.0.0/..",
         codes[i],
@@ -108,7 +112,8 @@ read_merch <- function(path = tempdir(),
 
       names(merch) <- tolower(names(merch))
 
-      agg_merch[[i]] <- merch
+      agg_merch[[i]] <- merch 
+      }, error = function(e){})
     }
 
     merch <- dplyr::bind_rows(agg_merch)
@@ -243,6 +248,10 @@ read_merch <- function(path = tempdir(),
     }
 
     merch <- dplyr::bind_rows(agg_merch)
+
+
+
+
 
     merch <- merch %>%
       transmute(sitc_rev3_code = commodity_sitc,

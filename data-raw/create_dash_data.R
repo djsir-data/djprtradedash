@@ -18,16 +18,28 @@ lookup <- create_merch_lookup()
 # Create vectors of dates defining the first & final month of each
 # year from 1995 to last year PLUS the start of this year to
 # the current date
-last_year <- year(Sys.Date()) - 1
+# last_year <- year(Sys.Date()) - 1
 
-prior_years <- seq.Date(
-  from = ymd(paste0(last_year, "-12-01")),
+# prior_years <- seq.Date(
+#   from = ymd(paste0(last_year, "-12-01")),
+#   to = ymd(paste0(min_merch_year, "-12-01")),
+#   by = "-1 year"
+# )
+
+# last_quarter <- paste0(year(Sys.Date()),"-", month(Sys.Date()) - 1)
+
+quarter_dates <- seq.Date(
+  from = ymd(Sys.Date()),
   to = ymd(paste0(min_merch_year, "-12-01")),
-  by = "-1 year"
+  by = "-1 quarter"
 )
 
-merch_end_dates <- c(Sys.Date(), prior_years)
-merch_start_dates <- floor_date(merch_end_dates, "year")
+merch_start_dates <- ceiling_date(quarter_dates[-1], "quarter")
+
+merch_end_dates <- head(quarter_dates, -1)
+
+# merch_end_dates <- c(Sys.Date(), prior_years)
+# merch_start_dates <- floor_date(merch_end_dates, "year")
 
 # We now iterate over our dates - call `read_merch()` multiple
 # times, once per year worth of data

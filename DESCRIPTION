@@ -37,7 +37,8 @@ Imports:
     stringr,
     rvest,
     gt,
-    scales
+    scales,
+    data.table
 Remotes: 
     djpr-data/djprshiny,
     djpr-data/djprtheme,
