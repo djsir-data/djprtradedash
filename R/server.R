@@ -49,113 +49,106 @@ server <- function(input, output, session) {
     plot_name = "merch_explorer_plot"
   )
 
-  #Balance of Payments---
-  #Goods and Services----
+  # Balance of Payments---
+  # Goods and Services----
   djpr_plot_server("total_bop_bar_chart",
-          viz_total_bop_bar_chart,
-          data = bop,
-          height_percent = 75,
-          #width_percent = 75,
-          plt_change = plt_change,
-          date_slider = FALSE,
-          interactive = FALSE
+    viz_total_bop_bar_chart,
+    data = bop,
+    height_percent = 75,
+    # width_percent = 75,
+    plt_change = plt_change,
+    date_slider = FALSE,
+    interactive = FALSE
   )
 
-  #Goods and Services: Goods and Services exports time series
+  # Goods and Services: Goods and Services exports time series
   djpr_plot_server("good_services_export_chart",
-                   viz_good_services_export_chart,
-                   data = bop,
-                   plt_change = plt_change
-
+    viz_good_services_export_chart,
+    data = bop,
+    plt_change = plt_change
   )
 
-  #Goods and Services: Goods and Services imports time series
+  # Goods and Services: Goods and Services imports time series
 
   djpr_plot_server("good_services_import_chart",
-                   viz_good_services_import_chart,
-                   data = bop,
-                   plt_change = plt_change
-
+    viz_good_services_import_chart,
+    data = bop,
+    plt_change = plt_change
   )
 
-  #Goods and Services: Annual growth in goods and services exports and imports
+  # Goods and Services: Annual growth in goods and services exports and imports
   djpr_plot_server("goods_export_import_line",
-                   viz_goods_export_import_line,
-                   data = bop,
-                   plt_change = plt_change
+    viz_goods_export_import_line,
+    data = bop,
+    plt_change = plt_change
   )
-  #Goods and Services: Export of goods and services for Victoria by calendar year
+  # Goods and Services: Export of goods and services for Victoria by calendar year
   djpr_plot_server("Vic_total_bop_bar_chart",
-                   viz_Vic_total_bop_bar_chart,
-                   data = bop,
-                   height_percent = 75,
-                   plt_change = plt_change,
-                   date_slider = FALSE,
-                   interactive = FALSE
+    viz_Vic_total_bop_bar_chart,
+    data = bop,
+    height_percent = 75,
+    plt_change = plt_change,
+    date_slider = FALSE,
+    interactive = FALSE
   )
-  #Balance of Payments---
-  #Goods:Goods imports and exports since COVID
+  # Balance of Payments---
+  # Goods:Goods imports and exports since COVID
   djpr_plot_server("goods_bop_bar_chart",
-                   viz_goods_bop_bar_chart,
-                   data = bop,
-                   height_percent = 75,
-                   plt_change = plt_change,
-                   date_slider = FALSE,
-                   interactive = FALSE
+    viz_goods_bop_bar_chart,
+    data = bop,
+    height_percent = 75,
+    plt_change = plt_change,
+    date_slider = FALSE,
+    interactive = FALSE
   )
-  #Goods: Goods imports and exports since covid
+  # Goods: Goods imports and exports since covid
   djpr_plot_server("good_trade_line_chart",
-                   viz_good_trade_line_chart,
-                   data = bop %>%
-                   dplyr::filter(date >= as.Date("2018-12-01")),
-                   plt_change = plt_change
-
+    viz_good_trade_line_chart,
+    data = bop %>%
+      dplyr::filter(date >= as.Date("2018-12-01")),
+    plt_change = plt_change
   )
 
-  #Goods: Annual growth in goods exports and imports in NSW and Vic
+  # Goods: Annual growth in goods exports and imports in NSW and Vic
 
   djpr_plot_server("NSW_Vic_goods_line_chart",
-                   viz_NSW_Vic_goods_line_chart,
-                   data = bop,
-                   plt_change = plt_change
-
+    viz_NSW_Vic_goods_line_chart,
+    data = bop,
+    plt_change = plt_change
   )
 
-  #Balance of Payments---
-  #Services: services imports and exports since COVID
+  # Balance of Payments---
+  # Services: services imports and exports since COVID
   djpr_plot_server("service_bop_bar_chart",
-                   viz_service_bop_bar_chart,
-                   data = bop,
-                   height_percent = 75,
-                   plt_change = plt_change,
-                   date_slider = FALSE,
-                   interactive = FALSE
-        )
-
-  #Services: services imports and exports since COVID
-  djpr_plot_server("services_trade_line_chart",
-                   viz_services_trade_line_chart,
-                   data = bop %>%
-                     dplyr::filter(date >= as.Date("2018-12-01")),
-                   plt_change = plt_change
-
+    viz_service_bop_bar_chart,
+    data = bop,
+    height_percent = 75,
+    plt_change = plt_change,
+    date_slider = FALSE,
+    interactive = FALSE
   )
 
-  #Services: Annual growth in services exports and imports in NSW and Vic
+  # Services: services imports and exports since COVID
+  djpr_plot_server("services_trade_line_chart",
+    viz_services_trade_line_chart,
+    data = bop %>%
+      dplyr::filter(date >= as.Date("2018-12-01")),
+    plt_change = plt_change
+  )
+
+  # Services: Annual growth in services exports and imports in NSW and Vic
 
   djpr_plot_server("NSW_Vic_Services_line_chart",
-                   viz_NSW_Vic_Services_line_chart,
-                   data = bop,
-                   plt_change = plt_change
-
+    viz_NSW_Vic_Services_line_chart,
+    data = bop,
+    plt_change = plt_change
   )
 
-  #Balance of trade:Cumulative change in total trade balance since December 2019
+  # Balance of trade:Cumulative change in total trade balance since December 2019
   djpr_plot_server("trade_balance_line_chart",
-                   viz_trade_balance_line_chart,
-                   data = bop %>%
-                     dplyr::filter(date >= as.Date("2018-12-01")),
-                   plt_change = plt_change
-
+    viz_trade_balance_line_chart,
+    data = bop %>%
+      dplyr::filter(date >= as.Date("2018-12-01")),
+    plt_change = plt_change
   )
 }
