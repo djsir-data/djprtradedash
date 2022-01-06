@@ -24,13 +24,37 @@ read_merch <- function(path = tempdir(),
                        max_date = Sys.Date(),
                        min_date = as.Date("2010-01-01"),
                        series = "export") {
-  
+
   if (series == "export") {
     url <- "https://www.abs.gov.au/websitedbs/D3110132.nsf/home/DataExplorer/$File/MERCH_EXP.zip"
     exports_dest_zip <- file.path(path, basename(url))
     download.file(url, exports_dest_zip, mode="wb")
     unzip(exports_dest_zip, exdir=path, unzip="unzip")
-    exports_data <- data.table::fread(file.path(path, "MERCH_EXP.csv"))
+    merch <- data.table::fread(
+      file.path(path, "MERCH_EXP.csv"),
+      stringsAsFactors = TRUE,
+      data.table = TRUE
+      )
+
+    data.table::setnames(
+      merch,
+      c(
+        "COMMODITY_SITC: Commodity by SITC",
+        "COUNTRY_DEST: Country of Destination",
+        "STATE_ORIGIN: State of Origin",
+        "TIME_PERIOD: Time Period",
+        "OBS_VALUE",
+        "UNIT_MULT: Unit of Multiplier"
+        ),
+      c(
+        "sitc",
+        "country_dest",
+        "origin",
+        "date",
+        "value",
+        "unit"
+      )
+      )
 
     merch <- exports_data[,.(
       sitc = `COMMODITY_SITC: Commodity by SITC`,
@@ -41,26 +65,24 @@ read_merch <- function(path = tempdir(),
       unit = `UNIT_MULT: Unit of Multiplier`
       )]
 
-    merch[, ':='(
-      sitc_code = stringr::str_split_fixed(sitc, ": ", 2)[,1],
-      sitc = stringr::str_split_fixed(sitc, ": ", 2)[,2],
-      country_code = stringr::str_split_fixed(country_dest, ": ", 2)[,1],
-      country_dest = stringr::str_split_fixed(country_dest, ": ", 2)[,2],
-      origin = stringr::str_split_fixed(origin, ": ", 2)[,2],
-      unit = stringr::str_split_fixed(unit, ": ", 2)[,2],
-      date = as.Date(paste0(date, "-01")),
+    merch[, c("sitc_code", "sitc") := tstrsplit_factor(sitc, ": ")]
+    merch[, c("country_code", "country_dest") := tstrsplit_factor(country_dest, ": ")]
+    merch[, `:=`(
+      origin = tstrsplit_factor(origin, ": ")[[2]],
+      unit = tstrsplit_factor(unit, ": ")[[2]],
+      date = lubridate::ymd(paste0(date, "-01")),
       export_import = series
-      )]
+    )]
 
-    merch[origin == "Total"] <- merch[origin == "Total"][, origin := "Australia"]
+    merch[origin == "Total", origin := "Australia"]
 
-    merch <- merch[order(origin, 
-                   sitc, 
-                   country_dest, 
+    merch <- merch[order(origin,
+                   sitc,
+                   country_dest,
                    date)]
 
     merch <- merch[date >= min_date & date <= max_date]
-    
+
     merch <- unique(merch)
   }
 
@@ -69,37 +91,50 @@ read_merch <- function(path = tempdir(),
     imports_dest_zip <- file.path(path, basename(url))
     download.file(url, imports_dest_zip, mode="wb")
     unzip(imports_dest_zip, exdir=path, unzip="unzip")
-    imports_data <- data.table::fread(file.path(path, "MERCH_IMP.csv"))
+    merch <- data.table::fread(
+      file.path(path, "MERCH_IMP.csv"),
+      stringsAsFactors = TRUE,
+      data.table = TRUE
+      )
 
-    merch <- imports_data[,.(
-      sitc = `COMMODITY_SITC: Commodity by SITC`,
-      country_origin = `COUNTRY_ORIGIN: Country of Origin`,
-      dest = `STATE_DEST: State of Destination`,
-      date = `TIME_PERIOD: Time Period`,
-      value = `OBS_VALUE`,
-      unit = `UNIT_MULT: Unit of Multiplier`
-      )]
+    data.table::setnames(
+      merch,
+      c(
+        "COMMODITY_SITC: Commodity by SITC",
+        "COUNTRY_ORIGIN: Country of Origin",
+        "STATE_DEST: State of Destination",
+        "TIME_PERIOD: Time Period",
+        "OBS_VALUE",
+        "UNIT_MULT: Unit of Multiplier"
+      ),
+      c(
+        "sitc",
+        "country_origin",
+        "dest",
+        "date",
+        "value",
+        "unit"
+      )
+    )
 
-    merch[, ':='(
-      sitc_code = stringr::str_split_fixed(sitc, ": ", 2)[,1],
-      sitc = stringr::str_split_fixed(sitc, ": ", 2)[,2],
-      country_code = stringr::str_split_fixed(country_origin, ": ", 2)[,1],
-      country_origin = stringr::str_split_fixed(country_origin, ": ", 2)[,2],
-      dest = stringr::str_split_fixed(dest, ": ", 2)[,2],
-      unit = stringr::str_split_fixed(unit, ": ", 2)[,2],
-      date = as.Date(paste0(date, "-01")),
+    merch[, c("sitc_code", "sitc") := tstrsplit_factor(sitc, ": ")]
+    merch[, c("country_code", "country_origin") := tstrsplit_factor(country_origin, ": ")]
+    merch[, `:=`(
+      dest = tstrsplit_factor(dest, ": ")[[2]],
+      unit = tstrsplit_factor(unit, ": ")[[2]],
+      date = lubridate::ymd(paste0(date, "-01")),
       export_import = series
-      )]
+    )]
 
-    merch[dest == "Total"] <- merch[dest == "Total"][, dest := "Australia"]
+    merch[dest == "Total", dest := "Australia"]
 
-    merch <- merch[order(dest, 
-                   sitc, 
-                   country_origin, 
+    merch <- merch[order(dest,
+                   sitc,
+                   country_origin,
                    date)]
 
     merch <- merch[date >= min_date & date <= max_date]
-    
+
     merch <- unique(merch)
   }
   merch
