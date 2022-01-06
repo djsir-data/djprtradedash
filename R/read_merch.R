@@ -1,147 +1,141 @@
 #' Download merchandise exports data
 #'
-#' Obtains merchandise exports data from ABS.Stat
-#' (\url{https://stat.data.abs.gov.au/index.aspx?DatasetCode=MERCH_EXP}).
+#' Obtains merchandise exports data from ABS Data Explorer
+#' (\url{https://explore.data.abs.gov.au/?tm=Merchandise&pg=0}).
 #'
 #' @details The ABS will not supply data frames of over 1m rows using the
 #' ABS.Stat API. For this reason, you cannot download more than 1 year at a
 #' time worth of data using this function, as this is around the point at which
 #' the 1m row limit is reached.
-#' @param path Path to directory where XML files should be stored
+#' @param path Path to directory where CSV files are extracted and stored
 #' @param min_date The minimum date to include in your data
 #' @param max_date The maximum date to include in your data
-#' @param check_local Logical. Check if a local version of the requested data is
-#' available at the `path` location; if present it will be loaded.
-#' @param merch_lookup A list of tibbles containing short and long versions
-#' of various data entries; see `create_merch_lookup()`.
+#' @param series Selects whether import or export merchandise data is downloaded
 #' @examples
 #' \dontrun{
 #' read_merch()
 #' }
 #' @export
+#' @import data.table
 #' @return A tibble containing merchandise export data
 
 
 read_merch <- function(path = tempdir(),
                        max_date = Sys.Date(),
-                       min_date = max_date - 180,
-                       check_local = TRUE,
-                       merch_lookup = create_merch_lookup()) {
-  if (max_date - min_date > 365) {
-    stop("Cannot download more than 12 months worth of data at a time due to ABS limits.")
+                       min_date = as.Date("2010-01-01"),
+                       series = "export") {
+
+  if (series == "export") {
+    url <- "https://www.abs.gov.au/websitedbs/D3110132.nsf/home/DataExplorer/$File/MERCH_EXP.zip"
+    exports_dest_zip <- file.path(path, basename(url))
+    download.file(url, exports_dest_zip, mode="wb")
+    unzip(exports_dest_zip, exdir=path, unzip="unzip")
+    merch <- data.table::fread(
+      file.path(path, "MERCH_EXP.csv"),
+      stringsAsFactors = TRUE,
+      data.table = TRUE
+      )
+
+    data.table::setnames(
+      merch,
+      c(
+        "COMMODITY_SITC: Commodity by SITC",
+        "COUNTRY_DEST: Country of Destination",
+        "STATE_ORIGIN: State of Origin",
+        "TIME_PERIOD: Time Period",
+        "OBS_VALUE",
+        "UNIT_MULT: Unit of Multiplier"
+        ),
+      c(
+        "sitc",
+        "country_dest",
+        "origin",
+        "date",
+        "value",
+        "unit"
+      )
+      )
+
+    merch <- exports_data[,.(
+      sitc = `COMMODITY_SITC: Commodity by SITC`,
+      country_dest = `COUNTRY_DEST: Country of Destination`,
+      origin = `STATE_ORIGIN: State of Origin`,
+      date = `TIME_PERIOD: Time Period`,
+      value = `OBS_VALUE`,
+      unit = `UNIT_MULT: Unit of Multiplier`
+      )]
+
+    merch[, c("sitc_code", "sitc") := tstrsplit_factor(sitc, ": ")]
+    merch[, c("country_code", "country_dest") := tstrsplit_factor(country_dest, ": ")]
+    merch[, `:=`(
+      origin = tstrsplit_factor(origin, ": ")[[2]],
+      unit = tstrsplit_factor(unit, ": ")[[2]],
+      date = lubridate::ymd(paste0(date, "-01")),
+      export_import = series
+    )]
+
+    merch[origin == "Total", origin := "Australia"]
+
+    merch <- merch[order(origin,
+                   sitc,
+                   country_dest,
+                   date)]
+
+    merch <- merch[date >= min_date & date <= max_date]
+
+    merch <- unique(merch)
   }
 
-  min_month <- format(min_date, "%Y-%m")
-  max_month <- format(max_date, "%Y-%m")
+  if (series == "import") {
+    url <- "https://www.abs.gov.au/websitedbs/D3110132.nsf/home/DataExplorer/$File/MERCH_IMP.zip"
+    imports_dest_zip <- file.path(path, basename(url))
+    download.file(url, imports_dest_zip, mode="wb")
+    unzip(imports_dest_zip, exdir=path, unzip="unzip")
+    merch <- data.table::fread(
+      file.path(path, "MERCH_IMP.csv"),
+      stringsAsFactors = TRUE,
+      data.table = TRUE
+      )
 
-  url <- paste0(
-    "https://stat.data.abs.gov.au/restsdmx/sdmx.ashx/GetData/MERCH_EXP/-+2/all?startTime=",
-    min_month,
-    "&endTime=",
-    max_month
-  )
-
-  file <- file.path(
-    path,
-    paste0("abs_merch_", min_date, "_", max_date, ".xml")
-  )
-
-  if (isFALSE(check_local) || !file.exists(file)) {
-    message(
-      "Downloading merchandise trade data from ", min_month, " to ",
-      max_month
+    data.table::setnames(
+      merch,
+      c(
+        "COMMODITY_SITC: Commodity by SITC",
+        "COUNTRY_ORIGIN: Country of Origin",
+        "STATE_DEST: State of Destination",
+        "TIME_PERIOD: Time Period",
+        "OBS_VALUE",
+        "UNIT_MULT: Unit of Multiplier"
+      ),
+      c(
+        "sitc",
+        "country_origin",
+        "dest",
+        "date",
+        "value",
+        "unit"
+      )
     )
-    utils::download.file(
-      url,
-      file
-    )
-  } else {
-    message("Loading merchandise trade from local file:\n", file)
+
+    merch[, c("sitc_code", "sitc") := tstrsplit_factor(sitc, ": ")]
+    merch[, c("country_code", "country_origin") := tstrsplit_factor(country_origin, ": ")]
+    merch[, `:=`(
+      dest = tstrsplit_factor(dest, ": ")[[2]],
+      unit = tstrsplit_factor(unit, ": ")[[2]],
+      date = lubridate::ymd(paste0(date, "-01")),
+      export_import = series
+    )]
+
+    merch[dest == "Total", dest := "Australia"]
+
+    merch <- merch[order(dest,
+                   sitc,
+                   country_origin,
+                   date)]
+
+    merch <- merch[date >= min_date & date <= max_date]
+
+    merch <- unique(merch)
   }
-
-  safely_read_sdmx <- purrr::safely(readsdmx::read_sdmx)
-
-  merch <- safely_read_sdmx(file)
-
-  # Check to see if merch downloaded and imported without error
-  if (is.null(merch$error)) {
-    merch <- merch$result
-  } else {
-    # If file did not load, try again one more time
-    utils::download.file(
-      url,
-      file
-    )
-    merch <- safely_read_sdmx(path)
-
-    # If it failed the second time, give an informative error
-    if (!is.null(merch$error)) {
-      stop(paste("Could not download and import", url))
-    }
-
-    merch <- merch$result
-  }
-
-  merch <- merch %>%
-    dplyr::as_tibble()
-
-  names(merch) <- tolower(names(merch))
-
-  merch <- merch %>%
-    dplyr::filter(.data$industry == "-1")
-
-  merch <- merch %>%
-    dplyr::select(.data$country,
-      .data$industry,
-      .data$sitc_rev3,
-      .data$time,
-      .data$region,
-      value = .data$obsvalue
-    )
-
-  if (nrow(merch) == 1000000) {
-    warning(
-      "The ABS has supplied a dataframe with exactly 1,000,000 rows, which suggests your request is too big and has been truncated."
-    )
-  }
-
-  merch <- merch %>%
-    dplyr::mutate(
-      value = as.numeric(.data$value),
-      unit = "000s"
-    )
-
-  merch <- suppressMessages(
-    purrr::reduce(
-      .x = c(list(merch), merch_lookup),
-      .f = dplyr::left_join
-    )
-  )
-
-  merch <- merch %>%
-    dplyr::select(
-      -.data$industry,
-      -.data$industry_desc
-    )
-
-  merch <- merch %>%
-    dplyr::mutate(date = lubridate::ymd(paste0(.data$time, "-01"))) %>%
-    dplyr::select(.data$date,
-      country_dest = .data$country_desc,
-      sitc_rev3 = .data$sitc_rev3_desc,
-      sitc_rev3_code = .data$sitc_rev3,
-      origin = .data$region_desc,
-      .data$unit,
-      .data$value
-    )
-
-  merch <- merch %>%
-    dplyr::arrange(
-      .data$origin,
-      .data$sitc_rev3,
-      .data$country_dest,
-      .data$date
-    )
-
   merch
 }

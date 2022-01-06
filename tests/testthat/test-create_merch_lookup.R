@@ -1,6 +1,7 @@
 test_that("lookup table is as expected", {
   expect_snapshot_value(create_merch_lookup(),
-                        style = "json2")
+    style = "json2"
+  )
 
   lookup <- create_merch_lookup()
   expect_type(lookup, "list")

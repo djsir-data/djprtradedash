@@ -9,7 +9,7 @@ test_that("read_merch() works", {
 
   expect_s3_class(m, "tbl_df")
   expect_type(m$value, "double")
-  expect_length(m, 7)
+  expect_length(m, 8)
   expect_gte(nrow(m), 10000)
   expect_message(
     read_merch(

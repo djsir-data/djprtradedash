@@ -37,7 +37,7 @@ page_merch <- function(...) {
         shinyWidgets::multiInput(
           inputId = "merch_sitc",
           label = "Goods",
-          choices = sort(unique(as.character(merch$sitc_rev3))),
+          choices = sort(unique(as.character(merch$sitc))),
           selected = "Medicinal and pharmaceutical products",
           width = "100%",
           options = list(
@@ -57,7 +57,7 @@ page_merch <- function(...) {
               label = "Facet on: ",
               choices = c(
                 "Destination country" = "country_dest",
-                "Good type" = "sitc_rev3"
+                "Good type" = "sitc"
               ),
               selected = "country_dest",
               inline = TRUE,
