@@ -57,15 +57,6 @@ read_merch <- function(path = tempdir(),
       )
       )
 
-    merch <- exports_data[,.(
-      sitc = `COMMODITY_SITC: Commodity by SITC`,
-      country_dest = `COUNTRY_DEST: Country of Destination`,
-      origin = `STATE_ORIGIN: State of Origin`,
-      date = `TIME_PERIOD: Time Period`,
-      value = `OBS_VALUE`,
-      unit = `UNIT_MULT: Unit of Multiplier`
-      )]
-
     merch[, c("sitc_code", "sitc") := tstrsplit_factor(sitc, ": ")]
     merch[, c("country_code", "country_dest") := tstrsplit_factor(country_dest, ": ")]
     merch[, `:=`(
@@ -85,6 +76,8 @@ read_merch <- function(path = tempdir(),
     merch <- merch[date >= min_date & date <= max_date]
 
     merch <- unique(merch)
+
+    merch <- merch[, .(sitc, country_dest, origin, date, value, unit, sitc_code, country_code, export_import)]
   }
 
   if (series == "import") {
@@ -138,6 +131,8 @@ read_merch <- function(path = tempdir(),
     merch <- merch[date >= min_date & date <= max_date]
 
     merch <- unique(merch)
+
+    merch <- merch[, .(sitc, country_origin, origin, dest, value, unit, sitc_code, country_code, export_import)]
   }
   merch
 }
