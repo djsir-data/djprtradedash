@@ -132,7 +132,7 @@ read_merch <- function(path = tempdir(),
 
     merch <- unique(merch)
 
-    merch <- merch[, .(sitc, country_origin, origin, dest, value, unit, sitc_code, country_code, export_import)]
+    merch <- merch[, .(sitc, country_origin, dest, date, value, unit, sitc_code, country_code, export_import)]
   }
   merch
 }
