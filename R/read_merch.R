@@ -29,9 +29,10 @@ read_merch <- function(path = tempdir(),
     url <- "https://www.abs.gov.au/websitedbs/D3110132.nsf/home/DataExplorer/$File/MERCH_EXP.zip"
     exports_dest_zip <- file.path(path, basename(url))
     download.file(url, exports_dest_zip, mode="wb")
-    unzip(exports_dest_zip, exdir=path, unzip="unzip")
+    utils::unzip(exports_dest_zip, exdir=path)
+    exp_csv<- list.files(path, pattern="^MERCH_EXP_",full.names=TRUE)
     merch <- data.table::fread(
-      file.path(path, "MERCH_EXP.csv"),
+      file.path(exp_csv),
       stringsAsFactors = TRUE,
       data.table = TRUE
       )
@@ -56,15 +57,6 @@ read_merch <- function(path = tempdir(),
       )
       )
 
-    merch <- exports_data[,.(
-      sitc = `COMMODITY_SITC: Commodity by SITC`,
-      country_dest = `COUNTRY_DEST: Country of Destination`,
-      origin = `STATE_ORIGIN: State of Origin`,
-      date = `TIME_PERIOD: Time Period`,
-      value = `OBS_VALUE`,
-      unit = `UNIT_MULT: Unit of Multiplier`
-      )]
-
     merch[, c("sitc_code", "sitc") := tstrsplit_factor(sitc, ": ")]
     merch[, c("country_code", "country_dest") := tstrsplit_factor(country_dest, ": ")]
     merch[, `:=`(
@@ -84,15 +76,18 @@ read_merch <- function(path = tempdir(),
     merch <- merch[date >= min_date & date <= max_date]
 
     merch <- unique(merch)
+
+    merch <- merch[, .(sitc, country_dest, origin, date, value, unit, sitc_code, country_code, export_import)]
   }
 
   if (series == "import") {
     url <- "https://www.abs.gov.au/websitedbs/D3110132.nsf/home/DataExplorer/$File/MERCH_IMP.zip"
     imports_dest_zip <- file.path(path, basename(url))
     download.file(url, imports_dest_zip, mode="wb")
-    unzip(imports_dest_zip, exdir=path, unzip="unzip")
+    utils::unzip(imports_dest_zip, exdir=path)
+    imp_csv<- list.files(path, pattern="^MERCH_IMP_",full.names=TRUE)
     merch <- data.table::fread(
-      file.path(path, "MERCH_IMP.csv"),
+      file.path(imp_csv),
       stringsAsFactors = TRUE,
       data.table = TRUE
       )
@@ -136,6 +131,8 @@ read_merch <- function(path = tempdir(),
     merch <- merch[date >= min_date & date <= max_date]
 
     merch <- unique(merch)
+
+    merch <- merch[, .(sitc, country_origin, dest, date, value, unit, sitc_code, country_code, export_import)]
   }
   merch
 }
