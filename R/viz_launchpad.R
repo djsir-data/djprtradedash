@@ -44,7 +44,10 @@ viz_exportlist <- function(data = merch,
 			  `SITC Code` = sitc_code,
 			  `Export Value (000s)` = value.x,
 			  `Change since 12 months ago (%)` = round(100*(`Export Value (000s)`/value.y-1), 2)) %>%
+<<<<<<< HEAD
 	# arrange(length(`SITC Code`), desc(`Export Value (000s)`)) %>% # TO BE CONTINUED
+=======
+>>>>>>> 92cea86d2a39426ceeff8b1f966413e8b83ffd08
 	DT::datatable(options = list(paging = TRUE,
 								 pageLength = 10,
 								 scrollX = TRUE,
