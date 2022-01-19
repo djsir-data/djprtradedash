@@ -9,6 +9,25 @@ server <- function(input, output, session) {
   plt_change <- reactive(input$plt_change) %>%
     debounce(2)
 
+  #Launchpad tables and charts
+  output$country_export_table <- renderUI({
+    make_table_launchpad(data = tab_launchpad_country_exp()) %>%
+      flextable::htmltools_value()
+  })
+  output$country_import_table <- renderUI({
+    make_table_launchpad(data = tab_launchpad_country_imp()) %>%
+      flextable::htmltools_value()
+  })
+  output$product_export_table <- renderUI({
+    make_table_launchpad(data = tab_launchpad_product_exp()) %>%
+      flextable::htmltools_value()
+  })
+  output$product_import_table <- renderUI({
+    make_table_launchpad(data = tab_launchpad_product_imp()) %>%
+      flextable::htmltools_value()
+  })
+
+
   # djpr_plot_server(
   #   "merch_explorer",
   #   viz_merch_explorer,
