@@ -86,7 +86,7 @@ viz_launchpad_headline2 <- function(data = supp_cy) {
 
 # Tables - Country
 
-tab_launchpad_country_exp <- function(data = merch) {
+tab_launchpad_country_exp <- function(data = merch, rows = 5) {
 
   datelist<-data%>%
     select(date)%>%
@@ -151,12 +151,12 @@ tab_launchpad_country_exp <- function(data = merch) {
            !!paste0(nice_prev_qtr) := .data$prev_qtr_change,
            !!paste0(nice_prev_year) := .data$prev_year_change
            )%>%
-    head(10)
+    head(rows)
 
   return(country_exp_list)
 }
 
-tab_launchpad_country_imp <- function(data = merch_imp) {
+tab_launchpad_country_imp <- function(data = merch_imp, rows = 5) {
 
   datelist<-data%>%
     select(date)%>%
@@ -221,7 +221,7 @@ tab_launchpad_country_imp <- function(data = merch_imp) {
            !!paste0(nice_prev_qtr) := .data$prev_qtr_change,
            !!paste0(nice_prev_year) := .data$prev_year_change
     )%>%
-    head(10)
+    head(rows)
 
 
   return(country_imp_list)
@@ -229,7 +229,7 @@ tab_launchpad_country_imp <- function(data = merch_imp) {
 
 # Tables - Product
 
-tab_launchpad_product_exp <- function(data = merch) {
+tab_launchpad_product_exp <- function(data = merch, sitc_level = 1, rows = 5) {
 
   datelist<-data%>%
     select(date)%>%
@@ -259,7 +259,7 @@ tab_launchpad_product_exp <- function(data = merch) {
            sitc != "Total",
            country_dest == "Total",
            origin == "Victoria",
-           nchar(sitc_code) == 2) %>%
+           nchar(sitc_code) == sitc_level) %>%
     select(sitc,date,value)%>%
     arrange(sitc,date) %>%
     ungroup()%>%
@@ -295,12 +295,12 @@ tab_launchpad_product_exp <- function(data = merch) {
            !!paste0(nice_prev_qtr) := .data$prev_qtr_change,
            !!paste0(nice_prev_year) := .data$prev_year_change
     )%>%
-    head(10)
+    head(rows)
 
   return(product_exp_list)
 }
 
-tab_launchpad_product_imp <- function(data = merch_imp) {
+tab_launchpad_product_imp <- function(data = merch_imp, sitc_level = 1, rows = 5) {
 
 
   datelist<-data%>%
@@ -331,7 +331,7 @@ tab_launchpad_product_imp <- function(data = merch_imp) {
            sitc != "Total",
            country_origin == "Total",
            dest == "Victoria",
-           nchar(sitc_code) == 2) %>%
+           nchar(sitc_code) == sitc_level) %>%
     select(sitc,date,value)%>%
     arrange(sitc,date) %>%
     ungroup()%>%
@@ -367,7 +367,7 @@ tab_launchpad_product_imp <- function(data = merch_imp) {
            !!paste0(nice_prev_qtr) := .data$prev_qtr_change,
            !!paste0(nice_prev_year) := .data$prev_year_change
     )%>%
-    head(10)
+    head(rows)
 
   return(product_imp_list)
 }

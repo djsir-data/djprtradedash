@@ -95,7 +95,7 @@ make_table_launchpad <- function(data,
       i = 1,
       border.top = flextable::fp_border_default()
     ) %>%
-    flextable::border(i = 10, border.bottom = flextable::fp_border_default())
+    flextable::border(i = nrow(data), border.bottom = flextable::fp_border_default())
 
   # Ensure font, font size, and bolding is correct
   if (destination == "dashboard") {
