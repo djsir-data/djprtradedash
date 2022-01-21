@@ -9,6 +9,34 @@ server <- function(input, output, session) {
   plt_change <- reactive(input$plt_change) %>%
     debounce(2)
 
+  #Launchpad searchbar
+  server <- function(input, output, session) {
+    output$res <- renderPrint({
+      input$search
+    })
+  }
+
+  #Launchpad tables and charts
+  table_rowcount <- 5
+
+  output$country_export_table <- renderUI({
+    make_table_launchpad(data = tab_launchpad_country_exp(rows = table_rowcount)) %>%
+      flextable::htmltools_value()
+  })
+  output$country_import_table <- renderUI({
+    make_table_launchpad(data = tab_launchpad_country_imp(rows = table_rowcount)) %>%
+      flextable::htmltools_value()
+  })
+  output$product_export_table <- renderUI({
+    make_table_launchpad(data = tab_launchpad_product_exp(rows = table_rowcount, sitc_level = 1)) %>%
+      flextable::htmltools_value()
+  })
+  output$product_import_table <- renderUI({
+    make_table_launchpad(data = tab_launchpad_product_imp(rows = table_rowcount, sitc_level = 1)) %>%
+      flextable::htmltools_value()
+  })
+
+
   # djpr_plot_server(
   #   "merch_explorer",
   #   viz_merch_explorer,
