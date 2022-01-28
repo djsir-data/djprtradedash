@@ -17,6 +17,11 @@ server <- function(input, output, session) {
   }
 
   #Launchpad tables and charts
+  djpr_plot_server("top_export_line_chart",
+    viz_launchpad_chart,
+    data = merch
+    )
+
   table_rowcount <- 5
 
   output$country_export_table <- renderUI({

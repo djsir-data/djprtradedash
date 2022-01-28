@@ -10,6 +10,15 @@ page_launchpad <- function(...) {
         style = "font-size: 40px; color: #1F1547; font-family: 'Roboto Slab'"
       )
     ),
+    fluidRow(
+      column(width = 6,
+        djpr_plot_ui("good_services_export_chart")
+        ),
+      column(width = 6,
+        djpr_plot_ui("top_export_line_chart")
+        ),
+      ),
+    br(),
     h6("Below is a summary of high-level trade data, at both product (SITC) and country level. For more granular or specific data related to trade please use the search box found below." ),
     br(),
     # shinyWidget::searchInput(
