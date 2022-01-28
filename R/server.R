@@ -9,17 +9,17 @@ server <- function(input, output, session) {
   plt_change <- reactive(input$plt_change) %>%
     debounce(2)
 
-  # djpr_plot_server(
-  #   "merch_explorer",
-  #   viz_merch_explorer,
-  #   data = merch,
-  #   countries = reactive(input$merch_countries),
-  #   goods = reactive(input$merch_sitc),
-  #   plt_change = plt_change
-  # )
+  # Initialise country selection & URL query
+  updateSelectInput(
+    inputId = "country_select",
+    choices = unique(merch$country_dest),
+    selected = "China (excludes SARs and Taiwan)"
+  )
 
-  merch_explorer_plot <- reactive({
-    req(
+  output$country_select <- renderText(input$country_select)
+
+  merch_explorer_plot <- shiny::reactive({
+    shiny::req(
       input$merch_explorer_dates,
       input$merch_countries,
       input$merch_sitc,
@@ -39,7 +39,7 @@ server <- function(input, output, session) {
       )
   })
 
-  output$merch_explorer <- renderPlot({
+  output$merch_explorer <- shiny::renderPlot({
     merch_explorer_plot()
   })
 
@@ -151,4 +151,15 @@ server <- function(input, output, session) {
       dplyr::filter(date >= as.Date("2018-12-01")),
     plt_change = plt_change
   )
+
+  # Country profiles
+  djpr_plot_server(
+    "country_top_exp",
+    error_safe_plotfun(viz_country_top_exp),
+    data = merch,
+    plt_change = plt_change,
+    country_select = reactive(input$country_select),
+    date_slider_value_min = Sys.Date() - lubridate::years(3)
+  )
+
 }

@@ -7,5 +7,5 @@ app <- function(...) {
     cache = trade_dash_cache
   )
 
-  shiny::shinyApp(ui(), server)
+  shiny::shinyApp(ui(), server, enableBookmarking = "url")
 }
