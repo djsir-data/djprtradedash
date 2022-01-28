@@ -4,6 +4,7 @@ ui <- function() {
     title = shiny::HTML("DJPR Trade<br>Dashboard"),
     page_launchpad(),
     page_merch(),
-    page_bop()
+    page_bop(),
+    page_country_profile()
   )
 }
