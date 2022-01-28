@@ -197,7 +197,7 @@ server <- function(input, output, session) {
   # Country profiles
   djpr_plot_server(
     "country_top_exp",
-    error_safe_plotfun(viz_country_top_exp),
+    viz_country_top_exp,
     data = merch,
     plt_change = plt_change,
     country_select = reactive(input$country_select),

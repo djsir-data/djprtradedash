@@ -95,6 +95,25 @@ viz_country_top_exp <- function(data, country_select, chart_top_n = 4){
       expand = c(0, 0, 0.05, 0),
       labels = scales::dollar_format()
       ) +
-    ggplot2::scale_x_date(expand = c(0.05, 0, 0.4, 0))
+    ggplot2::scale_x_date(expand = c(0.05, 0, 0.3, 0)) +
+    ggplot2::labs(
+      title = "Export breakdown"
+    )
 
 }
+
+
+# viz_country_1y_exp_stat <- function(data, country_select){
+#   stat <- data %>%
+#     dplyr::filter(
+#       .data$country_dest == country_select,
+#       .data$origin == "Victoria",
+#       .data$export_import == "export",
+#       .data$sitc == "Total"
+#       ) %>%
+#     dplyr::filter(
+#       .data$date > max(.data$date) - lubridate::years(1)
+#     ) %>%
+#     dplyr::summarise()
+#
+# }
