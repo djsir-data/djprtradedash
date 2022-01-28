@@ -44,6 +44,78 @@ viz_launchpad_chart <- function(data = merch,
     )
 }
 
+# Annual growth of Victoria's imports and exports of goods & services
+viz_goods_export_import_launchpad <- function(data = bop) {
+  df <- data %>%
+    dplyr::filter(
+      .data$state == "Victoria",
+    ) %>%
+    dplyr::select(-.data$series_id, -.data$unit) %>%
+    dplyr::filter(.data$goods_services == "Goods and Services", .data$indicator == "Chain Volume Measures") %>%
+    dplyr::mutate(value = abs(.data$value))
+
+  # Annual growth
+
+  df <- df %>%
+    dplyr::group_by(.data$exports_imports) %>%
+    dplyr::mutate(
+      value = 100 * ((.data$value / lag(.data$value, 4) - 1))
+    ) %>%
+    dplyr::filter(!is.na(.data$value)) %>%
+    dplyr::ungroup()
+
+  df <- df %>%
+    dplyr::mutate(tooltip = paste0(
+      .data$exports_imports, "\n",
+      format(.data$date, "%b %Y"), "\n",
+      round2(.data$value, 1), "%"
+    ))
+
+  latest_month <- format(max(df$date), "%B %Y")
+
+  export_latest <- df %>%
+    dplyr::filter(.data$exports_imports == "Exports" &
+      .data$date == max(.data$date)) %>%
+    dplyr::mutate(value = round2(.data$value, 1)) %>%
+    dplyr::pull(.data$value)
+
+  import_latest <- df %>%
+    dplyr::filter(.data$exports_imports == "Imports" &
+      .data$date == max(.data$date)) %>%
+    dplyr::mutate(value = round2(.data$value, 1)) %>%
+    dplyr::pull(.data$value)
+
+
+
+  title <- dplyr::case_when(
+    export_latest > import_latest ~
+    paste0("Exports of goods and services grew faster than imports in the year to ", latest_month),
+    export_latest < import_latest ~
+    paste0("Imports of goods and services grew faster than exports in the year to ", latest_month),
+    export_latest == import_latest ~
+    paste0("Exports of goods and services grew at around the same pace imports in the year to ", latest_month),
+    TRUE ~ paste0("Exports and imports of goods and services annual")
+  )
+
+  caption <- paste0("Source: ABS Balance of Payment quarterly (latest data is from ", latest_month, ". Note: Data seasonally Adjusted & Chain Volume Measures")
+
+
+
+  df %>%
+    djpr_ts_linechart(
+      col_var = .data$exports_imports,
+      label_num = paste0(round2(.data$value, 1), "%"),
+      y_labels = function(x) paste0(x, "%"),
+      hline = 0
+    ) +
+    labs(
+      title = title,
+      subtitle = "Annual growth in goods and services export and import in Victoria",
+      caption = caption
+    ) +
+    facet_wrap(~exports_imports, ncol = 1, scales = "free_y")
+}
+
 # List of Goods Exports
 
 viz_exportlist <- function(data = merch,

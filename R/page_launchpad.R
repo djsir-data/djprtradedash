@@ -12,7 +12,7 @@ page_launchpad <- function(...) {
     ),
     fluidRow(
       column(width = 6,
-        djpr_plot_ui("good_services_export_chart")
+        djpr_plot_ui("good_services_export_launchpad")
         ),
       column(width = 6,
         djpr_plot_ui("top_export_line_chart")
