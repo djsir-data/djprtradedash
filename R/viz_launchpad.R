@@ -1,12 +1,47 @@
-# Country synopsis chart
+# Goods line chart
 
 viz_launchpad_chart <- function(data = merch,
 								country = c("Total"),
-								region = c("Victoria")) {
-	data %>%
+								region = c("Victoria"),
+                code_level = 1) {
+	top_5_code <- data %>%
 		filter(country_dest %in% country,
-			   origin %in% region) %>%
-		arrange(desc(date), desc(value))
+			   origin %in% region,
+         sitc != "Total",
+         nchar(sitc_code) == code_level) %>%
+		arrange(desc(date), desc(value)) %>% 
+    select(sitc_code) %>%
+    unique() %>%
+    head(5) %>%
+    as.matrix()
+
+  df <- data %>%
+    filter(country_dest %in% country,
+         origin %in% region,
+         sitc_code %in% top_5_code) %>%
+    select(sitc, date, value, sitc_code)
+
+  latest_month <- format(max(df$date), "%B %Y")
+
+  caption <- paste0("Source: ABS.Stat Merchandise Exports by Commodity (latest data is from ", latest_month, ").")
+
+  df <- df %>%
+    mutate(value = value/1000,
+           tooltip = paste0(
+            "Exports", "\n",
+            format(.data$date, "%b %Y"), "\n",
+            "$m", round2(.data$value, 1)
+            ))
+
+  df %>%
+    djpr_ts_linechart(
+      col_var = .data$sitc,
+      y_labels = function(x) paste0("$", x, "m")
+    ) +
+    labs(
+      title = paste("Top 5 Exports", "at SITC Level", code_level, "from", region, "by Value of Exports ($m)"),
+      caption = caption
+    )
 }
 
 # List of Goods Exports
