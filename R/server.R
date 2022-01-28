@@ -19,8 +19,15 @@ server <- function(input, output, session) {
   #Launchpad tables and charts
   djpr_plot_server("top_export_line_chart",
     viz_launchpad_chart,
-    data = merch
+    data = merch,
+    plt_change = plt_change
     )
+
+  djpr_plot_server("good_services_export_launchpad",
+    viz_goods_export_import_launchpad,
+    data = bop,
+    plt_change = plt_change
+  )
 
   table_rowcount <- 5
 
