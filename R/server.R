@@ -20,13 +20,16 @@ server <- function(input, output, session) {
   djpr_plot_server("top_export_line_chart",
     viz_launchpad_chart,
     data = merch,
-    plt_change = plt_change
+    plt_change = plt_change,
+    date_slider_value_min = Sys.Date() - lubridate::years(3),
+    width_percent = 50
     )
 
-  djpr_plot_server("good_services_export_launchpad",
-    viz_goods_export_import_launchpad,
+  djpr_plot_server("good_services_export_line_launchpad",
+    viz_good_services_import_chart,
     data = bop,
-    plt_change = plt_change
+    plt_change = plt_change,
+    width_percent = 50
   )
 
   table_rowcount <- 5
