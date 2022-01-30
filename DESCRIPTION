@@ -35,10 +35,10 @@ Imports:
     tidyr,
     purrr,
     stringr,
-    rvest,
     gt,
     scales,
-    data.table
+    data.table,
+    formattable
 Remotes: 
     djpr-data/djprshiny,
     djpr-data/djprtheme,

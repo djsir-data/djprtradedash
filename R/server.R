@@ -51,18 +51,23 @@ server <- function(input, output, session) {
       flextable::htmltools_value()
   })
 
+  # Initialise country selection & URL query
+  updateSelectInput(
+    inputId = "country_select",
+    choices = unique(merch$country_dest),
+    selected = "China (excludes SARs and Taiwan)"
+  )
 
-  # djpr_plot_server(
-  #   "merch_explorer",
-  #   viz_merch_explorer,
-  #   data = merch,
-  #   countries = reactive(input$merch_countries),
-  #   goods = reactive(input$merch_sitc),
-  #   plt_change = plt_change
-  # )
+  output$country_select <- renderText(
+    paste0(
+      "Victoria-",
+      stringr::str_remove_all(input$country_select, " (.+)"),
+      " Trade"
+    )
+  )
 
-  merch_explorer_plot <- reactive({
-    req(
+  merch_explorer_plot <- shiny::reactive({
+    shiny::req(
       input$merch_explorer_dates,
       input$merch_countries,
       input$merch_sitc,
@@ -82,7 +87,7 @@ server <- function(input, output, session) {
       )
   })
 
-  output$merch_explorer <- renderPlot({
+  output$merch_explorer <- shiny::renderPlot({
     merch_explorer_plot()
   })
 
@@ -194,4 +199,29 @@ server <- function(input, output, session) {
       dplyr::filter(date >= as.Date("2018-12-01")),
     plt_change = plt_change
   )
+
+  # Country profiles
+  djpr_plot_server(
+    "country_top_exp",
+    viz_country_top_exp,
+    data = merch,
+    data_imp = merch_imp,
+    plt_change = plt_change,
+    country_select = reactive(input$country_select),
+    date_slider_value_min = Sys.Date() - lubridate::years(3),
+    height_percent = 160
+  )
+
+  output$country_1y_exp_stat <- reactive({
+    viz_country_1y_exp_stat(merch, input$country_select)
+  })
+
+  output$country_1y_imp_stat <- reactive({
+    viz_country_1y_imp_stat(merch_imp, input$country_select)
+  })
+
+  output$country_1y_exp_change_stat <- reactive({
+    viz_country_1y_exp_change_stat(merch, input$country_select)
+  })
+
 }
