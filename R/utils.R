@@ -26,6 +26,47 @@ error_safe_plotfun <- function(plotfun){
     function(...) plotfun(...) %iferror% data_unavil_ggplot("Data unavailable")
 }
 
+dollar_stat <- function(stat){
+  dplyr::case_when(
+    stat > 1e10 ~ scales::dollar(
+      stat / 1e09,
+      accuracy = 1,
+      suffix = "b"
+    ),
+    stat > 1e09 ~ scales::dollar(
+      stat / 1e09,
+      accuracy = 1.1,
+      suffix = "b"
+    ),
+    stat > 1e07 ~ scales::dollar(
+      stat / 1e06,
+      accuracy = 1,
+      prefix = "$",
+      suffix = "m"
+    ),
+    stat > 1e06 ~ scales::dollar(
+      stat / 1e06,
+      accuracy = 1.1,
+      prefix = "$",
+      suffix = "m"
+    ),
+    stat > 1e04 ~ scales::dollar(
+      stat / 1e03,
+      accuracy = 1,
+      suffix = "k"
+    ),
+    stat > 1e03 ~ scales::dollar(
+      stat / 1e03,
+      accuracy = 1.1,
+      suffix = "k"
+    ),
+    TRUE ~ scales::dollar(
+      stat,
+      accuracy = 1
+    )
+  )
+}
+
 
 #Unused
 append_header <- function(...){

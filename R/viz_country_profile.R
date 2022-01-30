@@ -103,17 +103,52 @@ viz_country_top_exp <- function(data, country_select, chart_top_n = 4){
 }
 
 
-# viz_country_1y_exp_stat <- function(data, country_select){
-#   stat <- data %>%
-#     dplyr::filter(
-#       .data$country_dest == country_select,
-#       .data$origin == "Victoria",
-#       .data$export_import == "export",
-#       .data$sitc == "Total"
-#       ) %>%
-#     dplyr::filter(
-#       .data$date > max(.data$date) - lubridate::years(1)
-#     ) %>%
-#     dplyr::summarise()
-#
-# }
+viz_country_1y_exp_stat <- function(data, country_select){
+  data %>%
+    dplyr::filter(
+      .data$country_dest == country_select,
+      .data$origin == "Victoria",
+      .data$export_import == "export",
+      .data$sitc == "Total"
+      ) %>%
+    dplyr::filter(
+      .data$date > max(.data$date) - lubridate::years(1)
+    ) %>%
+    dplyr::summarise(value = sum(value, na.rm = TRUE) * 1000) %>%
+    dplyr::pull(value) %>%
+    dollar_stat()
+}
+
+viz_country_1y_imp_stat <- function(data, country_select){
+  data %>%
+    dplyr::filter(
+      .data$country_origin == country_select,
+      .data$dest == "Victoria",
+      .data$export_import == "import",
+      .data$sitc == "Total"
+    ) %>%
+    dplyr::filter(
+      .data$date > max(.data$date) - lubridate::years(1)
+    ) %>%
+    dplyr::summarise(value = sum(value, na.rm = TRUE) * 1000) %>%
+    dplyr::pull(value) %>%
+    dollar_stat()
+}
+
+viz_country_1y_exp_change_stat <- function(data, country_select){
+  data %>%
+    dplyr::filter(
+      .data$country_dest == country_select,
+      .data$origin == "Victoria",
+      .data$export_import == "export",
+      .data$sitc == "Total"
+    ) %>%
+    dplyr::filter(
+      .data$date == max(.data$date) |
+      .data$date == max(.data$date) - lubridate::years(1)
+    ) %>%
+    dplyr::arrange(.data$date) %>%
+    dplyr::summarise(value = (value[2] - value[1]) / value[1]) %>%
+    dplyr::pull(value) %>%
+    scales::percent()
+}

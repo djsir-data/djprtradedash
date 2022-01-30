@@ -58,7 +58,13 @@ server <- function(input, output, session) {
     selected = "China (excludes SARs and Taiwan)"
   )
 
-  output$country_select <- renderText(input$country_select)
+  output$country_select <- renderText(
+    paste0(
+      "Victoria-",
+      stringr::str_remove_all(input$country_select, " (.+)"),
+      " Trade"
+    )
+  )
 
   merch_explorer_plot <- shiny::reactive({
     shiny::req(
@@ -203,5 +209,17 @@ server <- function(input, output, session) {
     country_select = reactive(input$country_select),
     date_slider_value_min = Sys.Date() - lubridate::years(3)
   )
+
+  output$country_1y_exp_stat <- reactive({
+    viz_country_1y_exp_stat(merch, input$country_select)
+  })
+
+  output$country_1y_imp_stat <- reactive({
+    viz_country_1y_imp_stat(merch_imp, input$country_select)
+  })
+
+  output$country_1y_exp_change_stat <- reactive({
+    viz_country_1y_exp_change_stat(merch, input$country_select)
+  })
 
 }
