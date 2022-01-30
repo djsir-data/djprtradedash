@@ -205,9 +205,11 @@ server <- function(input, output, session) {
     "country_top_exp",
     viz_country_top_exp,
     data = merch,
+    data_imp = merch_imp,
     plt_change = plt_change,
     country_select = reactive(input$country_select),
-    date_slider_value_min = Sys.Date() - lubridate::years(3)
+    date_slider_value_min = Sys.Date() - lubridate::years(3),
+    height_percent = 160
   )
 
   output$country_1y_exp_stat <- reactive({

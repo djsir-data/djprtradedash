@@ -49,20 +49,20 @@ page_country_profile <- function(...) {
           )
         ),
         br(),
-        djpr_plot_ui("country_top_exp")
+        djpr_plot_ui("country_top_exp"),
+        br()
       ),
-      right_content =
+      left_content =
         tagList(
+          br(),
+          br(),
           hr(),
           p(
             "Trading partner:",
             style = "font-size: 150%;font-style: italic;"
           ),
           selectInput("country_select", NULL, ""),
-          span(
-            actionButton("country_report", "Generate report"),
-            style = "float: right;"
-            ),
+          actionButton("country_report", "Generate report"),
           hr(),
         )
     )
