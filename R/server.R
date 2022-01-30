@@ -9,7 +9,6 @@ server <- function(input, output, session) {
   plt_change <- reactive(input$plt_change) %>%
     debounce(2)
 
-
   #Launchpad searchbar
   server <- function(input, output, session) {
     output$res <- renderPrint({
@@ -51,8 +50,6 @@ server <- function(input, output, session) {
     make_table_launchpad(data = tab_launchpad_product_imp(rows = table_rowcount, sitc_level = 1)) %>%
       flextable::htmltools_value()
   })
-
-
 
   # Initialise country selection & URL query
   updateSelectInput(
