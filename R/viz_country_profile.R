@@ -1,4 +1,6 @@
+
 viz_country_top_exp <- function(data, data_imp, country_select, chart_top_n = 4){
+
   data <- data %>%
     dplyr::filter(
       nchar(.data$sitc_code) == 1,
@@ -6,6 +8,7 @@ viz_country_top_exp <- function(data, data_imp, country_select, chart_top_n = 4)
       .data$origin == "Victoria",
       .data$export_import == "export"
     )
+
 
   data_imp <- data_imp %>%
     dplyr::filter(
@@ -20,6 +23,7 @@ viz_country_top_exp <- function(data, data_imp, country_select, chart_top_n = 4)
   if(!(country_select %in% data$country_dest)) return(
     data_unavil_ggplot("No data available for\n", country_select)
   )
+
 
   if(!(country_select %in% data_imp$country_origin)) return(
     data_unavil_ggplot("No data available for\n", country_select)
@@ -226,3 +230,4 @@ viz_country_1y_exp_change_stat <- function(data, country_select){
     dplyr::pull(value) %>%
     scales::percent()
 }
+
