@@ -9,7 +9,7 @@ viz_launchpad_chart <- function(data = merch,
 			   origin %in% region,
          sitc != "Total",
          nchar(sitc_code) == code_level) %>%
-		arrange(desc(date), desc(value)) %>% 
+		arrange(desc(date), desc(value)) %>%
     select(sitc_code) %>%
     unique() %>%
     head(5) %>%
@@ -264,17 +264,17 @@ tab_launchpad_country_exp <- function(data = merch, rows = 5) {
     ungroup()%>%
     ungroup()%>%
     group_by(country_dest) %>%
-    mutate(prev_month_change    = paste0(formattable::comma(value-dplyr::lag(value,1), digits = 0),
+    mutate(prev_month_change    = paste0(scales::comma(value-dplyr::lag(value,1), accuracy = 1),
                                         "\n(",
-                                        formattable::percent((value-dplyr::lag(value,1))/dplyr::lag(value,1)),
+                                        scales::percent((value-dplyr::lag(value,1))/dplyr::lag(value,1)),
                                         ")"),
-           prev_qtr_change      = paste0(formattable::comma(value-dplyr::lag(value,2), digits = 0),
+           prev_qtr_change      = paste0(scales::comma(value-dplyr::lag(value,2), accuracy = 1),
                                         "\n(",
-                                        formattable::percent((value-dplyr::lag(value,2))/dplyr::lag(value,2)),
+                                        scales::percent((value-dplyr::lag(value,2))/dplyr::lag(value,2)),
                                         ")"),
-           prev_year_change     = paste0(formattable::comma(value-dplyr::lag(value,3), digits = 0),
+           prev_year_change     = paste0(scales::comma(value-dplyr::lag(value,3), accuracy = 1),
                                         "\n(",
-                                        formattable::percent((value-dplyr::lag(value,3))/dplyr::lag(value,3)),
+                                        scales::percent((value-dplyr::lag(value,3))/dplyr::lag(value,3)),
                                         ")")
            )%>%
     ungroup()%>%
@@ -282,9 +282,9 @@ tab_launchpad_country_exp <- function(data = merch, rows = 5) {
     arrange(desc(value))%>%
     group_by(date) %>%
     mutate()%>%
-    mutate(value = paste0(formattable::comma(value, digits = 0),
+    mutate(value = paste0(scales::comma(value, accuracy = 1),
                           "\n(",
-                          formattable::percent(value/sum(value[!is.na(value)]), digits = 1),
+                          scales::percent(value/sum(value[!is.na(value)]), accuracy = 1.1),
                           ")"))%>%
     ungroup()%>%
     select(-c(date))%>%
@@ -334,17 +334,17 @@ tab_launchpad_country_imp <- function(data = merch_imp, rows = 5) {
     ungroup()%>%
     ungroup()%>%
     group_by(country_origin) %>%
-    mutate(prev_month_change    = paste0(formattable::comma(value-dplyr::lag(value,1), digits = 0),
+    mutate(prev_month_change    = paste0(scales::comma(value-dplyr::lag(value,1), accuracy = 1),
                                          "\n(",
-                                         formattable::percent((value-dplyr::lag(value,1))/dplyr::lag(value,1)),
+                                         scales::percent((value-dplyr::lag(value,1))/dplyr::lag(value,1)),
                                          ")"),
-           prev_qtr_change      = paste0(formattable::comma(value-dplyr::lag(value,2), digits = 0),
+           prev_qtr_change      = paste0(scales::comma(value-dplyr::lag(value,2), accuracy = 1),
                                          "\n(",
-                                         formattable::percent((value-dplyr::lag(value,2))/dplyr::lag(value,2)),
+                                         scales::percent((value-dplyr::lag(value,2))/dplyr::lag(value,2)),
                                          ")"),
-           prev_year_change     = paste0(formattable::comma(value-dplyr::lag(value,3), digits = 0),
+           prev_year_change     = paste0(scales::comma(value-dplyr::lag(value,3), accuracy = 1),
                                          "\n(",
-                                         formattable::percent((value-dplyr::lag(value,3))/dplyr::lag(value,3)),
+                                         scales::percent((value-dplyr::lag(value,3))/dplyr::lag(value,3)),
                                          ")")
     )%>%
     ungroup()%>%
@@ -352,9 +352,9 @@ tab_launchpad_country_imp <- function(data = merch_imp, rows = 5) {
     arrange(desc(value))%>%
     group_by(date) %>%
     mutate()%>%
-    mutate(value = paste0(formattable::comma(value, digits = 0),
+    mutate(value = paste0(scales::comma(value, accuracy = 1),
                           "\n(",
-                          formattable::percent(value/sum(value[!is.na(value)]), digits = 1),
+                          scales::percent(value/sum(value[!is.na(value)]), accuracy = 1.1),
                           ")"))%>%
     ungroup()%>%
     select(-c(date))%>%
@@ -408,17 +408,17 @@ tab_launchpad_product_exp <- function(data = merch, sitc_level = 1, rows = 5) {
     ungroup()%>%
     ungroup()%>%
     group_by(sitc) %>%
-    mutate(prev_month_change    = paste0(formattable::comma(value-dplyr::lag(value,1), digits = 0),
+    mutate(prev_month_change    = paste0(scales::comma(value-dplyr::lag(value,1), accuracy = 1),
                                          "\n(",
-                                         formattable::percent((value-dplyr::lag(value,1))/dplyr::lag(value,1)),
+                                         scales::percent((value-dplyr::lag(value,1))/dplyr::lag(value,1)),
                                          ")"),
-           prev_qtr_change      = paste0(formattable::comma(value-dplyr::lag(value,2), digits = 0),
+           prev_qtr_change      = paste0(scales::comma(value-dplyr::lag(value,2), accuracy = 1),
                                          "\n(",
-                                         formattable::percent((value-dplyr::lag(value,2))/dplyr::lag(value,2)),
+                                         scales::percent((value-dplyr::lag(value,2))/dplyr::lag(value,2)),
                                          ")"),
-           prev_year_change     = paste0(formattable::comma(value-dplyr::lag(value,3), digits = 0),
+           prev_year_change     = paste0(scales::comma(value-dplyr::lag(value,3), accuracy = 1),
                                          "\n(",
-                                         formattable::percent((value-dplyr::lag(value,3))/dplyr::lag(value,3)),
+                                         scales::percent((value-dplyr::lag(value,3))/dplyr::lag(value,3)),
                                          ")")
     )%>%
     ungroup()%>%
@@ -426,9 +426,9 @@ tab_launchpad_product_exp <- function(data = merch, sitc_level = 1, rows = 5) {
     arrange(desc(value))%>%
     group_by(date) %>%
     mutate()%>%
-    mutate(value = paste0(formattable::comma(value, digits = 0),
+    mutate(value = paste0(scales::comma(value, accuracy = 1),
                           "\n(",
-                          formattable::percent(value/sum(value[!is.na(value)]), digits = 1),
+                          scales::percent(value/sum(value[!is.na(value)]), accuracy = 1.1),
                           ")"))%>%
     ungroup()%>%
     select(-c(date))%>%
@@ -480,17 +480,17 @@ tab_launchpad_product_imp <- function(data = merch_imp, sitc_level = 1, rows = 5
     ungroup()%>%
     ungroup()%>%
     group_by(sitc) %>%
-    mutate(prev_month_change    = paste0(formattable::comma(value-dplyr::lag(value,1), digits = 0),
+    mutate(prev_month_change    = paste0(scales::comma(value-dplyr::lag(value,1), accuracy = 1),
                                          "\n(",
-                                         formattable::percent((value-dplyr::lag(value,1))/dplyr::lag(value,1)),
+                                         scales::percent((value-dplyr::lag(value,1))/dplyr::lag(value,1)),
                                          ")"),
-           prev_qtr_change      = paste0(formattable::comma(value-dplyr::lag(value,2), digits = 0),
+           prev_qtr_change      = paste0(scales::comma(value-dplyr::lag(value,2), accuracy = 1),
                                          "\n(",
-                                         formattable::percent((value-dplyr::lag(value,2))/dplyr::lag(value,2)),
+                                         scales::percent((value-dplyr::lag(value,2))/dplyr::lag(value,2)),
                                          ")"),
-           prev_year_change     = paste0(formattable::comma(value-dplyr::lag(value,3), digits = 0),
+           prev_year_change     = paste0(scales::comma(value-dplyr::lag(value,3), accuracy = 1),
                                          "\n(",
-                                         formattable::percent((value-dplyr::lag(value,3))/dplyr::lag(value,3)),
+                                         scales::percent((value-dplyr::lag(value,3))/dplyr::lag(value,3)),
                                          ")")
     )%>%
     ungroup()%>%
@@ -498,9 +498,9 @@ tab_launchpad_product_imp <- function(data = merch_imp, sitc_level = 1, rows = 5
     arrange(desc(value))%>%
     group_by(date) %>%
     mutate()%>%
-    mutate(value = paste0(formattable::comma(value, digits = 0),
+    mutate(value = paste0(scales::comma(value, accuracy = 1),
                           "\n(",
-                          formattable::percent(value/sum(value[!is.na(value)]), digits = 1),
+                          scales::percent(value/sum(value[!is.na(value)]), accuracy = 1.1),
                           ")"))%>%
     ungroup()%>%
     select(-c(date))%>%

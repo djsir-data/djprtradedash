@@ -28,17 +28,14 @@ Imports:
     ggplot2,
     rlang,
     shiny,
-    slider,
     shinyWidgets,
     readsdmx,
     readabs (>= 0.4.10.901),
     tidyr,
-    purrr,
     stringr,
-    gt,
     scales,
     data.table,
-    formattable
+    purrr
 Remotes: 
     djpr-data/djprshiny,
     djpr-data/djprtheme,

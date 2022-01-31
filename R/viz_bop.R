@@ -489,10 +489,9 @@ table_export_import <- function(data = bop) {
   latest_month <- format(max(df$date), "%B %Y")
 
   df_vic %>%
-    gt::gt() %>%
-    gt::tab_header(paste0(title = "Victoria's Export and Imports of Goods and Services"), latest_month) %>%
-    gt::tab_source_note(source_note = "Source: ABS, Balance of payment, Chain Volume measure, Change Since COVID (Since December 2019)") %>%
-    gt::tab_options(column_labels.background.color = "grey")
+    flextable::flextable() %>%
+    flextable::set_caption(paste0(title = "Victoria's Export and Imports of Goods and Services"), latest_month) %>%
+    flextable::add_footer_lines("Source: ABS, Balance of payment, Chain Volume measure, Change Since COVID (Since December 2019)")
 }
 
 # Balance of trade in goods and services since COVID
