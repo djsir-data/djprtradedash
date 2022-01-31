@@ -164,17 +164,85 @@ viz_country_top_exp <- function(data, data_imp, country_select, chart_top_n = 4)
       labels = scales::dollar_format(1, suffix = "m")
       ) +
     ggplot2::scale_x_date(expand = c(0.05, 0, 0.3, 0)) +
-    ggplot2::facet_grid(
-      rows = vars(export_import),
-      scales = "free",
-      switch = "y"
-      ) +
+    ggplot2::facet_wrap(~export_import, ncol = 1, scales = "free") +
     ggplot2::theme(strip.text = ggplot2::element_text(
       face = "bold",
       colour = "#004676",
       size = 16,
-      vjust  = 5,
-      margin = ggplot2::margin(5, 5, 5, 5)
+      hjust = 0,
+    )
+    )
+}
+
+
+vis_country_top_products <- function(
+  data,
+  country_select,
+  donut_width = 4,
+  sitc_digits = 2
+  ){
+  data <- data %>%
+    dplyr::filter(
+      nchar(.data$sitc_code) == sitc_digits,
+      .data$sitc_code != "TOT",
+      .data$country_dest == country_select |
+        .data$country_origin == country_select,
+      .data$origin == "Victoria" |
+        .data$dest == "Victoria"
+    )
+
+  if(!(country_select %in% data$country_dest)) return(
+    data_unavil_ggplot("No data available for\n", country_select)
+  )
+
+  if(!(country_select %in% data$country_origin)) return(
+    data_unavil_ggplot("No data available for\n", country_select)
+  )
+
+  if(nrow(data) == 0) return(
+    data_unavil_ggplot("No data available for\n", country_select)
+  )
+
+  data <- data %>%
+    dplyr::group_by(.data$export_import, .data$sitc) %>%
+    dplyr::summarise(value = sum(.data$value, na.rm = TRUE) * 1000 / 1e06) %>%
+    dplyr::ungroup() %>%
+    dplyr::group_by(.data$export_import) %>%
+    dplyr::slice_max(.data$value, n = 5) %>%
+    dplyr::ungroup() %>%
+    dplyr::arrange(value) %>%
+    dplyr::mutate(
+      sitc = stringr::str_wrap(sitc),
+      sitc = factor(sitc, levels = unique(sitc)),
+      csum = rev(cumsum(rev(value))),
+      pos = value/2 + lead(csum, 1),
+      pos = if_else(is.na(pos), value/2, pos),
+      export_import = dplyr::recode(
+        .data$export_import,
+        export = "Top exports",
+        import = "Top imports"
+      )
+      )
+
+  n_colours <- length(levels(data$sitc))
+
+  ggplot2::ggplot(data, ggplot2::aes(x = donut_width, y = value, fill = sitc)) +
+    ggplot2::geom_col(position = "fill") +
+    ggplot2::coord_polar(theta = "y") +
+    ggplot2::xlim(c(0.2, donut_width + 0.5)) +
+    ggrepel::geom_text_repel(
+      ggplot2::aes(y = pos, label = sitc),
+      position = ggplot2::position_fill(-1),
+      size = 4.5
+      ) +
+    ggplot2::facet_wrap(~export_import, nrow = 1) +
+    ggplot2::theme_void() +
+    djprtheme::djpr_fill_manual(n_colours) +
+    ggplot2::guides(fill = "none") +
+    ggplot2::theme(strip.text = ggplot2::element_text(
+      face = "bold",
+      colour = "#004676",
+      size = 16
     )
     )
 }
