@@ -22,7 +22,8 @@ read_bop <- function(path = tempdir()) {
   )
 
   credits <- suppressMessages(
-    readabs::read_abs_local(path = path,
+    readabs::read_abs_local(
+      path = path,
       filenames = list.files(path)[grepl("21.xls", list.files(path))]
     )
   ) %>%
@@ -38,7 +39,8 @@ read_bop <- function(path = tempdir()) {
   )
 
   debits <- suppressMessages(
-    readabs::read_abs_local(path = path,
+    readabs::read_abs_local(
+      path = path,
       filenames = list.files(path)[grepl("22.xls", list.files(path))]
     )
   ) %>%

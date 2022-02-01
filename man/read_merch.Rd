@@ -7,30 +7,25 @@
 read_merch(
   path = tempdir(),
   max_date = Sys.Date(),
-  min_date = max_date - 180,
-  check_local = TRUE,
-  merch_lookup = create_merch_lookup()
+  min_date = as.Date("1995-01-01"),
+  series = "export"
 )
 }
 \arguments{
-\item{path}{Path to directory where XML files should be stored}
+\item{path}{Path to directory where CSV files are extracted and stored}
 
 \item{max_date}{The maximum date to include in your data}
 
 \item{min_date}{The minimum date to include in your data}
 
-\item{check_local}{Logical. Check if a local version of the requested data is
-available at the \code{path} location; if present it will be loaded.}
-
-\item{merch_lookup}{A list of tibbles containing short and long versions
-of various data entries; see \code{create_merch_lookup()}.}
+\item{series}{Selects whether import or export merchandise data is downloaded}
 }
 \value{
 A tibble containing merchandise export data
 }
 \description{
-Obtains merchandise exports data from ABS.Stat
-(\url{https://stat.data.abs.gov.au/index.aspx?DatasetCode=MERCH_EXP}).
+Obtains merchandise exports data from ABS Data Explorer
+(\url{https://explore.data.abs.gov.au/?tm=Merchandise&pg=0}).
 }
 \details{
 The ABS will not supply data frames of over 1m rows using the

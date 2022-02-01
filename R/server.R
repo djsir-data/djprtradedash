@@ -9,17 +9,65 @@ server <- function(input, output, session) {
   plt_change <- reactive(input$plt_change) %>%
     debounce(2)
 
-  # djpr_plot_server(
-  #   "merch_explorer",
-  #   viz_merch_explorer,
-  #   data = merch,
-  #   countries = reactive(input$merch_countries),
-  #   goods = reactive(input$merch_sitc),
-  #   plt_change = plt_change
-  # )
+  #Launchpad searchbar
+  server <- function(input, output, session) {
+    output$res <- renderPrint({
+      input$search
+    })
+  }
 
-  merch_explorer_plot <- reactive({
-    req(
+  #Launchpad tables and charts
+  djpr_plot_server("top_export_line_chart",
+    viz_launchpad_chart,
+    data = merch,
+    plt_change = plt_change,
+    date_slider_value_min = Sys.Date() - lubridate::years(3),
+    width_percent = 50
+    )
+
+  djpr_plot_server("good_services_export_line_launchpad",
+    viz_good_services_import_chart,
+    data = bop,
+    plt_change = plt_change,
+    width_percent = 50
+  )
+
+  table_rowcount <- 5
+
+  output$country_export_table <- renderUI({
+    make_table_launchpad(data = tab_launchpad_country_exp(rows = table_rowcount)) %>%
+      flextable::htmltools_value()
+  })
+  output$country_import_table <- renderUI({
+    make_table_launchpad(data = tab_launchpad_country_imp(rows = table_rowcount)) %>%
+      flextable::htmltools_value()
+  })
+  output$product_export_table <- renderUI({
+    make_table_launchpad(data = tab_launchpad_product_exp(rows = table_rowcount, sitc_level = 1)) %>%
+      flextable::htmltools_value()
+  })
+  output$product_import_table <- renderUI({
+    make_table_launchpad(data = tab_launchpad_product_imp(rows = table_rowcount, sitc_level = 1)) %>%
+      flextable::htmltools_value()
+  })
+
+  # Initialise country selection & URL query
+  updateSelectInput(
+    inputId = "country_select",
+    choices = unique(merch$country_dest),
+    selected = "China (excludes SARs and Taiwan)"
+  )
+
+  output$country_select <- renderText(
+    paste0(
+      "Victoria-",
+      stringr::str_remove_all(input$country_select, " (.+)"),
+      " Trade"
+    )
+  )
+
+  merch_explorer_plot <- shiny::reactive({
+    shiny::req(
       input$merch_explorer_dates,
       input$merch_countries,
       input$merch_sitc,
@@ -39,7 +87,7 @@ server <- function(input, output, session) {
       )
   })
 
-  output$merch_explorer <- renderPlot({
+  output$merch_explorer <- shiny::renderPlot({
     merch_explorer_plot()
   })
 
@@ -48,4 +96,132 @@ server <- function(input, output, session) {
     plot = merch_explorer_plot(),
     plot_name = "merch_explorer_plot"
   )
+
+  # Balance of Payments---
+  # Goods and Services----
+  djpr_plot_server("total_bop_bar_chart",
+    viz_total_bop_bar_chart,
+    data = bop,
+    height_percent = 75,
+    # width_percent = 75,
+    plt_change = plt_change,
+    date_slider = FALSE,
+    interactive = FALSE
+  )
+
+  # Goods and Services: Goods and Services exports time series
+  djpr_plot_server("good_services_export_chart",
+    viz_good_services_export_chart,
+    data = bop,
+    plt_change = plt_change
+  )
+
+  # Goods and Services: Goods and Services imports time series
+
+  djpr_plot_server("good_services_import_chart",
+    viz_good_services_import_chart,
+    data = bop,
+    plt_change = plt_change
+  )
+
+  # Goods and Services: Annual growth in goods and services exports and imports
+  djpr_plot_server("goods_export_import_line",
+    viz_goods_export_import_line,
+    data = bop,
+    plt_change = plt_change
+  )
+  # Goods and Services: Export of goods and services for Victoria by calendar year
+  djpr_plot_server("Vic_total_bop_bar_chart",
+    viz_Vic_total_bop_bar_chart,
+    data = bop,
+    height_percent = 75,
+    plt_change = plt_change,
+    date_slider = FALSE,
+    interactive = FALSE
+  )
+  # Balance of Payments---
+  # Goods:Goods imports and exports since COVID
+  djpr_plot_server("goods_bop_bar_chart",
+    viz_goods_bop_bar_chart,
+    data = bop,
+    height_percent = 75,
+    plt_change = plt_change,
+    date_slider = FALSE,
+    interactive = FALSE
+  )
+  # Goods: Goods imports and exports since covid
+  djpr_plot_server("good_trade_line_chart",
+    viz_good_trade_line_chart,
+    data = bop %>%
+      dplyr::filter(date >= as.Date("2018-12-01")),
+    plt_change = plt_change
+  )
+
+  # Goods: Annual growth in goods exports and imports in NSW and Vic
+
+  djpr_plot_server("NSW_Vic_goods_line_chart",
+    viz_NSW_Vic_goods_line_chart,
+    data = bop,
+    plt_change = plt_change
+  )
+
+  # Balance of Payments---
+  # Services: services imports and exports since COVID
+  djpr_plot_server("service_bop_bar_chart",
+    viz_service_bop_bar_chart,
+    data = bop,
+    height_percent = 75,
+    plt_change = plt_change,
+    date_slider = FALSE,
+    interactive = FALSE
+  )
+
+  # Services: services imports and exports since COVID
+  djpr_plot_server("services_trade_line_chart",
+    viz_services_trade_line_chart,
+    data = bop %>%
+      dplyr::filter(date >= as.Date("2018-12-01")),
+    plt_change = plt_change
+  )
+
+  # Services: Annual growth in services exports and imports in NSW and Vic
+
+  djpr_plot_server("NSW_Vic_Services_line_chart",
+    viz_NSW_Vic_Services_line_chart,
+    data = bop,
+    plt_change = plt_change
+  )
+
+  # Balance of trade:Cumulative change in total trade balance since December 2019
+  djpr_plot_server("trade_balance_line_chart",
+    viz_trade_balance_line_chart,
+    data = bop %>%
+      dplyr::filter(date >= as.Date("2018-12-01")),
+    plt_change = plt_change
+  )
+
+  # Country profiles
+  djpr_plot_server(
+    "country_top_exp",
+    viz_country_top_exp,
+    data = merch,
+    data_imp = merch_imp,
+    plt_change = plt_change,
+    country_select = reactive(input$country_select),
+    date_slider_value_min = Sys.Date() - lubridate::years(3),
+    height_percent = 160
+  )
+
+  output$country_1y_exp_stat <- reactive({
+    viz_country_1y_exp_stat(merch, input$country_select)
+  })
+
+  output$country_1y_imp_stat <- reactive({
+    viz_country_1y_imp_stat(merch_imp, input$country_select)
+  })
+
+  output$country_1y_exp_change_stat <- reactive({
+    viz_country_1y_exp_change_stat(merch, input$country_select)
+  })
+
 }
