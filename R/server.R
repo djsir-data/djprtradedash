@@ -22,6 +22,14 @@ server <- function(input, output, session) {
     data = merch,
     plt_change = plt_change,
     date_slider_value_min = Sys.Date() - lubridate::years(3),
+    width_percent = 100
+    )
+
+  djpr_plot_server("top_country_line_chart",
+    viz_launchpad_countries,
+    data = merch,
+    plt_change = plt_change,
+    date_slider_value_min = Sys.Date() - lubridate::years(3),
     width_percent = 50
     )
 
