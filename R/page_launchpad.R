@@ -10,12 +10,14 @@ page_launchpad <- function(...) {
         style = "font-size: 40px; color: #1F1547; font-family: 'Roboto Slab'"
       )
     ),
+    djpr_plot_ui("top_export_line_chart"),
+    br(),
     fluidRow(
       column(width = 6,
         djpr_plot_ui("good_services_export_line_launchpad")
         ),
       column(width = 6,
-        djpr_plot_ui("top_export_line_chart")
+        djpr_plot_ui("top_country_line_chart")
         ),
       ),
     br(),

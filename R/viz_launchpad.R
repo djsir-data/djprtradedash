@@ -1,9 +1,55 @@
-# Goods line chart
+# Top countries goods line chart
+
+viz_launchpad_countries <- function(data = merch,
+                                    region = c("Victoria"),
+                                    top = 5) {
+  top_5_country <- data %>%
+    filter(.data$origin %in% .env$region,
+           .data$sitc == "Total",
+           .data$country_dest != "Total") %>%
+    arrange(desc(date), desc(value)) %>%
+    select(country_dest) %>%
+    unique() %>%
+    head(top) %>%
+    as.matrix()
+
+  df <- data %>%
+    filter(.data$origin %in% .env$region, 
+           .data$sitc == "Total",
+           .data$country_dest %in% top_5_country) %>%
+    select(country_dest, origin, date, value)
+
+  latest_month <- format(max(df$date), "%B %Y")
+
+  caption <- paste0("Source: ABS.Stat Merchandise Exports by Commodity (latest data is from ", latest_month, ").")
+
+  df <- df %>%
+    mutate(value = value/1000,
+           tooltip = paste0(
+            country_dest, "\n",
+            format(.data$date, "%b %Y"), "\n",
+            "$", round2(.data$value, 1), "m"
+            ))
+
+  df %>%
+    djpr_ts_linechart(
+      col_var = .data$country_dest,
+      y_labels = function(x) paste0("$", x, "m")
+    ) +
+    labs(
+      title = paste("Top", top, "Exports Destinations from", region, "by Value of Exports ($m)"),
+      subtitle = paste("Total Exports from", region, "across All SITC Classifications"),
+      caption = caption
+    )
+}
+
+# Top goods exports line chart
 
 viz_launchpad_chart <- function(data = merch,
 								country = c("Total"),
 								region = c("Victoria"),
-                code_level = 1) {
+                code_level = 3,
+                top = 10) {
 	top_5_code <- data %>%
 		filter(country_dest %in% country,
 			   origin %in% region,
@@ -12,7 +58,7 @@ viz_launchpad_chart <- function(data = merch,
 		arrange(desc(date), desc(value)) %>% 
     select(sitc_code) %>%
     unique() %>%
-    head(5) %>%
+    head(top) %>%
     as.matrix()
 
   df <- data %>%
@@ -39,7 +85,8 @@ viz_launchpad_chart <- function(data = merch,
       y_labels = function(x) paste0("$", x, "m")
     ) +
     labs(
-      title = paste("Top 5 Exports", "at SITC Level", code_level, "from", region, "by Value of Exports ($m)"),
+      title = paste("Top", top, "Exports by Value of Exports ($m)"),
+      subtitle = paste("Exports at SITC Level", code_level, "from", region),
       caption = caption
     )
 }
