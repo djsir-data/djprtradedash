@@ -7,7 +7,7 @@
 read_merch(
   path = tempdir(),
   max_date = Sys.Date(),
-  min_date = as.Date("1995-01-01"),
+  min_date = as.Date("2010-01-01"),
   series = "export"
 )
 }
