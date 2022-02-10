@@ -14,7 +14,7 @@ viz_launchpad_countries <- function(data = merch,
     as.matrix()
 
   df <- data %>%
-    filter(.data$origin %in% .env$region, 
+    filter(.data$origin %in% .env$region,
            .data$sitc == "Total",
            .data$country_dest %in% top_5_country) %>%
     select(country_dest, origin, date, value)
@@ -169,16 +169,17 @@ viz_good_services_import_chart <- function(data = bop) {
 
   latest_change <- df %>%
     dplyr::filter(.data$goods_services == "Total") %>%
-    dplyr::mutate(change = .data$value - lag(.data$value, 1)) %>%
-    dplyr::filter(!is.na(.data$change)) %>%
+    dplyr::mutate(annual_change = .data$value - dplyr::lag(.data$value, 4),
+                  annual_pchange = .data$annual_change/dplyr::lag(.data$value, 4)) %>%
+    dplyr::filter(!is.na(.data$annual_pchange)) %>%
     dplyr::filter(.data$date == max(.data$date))
 
 
   title <-
     dplyr::case_when(
-      latest_change$change > 0 ~ paste0("Victoria's total exports rose by ", scales::comma(latest_change$change), " million dollars over the past quarter"),
-      latest_change$change < 0 ~ paste0("Victoria's total exports fell by ", scales::comma(abs(latest_change$change)), " million dollars over the past quarter"),
-      latest_change$change == 0 ~ "Victoria's total exports the same as over the past quarter ",
+      latest_change$annual_pchange > 0 ~ paste0("Victoria's total exports rose by ", paste0(round(latest_change$annual_pchange*100,1),"%"), " over the year"),
+      latest_change$annual_pchange < 0 ~ paste0("Victoria's total exports fell by ", paste0(round(latest_change$annual_pchange*100,1),"%"), " over the year"),
+      latest_change$annual_pchange == 0 ~ "Victoria's total exports the same as over the past quarter ",
       TRUE ~ "Victoria's total exports over the past quarter"
     )
 
