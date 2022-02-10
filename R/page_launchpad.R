@@ -54,7 +54,10 @@ page_launchpad <- function(...) {
                     h4("Top 5 Imports"),
                     uiOutput("product_import_table", height = "600px"),
                     style='padding-left:20px; padding-right:0px;')
-    )
+    ),
+    br(),
+    centred_row(htmlOutput("launchpad_footnote")),
+    br()
 
 )
 

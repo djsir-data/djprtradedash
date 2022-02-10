@@ -65,7 +65,10 @@ page_country_profile <- function(...) {
           actionButton("country_report", "Generate report"),
           hr(),
         )
-    )
+    ),
+    br(),
+    centred_row(htmlOutput("country_footnote")),
+    br()
 
   )
 }

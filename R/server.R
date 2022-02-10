@@ -16,6 +16,30 @@ server <- function(input, output, session) {
     })
   }
 
+  # Page Footnotes
+
+  footnote <- reactive({
+    # req(dash_data)
+    # latest <- max(series_latestdates)
+    div(
+      shiny::HTML(
+        paste0(
+          "This dashboard is produced by the <b>Strategy and Priority ",
+          "Projects - Data + Analytics</b> team at the Victorian Department ",
+          "of Jobs, Precincts and Regions. ", # The <b>latest data in this ",
+          # "dashboard is for ",
+          # format(latest, "%B %Y"),
+          'Please <a href="mailto:spp-data@ecodev.vic.gov.au?subject=DJPR Jobs Dashboard">email us</a> with any comments or feedback.'
+        )
+      ),
+      style = "color: #828282; font-size: 0.75rem"
+    )
+  })
+
+  output$launchpad_footnote <- output$bop_footnote <- output$merch_footnote <- output$country_footnote <- renderUI({
+    footnote()
+  })
+
   #Launchpad tables and charts
   djpr_plot_server("top_export_line_chart",
     viz_launchpad_chart,

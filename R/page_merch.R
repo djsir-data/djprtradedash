@@ -100,6 +100,9 @@ page_merch <- function(...) {
           )
         )
       )
-    )
+    ),
+    br(),
+    centred_row(htmlOutput("merch_footnote")),
+    br()
   )
 }
