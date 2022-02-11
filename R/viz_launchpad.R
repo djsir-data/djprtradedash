@@ -35,7 +35,9 @@ viz_launchpad_countries <- function(data = merch,
     djpr_ts_linechart(
       col_var = .data$country_dest,
       y_labels = function(x) paste0("$", x, "m"),
-      label_wrap_length = 20
+      label_wrap_length = 15,
+      x_expand_mult = c(0, 0.30)
+
     ) +
     labs(
       title = paste("Top", top, "Exports Destinations from", region, "by Value of Exports ($m)"),
@@ -50,7 +52,7 @@ viz_launchpad_chart <- function(data = merch,
 								country = c("Total"),
 								region = c("Victoria"),
                 code_level = 3,
-                top = 10) {
+                top = 5) {
 	top_5_code <- data %>%
 		filter(country_dest %in% country,
 			   origin %in% region,
@@ -66,7 +68,9 @@ viz_launchpad_chart <- function(data = merch,
     filter(country_dest %in% country,
          origin %in% region,
          sitc_code %in% top_5_code) %>%
-    select(sitc, date, value, sitc_code)
+    select(sitc, date, value, sitc_code)%>%
+    group_by(sitc)%>%
+    mutate(sitc_shrink = strsplit(sitc, "[(]")[[1]][1])
 
   latest_month <- format(max(df$date), "%B %Y")
 
@@ -82,9 +86,10 @@ viz_launchpad_chart <- function(data = merch,
 
   df %>%
     djpr_ts_linechart(
-      col_var = .data$sitc,
+      col_var = .data$sitc_shrink,
       y_labels = function(x) paste0("$", x, "m"),
-      label_wrap_length = 20
+      label_wrap_length = 25,
+      x_expand_mult = c(0, 0.25)
     ) +
     labs(
       title = paste("Top", top, "Exports by Value of Exports ($m)"),
