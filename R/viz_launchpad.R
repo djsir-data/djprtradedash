@@ -34,7 +34,8 @@ viz_launchpad_countries <- function(data = merch,
   df %>%
     djpr_ts_linechart(
       col_var = .data$country_dest,
-      y_labels = function(x) paste0("$", x, "m")
+      y_labels = function(x) paste0("$", x, "m"),
+      label_wrap_length = 20
     ) +
     labs(
       title = paste("Top", top, "Exports Destinations from", region, "by Value of Exports ($m)"),
@@ -82,7 +83,8 @@ viz_launchpad_chart <- function(data = merch,
   df %>%
     djpr_ts_linechart(
       col_var = .data$sitc,
-      y_labels = function(x) paste0("$", x, "m")
+      y_labels = function(x) paste0("$", x, "m"),
+      label_wrap_length = 20
     ) +
     labs(
       title = paste("Top", top, "Exports by Value of Exports ($m)"),
@@ -563,5 +565,6 @@ tab_launchpad_product_imp <- function(data = merch_imp, sitc_level = 1, rows = 5
   return(product_imp_list)
 }
 
-##### Analysis - anything after this line, please delete #####
+##### Testings new plot function, please delete #####
+
 
