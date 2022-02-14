@@ -1,7 +1,7 @@
 # Cumulative Change in Victoria's goods exports and imports since COVID
 viz_good_trade_line_chart <- function(data = bop) {
   df <- data %>%
-    dplyr::filter(date >= as.Date("2018-12-01")) %>%
+    dplyr::filter(date >= as.Date("2017-12-01")) %>%
     dplyr::filter(
       .data$state == "Victoria",
     ) %>%
@@ -10,19 +10,21 @@ viz_good_trade_line_chart <- function(data = bop) {
     dplyr::mutate(value = abs(.data$value))
 
   latest_month <- format(max(df$date), "%B %Y")
-
+  year_prior <- format(max(df$date)-months(12), "%B %Y")
 
   df <- df %>%
     dplyr::group_by(.data$exports_imports) %>%
+    dplyr::arrange(date)%>%
     dplyr::mutate(
-      value = 100 * (.data$value
-        / .data$value[.data$date == as.Date("2019-12-01")] - 1),
+      value = 100 * ((.data$value
+        / dplyr::lag(.data$value,4)) - 1),
       tooltip = paste0(
         .data$exports_imports, "\n",
         format(.data$date, "%b %Y"), "\n",
         round2(.data$value, 1), "%"
       )
-    )
+    ) %>%
+    dplyr::filter(date >= as.Date("2018-12-01"))
 
 
   latest_export <- df %>%
@@ -40,7 +42,7 @@ viz_good_trade_line_chart <- function(data = bop) {
       latest_export == 0 ~ "the same as ",
       latest_export < 0 ~ paste0(abs(latest_export), " per cent lower than ")
     ),
-    "they were in December 2019"
+    "they were in ",year_prior
   )
 
   caption <- paste0("Source: ABS Balance of Payment quarterly (latest data is from ", latest_month, ". Note: Data seasonally Adjusted & Chain Volume Measures")
@@ -55,7 +57,7 @@ viz_good_trade_line_chart <- function(data = bop) {
     ) +
     labs(
       title = title,
-      subtitle = "Cumulative change in exports and imports of goods since December 2019 in Victoria",
+      subtitle = paste0("Cumulative annual change in Victorian exports and imports in ",latest_month),
       caption = caption
     )
 }
@@ -63,7 +65,7 @@ viz_good_trade_line_chart <- function(data = bop) {
 # Cumulative change in Victoria's Services' exports and imports since COVID
 viz_services_trade_line_chart <- function(data = bop) {
   df <- data %>%
-    dplyr::filter(date >= as.Date("2018-12-01")) %>%
+    dplyr::filter(date >= as.Date("2017-12-01")) %>%
     dplyr::filter(
       .data$state == "Victoria",
     ) %>%
@@ -72,21 +74,22 @@ viz_services_trade_line_chart <- function(data = bop) {
     dplyr::mutate(value = abs(.data$value))
 
   latest_month <- format(max(df$date), "%B %Y")
-
-  caption <- paste0("Source: ABS Balance of Payment quarterly (latest data is from ", latest_month, ". Note: Data seasonally Adjusted & Chain Volume Measures")
+  year_prior <- format(max(df$date)-months(12), "%B %Y")
 
 
   df <- df %>%
     dplyr::group_by(.data$exports_imports) %>%
+    dplyr::arrange(date)%>%
     dplyr::mutate(
-      value = 100 * (.data$value
-        / .data$value[.data$date == as.Date("2019-12-01")] - 1),
+      value = 100 * ((.data$value
+                              / dplyr::lag(.data$value,4)) - 1),
       tooltip = paste0(
         .data$exports_imports, "\n",
         format(.data$date, "%b %Y"), "\n",
         round2(.data$value, 1), "%"
       )
-    )
+    ) %>%
+    dplyr::filter(date >= as.Date("2018-12-01"))
 
 
   latest_export <- df %>%
@@ -97,6 +100,8 @@ viz_services_trade_line_chart <- function(data = bop) {
     dplyr::pull(.data$value) %>%
     round2(1)
 
+  caption <- paste0("Source: ABS Balance of Payment quarterly (latest data is from ", latest_month, ". Note: Data seasonally Adjusted & Chain Volume Measures")
+
   title <- paste0(
     "Victoria's services exports are ",
     dplyr::case_when(
@@ -104,7 +109,7 @@ viz_services_trade_line_chart <- function(data = bop) {
       latest_export == 0 ~ "the same as ",
       latest_export < 0 ~ paste0(abs(latest_export), " per cent lower than ")
     ),
-    "they were in December 2019"
+    "they were in ",year_prior
   )
 
 
@@ -117,7 +122,7 @@ viz_services_trade_line_chart <- function(data = bop) {
     ) +
     labs(
       title = title,
-      subtitle = "Cumulative change in exports and imports of services since December 2019 in Victoria",
+      subtitle = paste0("Cumulative annual change in Victorian exports and imports in ", latest_month),
       caption = caption
     )
 }
@@ -148,7 +153,9 @@ viz_service_bop_bar_chart <- function(data = bop) {
   # % change of export and export since Dec 2029
   df <- df %>%
     dplyr::group_by(.data$state, .data$exports_imports) %>%
-    dplyr::mutate(value = 100 * ((.data$value / .data$value[date == as.Date("2019-12-01")]) - 1)) %>%
+    dplyr::arrange(.data$date)%>%
+    dplyr::mutate(value = 100 * ((.data$value
+                                  / dplyr::lag(.data$value,4)) - 1)) %>%
     dplyr::ungroup()
 
   latest_export <- df %>%
@@ -170,17 +177,18 @@ viz_service_bop_bar_chart <- function(data = bop) {
     round2(1)
 
   latest_month <- format(max(df$date), "%B %Y")
+  year_prior <- format(max(df$date)-months(12), "%B %Y")
 
 
   title <- dplyr::case_when(
     latest_export > 0 & latest_import > 0 ~
-    paste0("Both exports and imports of services increased between December 2019 and ", latest_month, " , in Victoria"),
+    paste0("Both exports and imports of services increased between ", year_prior," and ", latest_month, " , in Victoria"),
     latest_export > 0 & latest_import < 0 ~
-    paste0("While exports of services increased, imports of goods between December 2019 and ", latest_month, ", in Victoria"),
+    paste0("While exports of services increased, imports of goods between ", year_prior," and ", latest_month, ", in Victoria"),
     latest_export < 0 & latest_import < 0 ~
-    paste0("Both exports and imports of services fell between December 2019 and ", latest_month, ", in Victoria"),
+    paste0("Both exports and imports of services fell between ", year_prior," and ", latest_month, ", in Victoria"),
     latest_export < 0 & latest_import > 0 ~
-    paste0("While exports of services declined, imports of goods increased between December 2019 and ", latest_month, ", in Victoria"),
+    paste0("While exports of services declined, imports of goods increased between ", year_prior," and ", latest_month, ", in Victoria"),
     TRUE ~ "Changes in services exports and imports, in Victoria"
   )
 
@@ -205,7 +213,7 @@ viz_service_bop_bar_chart <- function(data = bop) {
       aes(label = paste0(round2(.data$value, 1), "%")),
       vjust = 0.5,
       colour = "black",
-      hjust = 1,
+      hjust = 1.1,
       size = 12 / .pt
     ) +
     scale_x_discrete(expand = expansion(add = c(0.5, 0.65))) +
@@ -224,11 +232,12 @@ viz_service_bop_bar_chart <- function(data = bop) {
     labs(
       title = title,
       subtitle = paste0(
-        "Growth in exports and imports of services between December 2019 and ",
+        "Growth in exports and imports of services between ", year_prior," and ",
         format(max(data$date), "%B %Y")
       ),
       caption = caption
     )
+
 }
 
 # Change in goods exports and imports by the state since COVID
@@ -254,7 +263,9 @@ viz_goods_bop_bar_chart <- function(data = bop) {
   # % change of export and export since Dec 2019
   df <- df %>%
     dplyr::group_by(.data$state, .data$exports_imports) %>%
-    dplyr::mutate(value = 100 * ((.data$value / .data$value[date == as.Date("2019-12-01")]) - 1)) %>%
+    dplyr::arrange(.data$date)%>%
+    dplyr::mutate(value = 100 * ((.data$value
+                                  / dplyr::lag(.data$value,4)) - 1)) %>%
     dplyr::ungroup()
 
   latest_export <- df %>%
@@ -276,16 +287,18 @@ viz_goods_bop_bar_chart <- function(data = bop) {
     round2(1)
 
   latest_month <- format(max(df$date), "%B %Y")
+  year_prior <- format(max(df$date)-months(12), "%B %Y")
+
 
   title <- dplyr::case_when(
     latest_export > 0 & latest_import > 0 ~
-    paste0("Both exports and imports of goods increased between December 2019 and ", latest_month, " , in Victoria"),
+    paste0("Both exports and imports of goods increased between ", year_prior," and ", latest_month,", in Victoria"),
     latest_export > 0 & latest_import < 0 ~
-    paste0("While exports of goods increased, imports of goods declined between December 2019 and ", latest_month, ", in Victoria"),
+    paste0("While exports of goods increased, imports of goods declined between ", year_prior," and ", latest_month, ", in Victoria"),
     latest_export < 0 & latest_import < 0 ~
-    paste0("Both exports and imports of goods fell between December 2019 and ", latest_month, ", in Victoria"),
+    paste0("Both exports and imports of goods fell between ", year_prior," and ", latest_month, ", in Victoria"),
     latest_export < 0 & latest_import > 0 ~
-    paste0("While exports of goods declined, imports of goods increased between December 2019 and ", latest_month, ", in Victoria"),
+    paste0("While exports of goods declined, imports of goods increased between ", year_prior," and ", latest_month, ", in Victoria"),
     TRUE ~ "Changes in goods exports and imports, in Victoria"
   )
 
@@ -310,7 +323,7 @@ viz_goods_bop_bar_chart <- function(data = bop) {
       aes(label = paste0(round2(.data$value, 1), "%")),
       vjust = 0.5,
       colour = "black",
-      hjust = 0,
+      hjust = 1.1,
       size = 12 / .pt
     ) +
     scale_x_discrete(expand = expansion(add = c(0.5, 0.85))) +
@@ -329,7 +342,7 @@ viz_goods_bop_bar_chart <- function(data = bop) {
     labs(
       title = title,
       subtitle = paste0(
-        "Growth in exports and imports of goods between December 2019 and ",
+        "Growth in exports and imports of goods between ", year_prior," and ",
         format(max(data$date), "%B %Y")
       ),
       caption = caption
@@ -515,14 +528,16 @@ viz_trade_balance_line_chart <- function(data = bop) {
 
 
   latest_month <- format(max(df$date), "%B %Y")
+  year_prior <- format(max(df$date)-months(12), "%B %Y")
+
   caption <- paste0("Source: ABS Balance of Payment quarterly (latest data is from ", latest_month, ". Note: Data seasonally Adjusted & Chain Volume Measures")
 
 
   df <- df %>%
     dplyr::group_by(.data$goods_services) %>%
     dplyr::mutate(
-      value = 100 * (.data$value
-        / .data$value[.data$date == as.Date("2019-12-01")] - 1),
+      value = 100 * ((.data$value
+                      / dplyr::lag(.data$value,4)) - 1),
       tooltip = paste0(
         .data$goods_services, "\n",
         format(.data$date, "%b %Y"), "\n",
@@ -544,7 +559,7 @@ viz_trade_balance_line_chart <- function(data = bop) {
       total_latest == 0 ~ "the same as ",
       total_latest < 0 ~ paste0(abs(total_latest), " per cent lower than ")
     ),
-    "it was in December 2019"
+    "it was in ",year_prior
   )
 
 
@@ -558,7 +573,7 @@ viz_trade_balance_line_chart <- function(data = bop) {
     ) +
     labs(
       title = title,
-      subtitle = "Cumulative change in total trade balance since December 2019 in Victoria",
+      subtitle = paste0("Cumulative annual change in Victorian exports and imports in ", latest_month),
       caption = caption
     )
 }
