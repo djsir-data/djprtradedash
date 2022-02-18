@@ -27,7 +27,8 @@ viz_merch_explorer <- function(data = merch,
     df
     ) %>%
   group_by(group, date) %>%
-  slice(n())
+  slice(n()) %>%
+  ungroup()
 
   if (facet_by == "country_dest") {
     df <- df %>%
