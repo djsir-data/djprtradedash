@@ -478,16 +478,16 @@ tab_launchpad_product_imp_exp <- function(direction = c('import', 'export'), dat
   )
 
   #generate table
-  country_filter <- glue('{country_field} = Total')
-  source_filter <- glue('{source_field} = Victoria')
+  country_filter <- glue('"{country_field}"')
+  source_filter <- glue('"{source_field}"')
 
   product_list <- data %>%
     group_by(sitc)%>%
     filter(date %in% !!datelist$date,
            sitc != "Total",
-           !!country_field == "Total",
-           !!source_field == "Victoria",
-           nchar(sitc_code) == !!sitc_level) %>% show_query() # final sql has incorrect quotations so query fails
+           !!sql(country_filter) == "Total",
+           !!sql(source_filter) == "Victoria",
+           nchar(sitc_code) == !!sitc_level) %>%
     select(sitc, date, value) %>%
     arrange(sitc, date) %>% collect() %>%
     mutate(date = lubridate::ymd(date)) %>%
