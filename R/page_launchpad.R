@@ -1,4 +1,7 @@
-page_launchpad <- function(...) {
+page_launchpadUI <- function(id) {
+
+  ns <- NS(id)
+
   djpr_tab_panel(
     title = "Launchpad",
     ggiraph_js(),
@@ -60,5 +63,56 @@ page_launchpad <- function(...) {
     br()
 
 )
+
+}
+
+
+
+
+
+
+page_launchpad <- function(input, output, session, data, table_rowcount = 5){
+
+  #Launchpad tables and charts
+  djpr_plot_server("top_export_line_chart",
+                   viz_launchpad_chart,
+                   data = merch,
+                   plt_change = plt_change,
+                   date_slider_value_min = Sys.Date() - lubridate::years(3),
+                   width_percent = 100
+  )
+
+  djpr_plot_server("top_country_line_chart",
+                   viz_launchpad_countries,
+                   data = merch,
+                   plt_change = plt_change,
+                   date_slider_value_min = Sys.Date() - lubridate::years(3),
+                   width_percent = 50
+  )
+
+  djpr_plot_server("good_services_export_line_launchpad",
+                   viz_good_services_import_chart,
+                   data = bop,
+                   plt_change = plt_change,
+                   width_percent = 50
+  )
+
+  output$country_export_table <- renderUI({
+    make_table_launchpad(data = tab_launchpad_country_imp_exp('export', merch, rows = table_rowcount)) %>%
+      flextable::htmltools_value()
+  })
+  output$country_import_table <- renderUI({
+    make_table_launchpad(data = tab_launchpad_country_imp_exp('import', merch_imp, rows = table_rowcount)) %>%
+      flextable::htmltools_value()
+  })
+  output$product_export_table <- renderUI({
+    make_table_launchpad(data = tab_launchpad_product_imp_exp('export', merch, rows = table_rowcount, sitc_level = 1)) %>%
+      flextable::htmltools_value()
+  })
+  output$product_import_table <- renderUI({
+    make_table_launchpad(data = tab_launchpad_product_imp_exp('import', merch_imp, rows = table_rowcount, sitc_level = 1)) %>%
+      flextable::htmltools_value()
+  })
+
 
 }
