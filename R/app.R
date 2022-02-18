@@ -7,5 +7,12 @@ app <- function(...) {
     cache = trade_dash_cache
   )
 
+  # close db connection on exit
+  onStop(function() {
+    cat('Closing Pool')
+    pool::poolClose(db_pool)
+  })
+
+
   shiny::shinyApp(ui(), server)
 }
