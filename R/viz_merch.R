@@ -22,7 +22,7 @@ viz_merch_explorer <- function(data = merch,
   
   df <- bind_rows(
     merge(dates, combs) %>% 
-    rename(date = x) %>%
+    rename(date = 1) %>%
     mutate(value = 0),
     df
     ) %>%
