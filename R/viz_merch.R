@@ -4,6 +4,8 @@ viz_merch_explorer <- function(data = merch,
                                origin = "Victoria",
                                facet_by = "country_dest",
                                smooth = FALSE) {
+  dates <- unique(data$date) 
+
   df <- data %>%
     dplyr::filter(
       .data$sitc %in% .env$goods,
@@ -15,6 +17,17 @@ viz_merch_explorer <- function(data = merch,
       sitc = as.character(.data$sitc),
       country_dest = as.character(.data$country_dest)
     )
+
+  combs <- df %>% dplyr::select(-date, -value) %>% unique()
+  
+  df <- bind_rows(
+    merge(dates, combs) %>% 
+    rename(date = x) %>%
+    mutate(value = 0),
+    df
+    ) %>%
+  group_by(group, date) %>%
+  slice(n())
 
   if (facet_by == "country_dest") {
     df <- df %>%
