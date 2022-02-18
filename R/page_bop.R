@@ -6,11 +6,11 @@ page_bop <- function(...) {
     yearly, over a particular period.  It shows the sum of the transactions of those involving
     goods or services."),
     h2(br(), "Goods and Services"),
+    djpr_plot_ui("good_services_export_chart"),
+    br(),
     djpr_plot_ui("total_bop_bar_chart",
       interactive = FALSE
     ),
-    br(),
-    djpr_plot_ui("good_services_export_chart"),
     br(),
     djpr_plot_ui("good_services_import_chart"),
     br(),
