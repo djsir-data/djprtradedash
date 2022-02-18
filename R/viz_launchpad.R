@@ -28,20 +28,20 @@ viz_launchpad_countries <- function(data = merch,
            tooltip = paste0(
             country_dest, "\n",
             format(.data$date, "%b %Y"), "\n",
-            "$", round2(.data$value, 1), "m"
+            format(round2(.data$value, 1), big.mark=",")
             ))
 
   df %>%
     djpr_ts_linechart(
       col_var = .data$country_dest,
-      y_labels = function(x) paste0("$", x, "m"),
+      y_labels = function(x) format(x, big.mark=","),
       label_wrap_length = 15,
       x_expand_mult = c(0, 0.30)
 
     ) +
     labs(
-      title = paste("Top", top, "Exports Destinations from", region, "by Value of Exports ($m)"),
-      subtitle = paste("Total Exports from", region, "across All SITC Classifications"),
+      title = paste("Top", top, "Exports Destinations from", region, "by Value of Exports"),
+      subtitle = paste("Total Exports from", region, "across All SITC Classifications ($m)"),
       caption = caption
     )
 }
@@ -81,19 +81,19 @@ viz_launchpad_chart <- function(data = merch,
            tooltip = paste0(
             "SITC: ", sitc_code, "\n",
             format(.data$date, "%b %Y"), "\n",
-            "$", round2(.data$value, 1), "m"
+            format(round2(.data$value, 1),big.mark=",")
             ))
 
   df %>%
     djpr_ts_linechart(
       col_var = .data$sitc_shrink,
-      y_labels = function(x) paste0("$", x, "m"),
+      y_labels = function(x) format(x, big.mark=","),
       label_wrap_length = 25,
       x_expand_mult = c(0, 0.25)
     ) +
     labs(
-      title = paste("Top", top, "Exports by Value of Exports ($m)"),
-      subtitle = paste("Exports at SITC Level", code_level, "from", region),
+      title = paste("Top", top, "Exports by Value of Exports"),
+      subtitle = paste("Exports at SITC Level", code_level, "from", region," ($m)"),
       caption = caption
     )
 }
@@ -143,11 +143,10 @@ viz_goods_export_import_launchpad <- function(data = bop) {
     djpr_ts_linechart(
       col_var = .data$goods_services,
       label_num = paste0(scales::comma(round2(.data$value, 1))),
-      # y_labels = function(x) paste0(x, "%"),
-    ) +
+      y_labels = function(x) format(x, big.mark=",")) +
     labs(
       title = title,
-      subtitle = "Victoria's exports of goods and services in million dollars",
+      subtitle = "Victoria's exports of goods and services ($m)",
       caption = caption
     )
 }
@@ -198,11 +197,11 @@ viz_good_services_import_chart <- function(data = bop) {
     djpr_ts_linechart(
       col_var = .data$goods_services,
       label_num = paste0(scales::comma(round2(.data$value, 1))),
-      # y_labels = function(x) paste0(x, "%"),
+      y_labels = function(x) format(x, big.mark=",")
     ) +
     labs(
       title = title,
-      subtitle = "Victoria's exports of goods and services in million dollars",
+      subtitle = "Victoria's exports of goods and services ($m)",
       caption = caption
     )
 }
