@@ -49,6 +49,18 @@ server <- function(input, output, session) {
     width_percent = 100
     )
 
+  # djpr_plot_server("top_export_line_chart",
+  #   viz_launchpad_chart,
+  #   data = merch,
+  #   plt_change = plt_change,
+  #   date_slider_value_min = Sys.Date() - lubridate::years(3),
+  #   width_percent = 100,
+  #   check_box_options = c(1,2,3),
+  #   check_box_selected = 3, 
+  #   check_box_var = nchar(sitc_code),
+  #   interactive = TRUE
+  #   )
+
   djpr_plot_server("top_country_line_chart",
     viz_launchpad_countries,
     data = merch,
@@ -75,11 +87,11 @@ server <- function(input, output, session) {
       flextable::htmltools_value()
   })
   output$product_export_table <- renderUI({
-    make_table_launchpad(data = tab_launchpad_product_exp(rows = table_rowcount, sitc_level = 1)) %>%
+    make_table_launchpad(data = tab_launchpad_product_exp(rows = table_rowcount, sitc_level = 3)) %>%
       flextable::htmltools_value()
   })
   output$product_import_table <- renderUI({
-    make_table_launchpad(data = tab_launchpad_product_imp(rows = table_rowcount, sitc_level = 1)) %>%
+    make_table_launchpad(data = tab_launchpad_product_imp(rows = table_rowcount, sitc_level = 3)) %>%
       flextable::htmltools_value()
   })
 
@@ -98,12 +110,28 @@ server <- function(input, output, session) {
     )
   )
 
+  merch_df <- shiny::reactive({
+    if(input$merch_explorer_sitc %in% c(1,2,3)) {
+      merch %>%
+        dplyr::filter(nchar(.data$sitc_code) == input$merch_explorer_sitc) %>%
+        dplyr::mutate(code_name = paste0(.data$sitc_code, ": ", .data$sitc))
+    } else {
+      merch %>%
+        dplyr::mutate(code_name = paste0(.data$sitc_code, ": ", .data$sitc))
+    }
+  })
+
+  observeEvent(merch_df(), {
+    shinyWidgets::updateMultiInput(session = session, inputId = "merch_sitc", choices = unique(merch_df()$code_name))
+  })
+
   merch_explorer_plot <- shiny::reactive({
     shiny::req(
       input$merch_explorer_dates,
       input$merch_countries,
       input$merch_sitc,
-      input$merch_explorer_facets
+      input$merch_explorer_facets,
+      input$merch_explorer_sitc
     )
 
     merch %>%
@@ -113,7 +141,7 @@ server <- function(input, output, session) {
       ) %>%
       viz_merch_explorer(
         countries = input$merch_countries,
-        goods = input$merch_sitc,
+        goods = sub(".[0-9]*:\\s", "", input$merch_sitc),
         facet_by = input$merch_explorer_facets,
         smooth = input$merch_explorer_smooth
       )

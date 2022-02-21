@@ -10,6 +10,7 @@ page_launchpad <- function(...) {
         style = "font-size: 40px; color: #1F1547; font-family: 'Roboto Slab'"
       )
     ),
+    h2("Overview", align='center'),
     djpr_plot_ui("top_export_line_chart"),
     br(),
     fluidRow(
