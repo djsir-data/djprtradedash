@@ -49,6 +49,18 @@ server <- function(input, output, session) {
     width_percent = 100
     )
 
+  # djpr_plot_server("top_export_line_chart",
+  #   viz_launchpad_chart,
+  #   data = merch,
+  #   plt_change = plt_change,
+  #   date_slider_value_min = Sys.Date() - lubridate::years(3),
+  #   width_percent = 100,
+  #   check_box_options = c(1,2,3),
+  #   check_box_selected = 3, 
+  #   check_box_var = nchar(sitc_code),
+  #   interactive = TRUE
+  #   )
+
   djpr_plot_server("top_country_line_chart",
     viz_launchpad_countries,
     data = merch,
@@ -75,11 +87,11 @@ server <- function(input, output, session) {
       flextable::htmltools_value()
   })
   output$product_export_table <- renderUI({
-    make_table_launchpad(data = tab_launchpad_product_exp(rows = table_rowcount, sitc_level = 1)) %>%
+    make_table_launchpad(data = tab_launchpad_product_exp(rows = table_rowcount, sitc_level = 3)) %>%
       flextable::htmltools_value()
   })
   output$product_import_table <- renderUI({
-    make_table_launchpad(data = tab_launchpad_product_imp(rows = table_rowcount, sitc_level = 1)) %>%
+    make_table_launchpad(data = tab_launchpad_product_imp(rows = table_rowcount, sitc_level = 3)) %>%
       flextable::htmltools_value()
   })
 

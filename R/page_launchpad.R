@@ -11,19 +11,6 @@ page_launchpad <- function(...) {
       )
     ),
     h2("Overview", align='center'),
-    shinyWidgets::awesomeRadio(
-              inputId = "launchpad_sitc",
-              label = "SITC Level: ",
-              choices = c(
-                1,
-                2,
-                3,
-                "All"
-              ),
-              selected = 3,
-              inline = TRUE,
-              status = "primary"
-            ),
     djpr_plot_ui("top_export_line_chart"),
     br(),
     fluidRow(
