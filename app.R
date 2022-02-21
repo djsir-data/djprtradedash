@@ -7,6 +7,7 @@ pkgload::load_all(".")
 library(pool)
 library(dplyr)
 library(dbplyr)
+library(glue)
 
 db_pool <- dbPool(
   drv = duckdb::duckdb(),
@@ -22,9 +23,5 @@ supp_fy <- tbl(db_pool, 'supp_fy')
 bop <- tbl(db_pool, 'bop')
 
 app()
-
-
-
-
 
 
