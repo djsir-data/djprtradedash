@@ -1,7 +1,5 @@
 page_launchpadUI <- function(id) {
 
-  ns <- NS(id)
-
   djpr_tab_panel(
     title = "Launchpad",
     ggiraph_js(),
@@ -71,10 +69,10 @@ page_launchpadUI <- function(id) {
 
 
 
-page_launchpad <- function(input, output, session, data, table_rowcount = 5){
+page_launchpad <- function(input, output, session, plt_change, table_rowcount = 5){
 
   #Launchpad tables and charts
-  djpr_plot_server("top_export_line_chart",
+  djprshiny::djpr_plot_server("top_export_line_chart",
                    viz_launchpad_chart,
                    data = merch,
                    plt_change = plt_change,
@@ -82,7 +80,18 @@ page_launchpad <- function(input, output, session, data, table_rowcount = 5){
                    width_percent = 100
   )
 
-  djpr_plot_server("top_country_line_chart",
+  print('plot1 done')
+
+  djprshiny::djpr_plot_server("good_services_export_line_launchpad",
+                              viz_good_services_import_chart,
+                              data = bop,
+                              plt_change = plt_change,
+                              width_percent = 50
+  )
+
+  print('plot2 done')
+
+  djprshiny::djpr_plot_server("top_country_line_chart",
                    viz_launchpad_countries,
                    data = merch,
                    plt_change = plt_change,
@@ -90,12 +99,10 @@ page_launchpad <- function(input, output, session, data, table_rowcount = 5){
                    width_percent = 50
   )
 
-  djpr_plot_server("good_services_export_line_launchpad",
-                   viz_good_services_import_chart,
-                   data = bop,
-                   plt_change = plt_change,
-                   width_percent = 50
-  )
+  print('plot3 done')
+
+
+
 
   output$country_export_table <- renderUI({
     make_table_launchpad(data = tab_launchpad_country_imp_exp('export', merch, rows = table_rowcount)) %>%
@@ -114,5 +121,6 @@ page_launchpad <- function(input, output, session, data, table_rowcount = 5){
       flextable::htmltools_value()
   })
 
+  print('all tables rendered')
 
 }

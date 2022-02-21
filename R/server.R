@@ -42,7 +42,7 @@ server <- function(input, output, session) {
 
   print('up2 module')
 
-  callModule(page_launchpad(), 'launchpad', data = NULL, table_rowcount = 5)
+  page_launchpad(input, output, session, plt_change, table_rowcount = 5)
 
   print('passed module')
 
