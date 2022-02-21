@@ -4,20 +4,16 @@ viz_launchpad_countries <- function(data = merch,
                                     region = c("Victoria"),
                                     top = 5) {
 
+  print('generate top5 plot')
+
   filtered <- data %>%
     filter(.data$origin %in% .env$region,
            .data$sitc == "Total")
 
-  if (!any(class(filtered) == 'data.frame')) {
-    filtered <- filtered %>%
-      collect() %>%
-      mutate(date = lubridate::ymd(date))
-  }
-
   top_5_country <- filtered %>%
     filter(.data$country_dest != "Total") %>%
     arrange(desc(date), desc(value)) %>%
-    select(country_dest) %>%
+    select(country_dest) %>% collect() %>%
     unique() %>%
     head(top) %>%
     as.matrix()
@@ -25,6 +21,18 @@ viz_launchpad_countries <- function(data = merch,
   df <- filtered %>%
     filter(.data$country_dest %in% top_5_country) %>%
     select(country_dest, origin, date, value)
+
+  if ('tbl_lazy' %in% class(df)) {
+    df <- df %>%
+      collect()
+  }
+
+  df <- df %>%
+    mutate(date = as.Date(date))
+
+  print(glue('row num: {nrow(df)}'))
+
+  #assertthat::assert_that(class(df$date) == 'Date', msg = 'incorrect date type')
 
   latest_month <- format(max(df$date), "%B %Y")
 
@@ -61,28 +69,34 @@ viz_launchpad_chart <- function(data = merch,
                 code_level = 3,
                 top = 5) {
 
+  print('generate top goods plot')
+
   filtered <- data %>%
-    filter(country_dest %in% country,
-           origin %in% region)
+    filter(.data$country_dest %in% !!country,
+           .data$origin %in% region)
 
-  if (!any(class(filtered) == 'data.frame')) {
-    filtered <- filtered %>%
-      collect() %>%
-      mutate(date = lubridate::ymd(date))
-  }
-
-	top_5_code <- filtered %>%
-		filter(sitc != "Total",
-           nchar(sitc_code) == code_level) %>%
-		arrange(desc(date), desc(value)) %>%
+  top_5_code <- filtered %>%
+    filter(.data$sitc != "Total",
+           nchar(.data$sitc_code) == !!code_level) %>%
+    arrange(desc(date), desc(value)) %>%
     select(sitc_code) %>%
+    collect() %>%
     unique() %>%
     head(top) %>%
     as.matrix()
 
   df <- filtered %>%
     filter(sitc_code %in% !!top_5_code) %>%
-    select(sitc, date, value, sitc_code) %>%
+    select(sitc, date, value, sitc_code)
+
+  if ('tbl_lazy' %in% class(df)) {
+    df <- df %>%
+      collect() %>%
+      mutate(date = lubridate::ymd(date))
+  }
+
+
+  df <- df %>%
     group_by(sitc) %>%
     mutate(sitc_shrink = strsplit(sitc, "[(]")[[1]][1],
            date = lubridate::ymd(date))
@@ -180,6 +194,8 @@ viz_goods_export_import_launchpad <- function(data = bop) {
 # Victoria's historical imports of goods and services
 viz_good_services_import_chart <- function(data = bop) {
 
+  print('generate vic imports g&s')
+
   filtered <- data %>%
     dplyr::filter(
       .data$state == "Victoria",
@@ -187,24 +203,24 @@ viz_good_services_import_chart <- function(data = bop) {
       .data$indicator == "Chain Volume Measures"
     )
 
-  if (!any(class(filtered) == 'data.frame')) {
+
+  if ('tbl_lazy' %in% class(filtered)) {
+    print('lazy data collect')
     filtered <- filtered %>%
       collect() %>%
       mutate(date = lubridate::ymd(date))
   }
 
 
-
   df <- filtered %>%
-    dplyr::filter(
-      .data$state == "Victoria",
-      .data$exports_imports == "Exports",
-      .data$indicator == "Chain Volume Measures"
-    ) %>%
     dplyr::select(-.data$series_id, -.data$unit) %>%
     dplyr::mutate(goods_services = dplyr::if_else(.data$goods_services == "Goods and Services", "Total", .data$goods_services)) %>%
-    dplyr::mutate(value = abs(.data$value))
+    dplyr::mutate(value = abs(.data$value),
+                  date = as.Date(date))
 
+  print(glue('row num: {nrow(df)}'))
+
+  #assertthat::assert_that(class(df$date) == 'Date', msg = 'incorrect date type')
 
   latest_month <- format(max(df$date), "%B %Y")
 
@@ -364,6 +380,8 @@ clean_dates <- function(data){
   since_prev_qtr = paste0("Since ", nice_prev_qtr)
   since_prev_year = paste0("Since ", nice_prev_year)
 
+  print('dates cleaned')
+
   list(
     datelist = datelist,
     latest_date = latest_date,
@@ -401,23 +419,29 @@ tab_launchpad_country_imp_exp <- function(direction = c('import', 'export'), dat
   #generate table
   country_list <- data %>%
     filter(date %in% !!datelist$date,
-           {{ direction }} != "Total",
            sitc == "Total")
 
+  # imports
   if (direction == 'country_origin') {
     country_list <- country_list %>%
-      filter(dest == "Victoria")
+      filter(country_origin != "Total",
+             dest == "Victoria")
+  # exports
+  } else if (direction == 'country_dest') {
+    country_list <- country_list |>
+      filter(country_dest != "Total")
   }
 
   country_list <- country_list %>%
-    group_by({{ direction }})%>%
-    select({{ direction }}, date, value) %>%
     collect() %>%
+    dplyr::group_by(.data[[direction]], date) %>%
+    summarise(value = sum(value, na.rm = TRUE)) %>%
+    select(one_of(direction), date, value) %>%
     mutate(date = lubridate::ymd(date)) %>%
-    arrange({{ direction }}, date) %>%
-    ungroup()%>%
-    ungroup()%>%
-    group_by({{ direction }}) %>%
+    arrange(.data[[direction]], date) %>%
+    #ungroup()%>%
+    #ungroup()%>%
+    #group_by(.data[[direction]]) %>%
     mutate(prev_month_change    = paste0(scales::comma(value-dplyr::lag(value,1), accuracy = 1),
                                          "\n(",
                                          scales::percent((value-dplyr::lag(value,1))/dplyr::lag(value,1)),
@@ -431,11 +455,11 @@ tab_launchpad_country_imp_exp <- function(direction = c('import', 'export'), dat
                                          scales::percent((value-dplyr::lag(value,3))/dplyr::lag(value,3)),
                                          ")")
     )%>%
-    ungroup()%>%
+    #ungroup()%>%
     filter(date==datelist$date[1])%>%
     arrange(desc(value))%>%
     group_by(date) %>%
-    mutate()%>%
+    #mutate()%>%
     mutate(value = paste0(scales::comma(value, accuracy = 1),
                           "\n(",
                           scales::percent(value/sum(value[!is.na(value)]), accuracy = 1.1),
