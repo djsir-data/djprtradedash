@@ -98,12 +98,28 @@ server <- function(input, output, session) {
     )
   )
 
+  merch_df <- shiny::reactive({
+    if(input$merch_explorer_sitc %in% c(1,2,3)) {
+      merch %>%
+        dplyr::filter(nchar(.data$sitc_code) == input$merch_explorer_sitc) %>%
+        dplyr::mutate(code_name = paste0(.data$sitc_code, ": ", .data$sitc))
+    } else {
+      merch %>%
+        dplyr::mutate(code_name = paste0(.data$sitc_code, ": ", .data$sitc))
+    }
+  })
+
+  observeEvent(merch_df(), {
+    shinyWidgets::updateMultiInput(session = session, inputId = "merch_sitc", choices = unique(merch_df()$code_name))
+  })
+
   merch_explorer_plot <- shiny::reactive({
     shiny::req(
       input$merch_explorer_dates,
       input$merch_countries,
       input$merch_sitc,
-      input$merch_explorer_facets
+      input$merch_explorer_facets,
+      input$merch_explorer_sitc
     )
 
     merch %>%
@@ -113,7 +129,7 @@ server <- function(input, output, session) {
       ) %>%
       viz_merch_explorer(
         countries = input$merch_countries,
-        goods = input$merch_sitc,
+        goods = sub(".[0-9]*:\\s", "", input$merch_sitc),
         facet_by = input$merch_explorer_facets,
         smooth = input$merch_explorer_smooth
       )

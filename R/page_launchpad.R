@@ -10,6 +10,20 @@ page_launchpad <- function(...) {
         style = "font-size: 40px; color: #1F1547; font-family: 'Roboto Slab'"
       )
     ),
+    h2("Overview", align='center'),
+    shinyWidgets::awesomeRadio(
+              inputId = "launchpad_sitc",
+              label = "SITC Level: ",
+              choices = c(
+                1,
+                2,
+                3,
+                "All"
+              ),
+              selected = 3,
+              inline = TRUE,
+              status = "primary"
+            ),
     djpr_plot_ui("top_export_line_chart"),
     br(),
     fluidRow(
