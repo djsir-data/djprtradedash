@@ -196,8 +196,8 @@ server <- function(input, output, session) {
     plt_change = plt_change
   )
   # Goods and Services: Export of goods and services for Victoria by calendar year
-  djpr_plot_server("Vic_total_bop_bar_chart",
-    viz_Vic_total_bop_bar_chart,
+  djpr_plot_server("vic_total_bop_cumul_line",
+    viz_vic_total_bop_cumul_line,
     data = bop,
     height_percent = 75,
     plt_change = plt_change,

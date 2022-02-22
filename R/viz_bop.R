@@ -1008,3 +1008,90 @@ viz_Vic_total_bop_bar_chart <- function(data = bop) {
       caption = caption
     )
 }
+
+# Victoria's exports of goods and services by calendar year
+viz_vic_total_bop_cumul_line <- function(data = bop) {
+  df <- data %>%
+    dplyr::select(-.data$series_id, -.data$unit) %>%
+    dplyr::filter(.data$state == "Victoria", .data$indicator == "Chain Volume Measures", .data$exports_imports == "Exports") %>%
+    dplyr::mutate(value = abs(.data$value),
+                  year = lubridate::year(.data$date),
+                  quarter = lubridate::quarter(.data$date)) %>%
+    dplyr::ungroup()
+
+  latest_month <- format(max(df$date), "%B %Y")
+
+  df <- df %>%
+    dplyr::filter(goods_services == "Goods and Services",
+                  format(date, "%Y") >= format(Sys.Date() - lubridate::years(5), "%Y")) %>%
+    dplyr::arrange(date) %>%
+    dplyr::group_by(year) %>%
+    dplyr::mutate(value = cumsum(.data$value)) %>%
+    dplyr::ungroup()
+
+  latest_change <- df %>%
+    dplyr::mutate(change = .data$value - lag(.data$value, 4)) %>%
+    dplyr::filter(!is.na(.data$change)) %>%
+    dplyr::filter(.data$date == max(.data$date))
+
+  if(latest_change$quarter == 1) {
+    title <-
+      dplyr::case_when(
+        latest_change$change > 0 ~ paste0("Victoria's total exports in Q", latest_change$quarter, " are ", scales::comma(latest_change$change), " million dollars higher than Q1 ", (latest_change$year-1)),
+        latest_change$change < 0 ~ paste0("Victoria's total exports in Q", latest_change$quarter, " are ", scales::comma(abs(latest_change$change)), " million dollars lower than Q1 ", (latest_change$year-1)),
+        latest_change$change == 0 ~ paste0("Victoria's total exports are the same as Q", latest_change$quarter, " ", (latest_change$year-1)),
+        TRUE ~ "Victoria's total exports over the past year"
+      )
+  } else {
+    title <-
+      dplyr::case_when(
+        latest_change$change > 0 ~ paste0("Victoria's YTD total exports to Q", latest_change$quarter, " are ", scales::comma(latest_change$change), " million dollars higher than Q1 to Q", latest_change$quarter, " ", (latest_change$year-1)),
+        latest_change$change < 0 ~ paste0("Victoria's YTD total exports to Q", latest_change$quarter, " are ", scales::comma(abs(latest_change$change)), " million dollars lower than Q1 to Q", latest_change$quarter, " ", (latest_change$year-1)),
+        latest_change$change == 0 ~ paste0("Victoria's YTD total exports are the same as last year from Q1 to Q", latest_change$quarter, " ", (latest_change$year-1)),
+        TRUE ~ "Victoria's total exports over the past year"
+      )
+  }
+
+
+  caption <- paste0("Source: ABS Balance of Payment quarterly (latest data is from ", latest_month, "). Note: Seasonally Adjusted Chain Volume Measure Data")
+
+
+
+  # draw line chart with relevant years
+  p <- df %>%
+    dplyr::mutate(tooltip = paste0(
+                  format(.data$date, "%b %Y"), "\n",
+                  format(round2(.data$value, 1),big.mark=",")
+                  ),
+                  date = lubridate::ymd(paste0(2021,"-", lubridate::month(.data$date),"-", "01"))) %>%
+    djprshiny::djpr_ts_linechart(
+      y_var = .data$value,
+      y_labels = function(x) format(x, big.mark=","),
+      col_var = factor(.data$year),
+      label = FALSE
+      ) +
+    ggplot2::labs(
+      title = title,
+      subtitle = "Victoria's cumulative exports of total goods and services ($m)",
+      caption = caption
+    ) +
+    ggplot2::scale_x_date(expand = expansion(mult = c(0, 0.2)),
+                 date_labels = "%B",
+                 breaks = as.Date(c("2021-03-01","2021-06-01", "2021-09-01","2021-12-01"))) +
+    ggrepel::geom_text_repel(
+      direction = "y",
+      hjust = -1,
+      data = df %>%
+        dplyr::mutate(tooltip = paste0(
+                  format(.data$date, "%b %Y"), "\n",
+                  format(djprshiny::round2(.data$value, 1),big.mark=",")
+                  ),
+                  date = lubridate::ymd(paste0(2021,"-", lubridate::month(.data$date),"-", "01"))) %>%
+        dplyr::group_by(year) %>%
+        filter(.data$date == max(.data$date)),
+      ggplot2::aes(label = paste0(.data$year, " Q", .data$quarter, "\n", paste0("$", format(.data$value, big.mark=","), "m")))
+      ) +
+    ggplot2::scale_color_grey(start = 0.8, end = 0)
+
+  p
+}
