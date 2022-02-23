@@ -11,11 +11,11 @@ page_launchpad <- function(...) {
       )
     ),
     h2("Overview", align='center'),
-    djpr_plot_ui("top_export_line_chart"),
+    djpr_plot_ui("good_services_export_line_launchpad"),
     br(),
     fluidRow(
       column(width = 6,
-        djpr_plot_ui("good_services_export_line_launchpad")
+        djpr_plot_ui("top_export_line_chart")
         ),
       column(width = 6,
         djpr_plot_ui("top_country_line_chart")
