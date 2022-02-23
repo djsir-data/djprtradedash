@@ -40,7 +40,7 @@ viz_launchpad_countries <- function(data = merch,
 
     ) +
     labs(
-      title = paste("Top", top, "Exports Destinations from", region, "by Value of Exports"),
+      title = paste("Top", top, "Destinations for Exports from", region),
       subtitle = paste("Total Exports from", region, "across All SITC Classifications ($m)"),
       caption = caption
     )
@@ -92,7 +92,7 @@ viz_launchpad_chart <- function(data = merch,
       x_expand_mult = c(0, 0.25)
     ) +
     labs(
-      title = paste("Top", top, "Exports by Value of Exports"),
+      title = paste("Top", top, "Exports from", region),
       subtitle = paste("Exports at SITC Level", code_level, "from", region," ($m)"),
       caption = caption
     )
