@@ -14,7 +14,7 @@ viz_launchpad_countries <- function(data = merch,
     as.matrix()
 
   df <- data %>%
-    filter(.data$origin %in% .env$region, 
+    filter(.data$origin %in% .env$region,
            .data$sitc == "Total",
            .data$country_dest %in% top_5_country) %>%
     select(country_dest, origin, date, value)
@@ -28,17 +28,20 @@ viz_launchpad_countries <- function(data = merch,
            tooltip = paste0(
             country_dest, "\n",
             format(.data$date, "%b %Y"), "\n",
-            "$", round2(.data$value, 1), "m"
+            format(round2(.data$value, 1), big.mark=",")
             ))
 
   df %>%
     djpr_ts_linechart(
       col_var = .data$country_dest,
-      y_labels = function(x) paste0("$", x, "m")
+      y_labels = function(x) format(x, big.mark=","),
+      label_wrap_length = 15,
+      x_expand_mult = c(0, 0.30)
+
     ) +
     labs(
-      title = paste("Top", top, "Exports Destinations from", region, "by Value of Exports ($m)"),
-      subtitle = paste("Total Exports from", region, "across All SITC Classifications"),
+      title = paste("Top", top, "Exports Destinations from", region, "by Value of Exports"),
+      subtitle = paste("Total Exports from", region, "across All SITC Classifications ($m)"),
       caption = caption
     )
 }
@@ -49,7 +52,7 @@ viz_launchpad_chart <- function(data = merch,
 								country = c("Total"),
 								region = c("Victoria"),
                 code_level = 3,
-                top = 10) {
+                top = 5) {
 	top_5_code <- data %>%
 		filter(country_dest %in% country,
 			   origin %in% region,
@@ -65,7 +68,9 @@ viz_launchpad_chart <- function(data = merch,
     filter(country_dest %in% country,
          origin %in% region,
          sitc_code %in% top_5_code) %>%
-    select(sitc, date, value, sitc_code)
+    select(sitc, date, value, sitc_code)%>%
+    group_by(sitc)%>%
+    mutate(sitc_shrink = strsplit(sitc, "[(]")[[1]][1])
 
   latest_month <- format(max(df$date), "%B %Y")
 
@@ -76,17 +81,19 @@ viz_launchpad_chart <- function(data = merch,
            tooltip = paste0(
             "SITC: ", sitc_code, "\n",
             format(.data$date, "%b %Y"), "\n",
-            "$", round2(.data$value, 1), "m"
+            format(round2(.data$value, 1),big.mark=",")
             ))
 
   df %>%
     djpr_ts_linechart(
-      col_var = .data$sitc,
-      y_labels = function(x) paste0("$", x, "m")
+      col_var = .data$sitc_shrink,
+      y_labels = function(x) format(x, big.mark=","),
+      label_wrap_length = 25,
+      x_expand_mult = c(0, 0.25)
     ) +
     labs(
-      title = paste("Top", top, "Exports by Value of Exports ($m)"),
-      subtitle = paste("Exports at SITC Level", code_level, "from", region),
+      title = paste("Top", top, "Exports by Value of Exports"),
+      subtitle = paste("Exports at SITC Level", code_level, "from", region," ($m)"),
       caption = caption
     )
 }
@@ -136,11 +143,10 @@ viz_goods_export_import_launchpad <- function(data = bop) {
     djpr_ts_linechart(
       col_var = .data$goods_services,
       label_num = paste0(scales::comma(round2(.data$value, 1))),
-      # y_labels = function(x) paste0(x, "%"),
-    ) +
+      y_labels = function(x) format(x, big.mark=",")) +
     labs(
       title = title,
-      subtitle = "Victoria's exports of goods and services in million dollars",
+      subtitle = "Victoria's exports of goods and services ($m)",
       caption = caption
     )
 }
@@ -169,16 +175,17 @@ viz_good_services_import_chart <- function(data = bop) {
 
   latest_change <- df %>%
     dplyr::filter(.data$goods_services == "Total") %>%
-    dplyr::mutate(change = .data$value - lag(.data$value, 1)) %>%
-    dplyr::filter(!is.na(.data$change)) %>%
+    dplyr::mutate(annual_change = .data$value - dplyr::lag(.data$value, 4),
+                  annual_pchange = .data$annual_change/dplyr::lag(.data$value, 4)) %>%
+    dplyr::filter(!is.na(.data$annual_pchange)) %>%
     dplyr::filter(.data$date == max(.data$date))
 
 
   title <-
     dplyr::case_when(
-      latest_change$change > 0 ~ paste0("Victoria's total exports rose by ", scales::comma(latest_change$change), " million dollars over the past quarter"),
-      latest_change$change < 0 ~ paste0("Victoria's total exports fell by ", scales::comma(abs(latest_change$change)), " million dollars over the past quarter"),
-      latest_change$change == 0 ~ "Victoria's total exports the same as over the past quarter ",
+      latest_change$annual_pchange > 0 ~ paste0("Victoria's total exports rose by ", paste0(round(latest_change$annual_pchange*100,1),"%"), " over the year"),
+      latest_change$annual_pchange < 0 ~ paste0("Victoria's total exports fell by ", paste0(round(latest_change$annual_pchange*100,1),"%"), " over the year"),
+      latest_change$annual_pchange == 0 ~ "Victoria's total exports the same as over the past quarter ",
       TRUE ~ "Victoria's total exports over the past quarter"
     )
 
@@ -190,11 +197,11 @@ viz_good_services_import_chart <- function(data = bop) {
     djpr_ts_linechart(
       col_var = .data$goods_services,
       label_num = paste0(scales::comma(round2(.data$value, 1))),
-      # y_labels = function(x) paste0(x, "%"),
+      y_labels = function(x) format(x, big.mark=",")
     ) +
     labs(
       title = title,
-      subtitle = "Victoria's exports of goods and services in million dollars",
+      subtitle = "Victoria's exports of goods and services ($m)",
       caption = caption
     )
 }
@@ -562,5 +569,6 @@ tab_launchpad_product_imp <- function(data = merch_imp, sitc_level = 1, rows = 5
   return(product_imp_list)
 }
 
-##### Analysis - anything after this line, please delete #####
+##### Testings new plot function, please delete #####
+
 

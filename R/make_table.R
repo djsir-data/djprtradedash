@@ -73,7 +73,7 @@ make_table_launchpad <- function(data,
     "",
     "Current figure & share (%)",
     "Change in latest period",
-    "Change in past quarter",
+    "Change in three months",
     "Change in past year")
 
   flex <- flex %>%

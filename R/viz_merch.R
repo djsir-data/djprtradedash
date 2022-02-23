@@ -1,9 +1,16 @@
 viz_merch_explorer <- function(data = merch,
                                countries = c("Thailand", "Malaysia"),
-                               goods = "Medicinal and pharmaceutical products",
+                               goods = "Medicinal and pharmaceutical products (excl. medicaments of group 542)",
                                origin = "Victoria",
                                facet_by = "country_dest",
                                smooth = FALSE) {
+
+  # if(sitc_level == "All") {
+  #   sitc_level <- c(1,2,3)
+  # }
+
+  dates <- unique(data$date) 
+
   df <- data %>%
     dplyr::filter(
       .data$sitc %in% .env$goods,
@@ -15,6 +22,20 @@ viz_merch_explorer <- function(data = merch,
       sitc = as.character(.data$sitc),
       country_dest = as.character(.data$country_dest)
     )
+
+  combs <- df %>% dplyr::select(-date, -value) %>% unique()
+  
+  df <- bind_rows(
+    merge(dates, combs) %>% 
+    dplyr::rename(date = 1) %>%
+    dplyr::mutate(value = 0),
+    df
+    ) %>%
+  dplyr::group_by(group, date) %>%
+  dplyr::slice(n()) %>%
+  dplyr::ungroup() %>%
+  dplyr::mutate(value = tidyr::replace_na(value, 0)) # %>%
+  # dplyr::filter(nchar(.data$sitc_code) %in% sitc_level)
 
   if (facet_by == "country_dest") {
     df <- df %>%
