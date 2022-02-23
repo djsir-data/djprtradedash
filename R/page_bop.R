@@ -14,9 +14,7 @@ page_bop <- function(...) {
     br(),
     djpr_plot_ui("goods_export_import_line"),
     br(),
-    djpr_plot_ui("vic_total_bop_cumul_line",
-      interactive = FALSE
-    ),
+    djpr_plot_ui("vic_total_bop_cumul_line"),
     h2(br(), "Goods"),
     djpr_plot_ui("goods_bop_bar_chart",
       interactive = FALSE

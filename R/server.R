@@ -197,7 +197,7 @@ server <- function(input, output, session) {
     height_percent = 75,
     plt_change = plt_change,
     date_slider = FALSE,
-    interactive = FALSE
+    interactive = TRUE
   )
   # Balance of Payments---
   # Goods:Goods imports and exports since COVID

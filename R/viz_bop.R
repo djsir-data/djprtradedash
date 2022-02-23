@@ -1084,7 +1084,7 @@ viz_vic_total_bop_cumul_line <- function(data = bop) {
       data = df %>%
         dplyr::mutate(tooltip = paste0(
                   format(.data$date, "%b %Y"), "\n",
-                  format(djprshiny::round2(.data$value, 1),big.mark=",")
+                  "$", format(djprshiny::round2(.data$value, 1),big.mark=","), "m"
                   ),
                   date = lubridate::ymd(paste0(2021,"-", lubridate::month(.data$date),"-", "01"))) %>%
         dplyr::group_by(year) %>%
