@@ -36,9 +36,6 @@ page_bop <- function(...) {
     djpr_plot_ui("NSW_Vic_Services_line_chart"),
     br(),
     h2(br(), "Balance of Trade "),
-    djpr_plot_ui("trade_balance_line_chart"),
-    br(),
-    centred_row(htmlOutput("bop_footnote")),
-    br()
+    djpr_plot_ui("trade_balance_line_chart")
   )
 }
