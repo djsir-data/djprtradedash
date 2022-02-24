@@ -56,7 +56,7 @@ server <- function(input, output, session) {
   #   date_slider_value_min = Sys.Date() - lubridate::years(3),
   #   width_percent = 100,
   #   check_box_options = c(1,2,3),
-  #   check_box_selected = 3, 
+  #   check_box_selected = 3,
   #   check_box_var = nchar(sitc_code),
   #   interactive = TRUE
   #   )
@@ -159,6 +159,11 @@ server <- function(input, output, session) {
 
   # Balance of Payments---
   # Goods and Services----
+  output$table_export_import <- renderUI({
+    table_export_import() %>%
+      flextable::htmltools_value()
+  })
+
   djpr_plot_server("total_bop_bar_chart",
     viz_total_bop_bar_chart,
     data = bop,
