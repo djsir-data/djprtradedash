@@ -9,19 +9,15 @@ page_bop <- function(...) {
     uiOutput("table_export_import") %>%
       djpr_with_spinner(),
     br(),
-    djpr_plot_ui("good_services_export_chart"),
+    djpr_plot_ui("good_services_import_chart"),
     br(),
     djpr_plot_ui("total_bop_bar_chart",
       interactive = FALSE
     ),
     br(),
-    djpr_plot_ui("good_services_import_chart"),
-    br(),
     djpr_plot_ui("goods_export_import_line"),
     br(),
-    djpr_plot_ui("Vic_total_bop_bar_chart",
-      interactive = FALSE
-    ),
+    djpr_plot_ui("vic_total_bop_cumul_line"),
     h2(br(), "Goods"),
     djpr_plot_ui("goods_bop_bar_chart",
       interactive = FALSE
