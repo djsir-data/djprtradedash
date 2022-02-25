@@ -26,7 +26,7 @@ page_merch <- function(...) {
         shinyWidgets::multiInput(
           inputId = "merch_countries",
           label = "Export destinations: ",
-          choices = sort(unique(as.character(merch$country_dest))),
+          choices = sort(merch_country_dest),
           selected = c("Thailand", "Malaysia"),
           width = "100%",
           options = list(
@@ -37,7 +37,7 @@ page_merch <- function(...) {
         shinyWidgets::multiInput(
           inputId = "merch_sitc",
           label = "Goods",
-          choices = sort(unique(as.character(merch$sitc))),
+          choices = sort(merch_sitc),
           selected = "Medicinal and pharmaceutical products",
           width = "100%",
           options = list(
@@ -82,11 +82,11 @@ page_merch <- function(...) {
             8,
             sliderInput("merch_explorer_dates",
               label = "",
-              min = min(merch$date),
-              max = max(merch$date),
+              min = merch_dates$min,
+              max = merch_dates$max,
               value = c(
-                min(merch$date),
-                max(merch$date)
+                merch_dates$min,
+                merch_dates$max
               ),
               dragRange = TRUE,
               timeFormat = "%b %Y",
