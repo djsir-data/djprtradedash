@@ -76,8 +76,9 @@ page_launchpad <- function(input, output, session, plt_change, table_rowcount = 
                    viz_launchpad_chart,
                    data = merch,
                    plt_change = plt_change,
-                   date_slider_value_min = Sys.Date() - lubridate::years(3),
-                   width_percent = 100
+                   date_slider_value_min = Sys.Date() - lubridate::years(2),
+                   width_percent = 100,
+                   convert_lazy = FALSE
   )
 
   print('plot1 done')
@@ -86,7 +87,9 @@ page_launchpad <- function(input, output, session, plt_change, table_rowcount = 
                               viz_good_services_import_chart,
                               data = bop,
                               plt_change = plt_change,
-                              width_percent = 50
+                              date_slider_value_min = Sys.Date() - lubridate::years(2),
+                              width_percent = 50,
+                              convert_lazy = FALSE
   )
 
   print('plot2 done')
@@ -95,8 +98,9 @@ page_launchpad <- function(input, output, session, plt_change, table_rowcount = 
                    viz_launchpad_countries,
                    data = merch,
                    plt_change = plt_change,
-                   date_slider_value_min = Sys.Date() - lubridate::years(3),
-                   width_percent = 50
+                   date_slider_value_min = Sys.Date() - lubridate::years(2),
+                   width_percent = 50,
+                   convert_lazy = FALSE
   )
 
   print('plot3 done')
