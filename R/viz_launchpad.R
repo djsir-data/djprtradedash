@@ -69,7 +69,7 @@ viz_launchpad_chart <- function(data = merch,
                 code_level = 3,
                 top = 5) {
 
-  print('generate top goods plot')
+  print(glue('viz_launchpad_chart / generate top goods plot: input {class(data)}'))
 
   filtered <- data %>%
     filter(.data$country_dest %in% !!country,
