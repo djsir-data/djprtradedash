@@ -4,12 +4,31 @@ viz_merch_explorer <- function(data = merch,
                                origin = "Victoria",
                                facet_by = "country_dest",
                                smooth = FALSE) {
+  data_dates <- data |>
+    summarise(
+      min = min(date, na.rm = TRUE),
+      max = max(date, na.rm = TRUE)
+    ) |>
+    collect() |>
+    mutate(across(everything(), as.Date))
+
   df <- data %>%
     dplyr::filter(
       .data$sitc %in% .env$goods,
       .data$country_dest %in% .env$countries,
       .data$origin == .env$origin
-    ) %>%
+    )
+
+  if ('tbl_lazy' %in% class(df)) {
+    df <- df %>%
+      collect() %>%
+      mutate(date = as.Date(date))
+    print('collect lazy for viz merch')
+    print(class(df))
+    print(class(df$date))
+  }
+
+  df <- df %>%
     dplyr::mutate(
       group = paste(.data$country_dest, .data$sitc, sep = "-"),
       sitc = as.character(.data$sitc),
@@ -47,7 +66,7 @@ viz_merch_explorer <- function(data = merch,
     TRUE, FALSE
   )
 
-  date_limits <- c(min(data$date), max(data$date))
+  date_limits <- c(data_dates$min, data_dates$max)
   x_breaks <- djprtheme::breaks_right(
     limits = date_limits,
     n_breaks = 5
@@ -83,7 +102,7 @@ viz_merch_explorer <- function(data = merch,
         date_labels = "%b\n%Y"
       )
   } else {
-    days_in_data <- as.numeric(max(data$date) - min(data$date))
+    days_in_data <- as.numeric(data_dates$max - data_dates$min)
     p <- p +
       ggrepel::geom_text_repel(
         data = ~ filter(
