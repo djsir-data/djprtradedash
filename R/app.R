@@ -10,7 +10,9 @@ app <- function(...) {
   # close db connection on exit
   onStop(function() {
     cat('Closing Pool')
-    pool::poolClose(db_pool)
+    duckdb::dbDisconnect(con, shutdown = TRUE)
+    rm(list = in_global, envir = .GlobalEnv)
+    rm(in_global, envir = .GlobalEnv)
   })
 
 
