@@ -68,9 +68,9 @@ viz_launchpad_chart <- function(data = merch,
     filter(country_dest %in% country,
          origin %in% region,
          sitc_code %in% top_5_code) %>%
-    select(sitc, date, value, sitc_code)%>%
-    group_by(sitc)%>%
-    mutate(sitc_shrink = strsplit(sitc, "[(]")[[1]][1])
+    select(sitc, date, value, sitc_code) %>%
+    group_by(sitc) %>%
+    mutate(sitc_shrink = paste0(sitc_code, ": ", stringr::str_trunc(sitc, 20, "right")))
 
   latest_month <- format(max(df$date), "%B %Y")
 
