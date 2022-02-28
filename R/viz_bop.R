@@ -267,7 +267,7 @@ viz_services_trade_line_chart <- function(data = bop) {
   df %>%
     djpr_ts_linechart(
       col_var = .data$exports_imports,
-      label_num = round2(.data$value, 1),
+      label_num = paste0(round2(.data$value, 1),"%")
     ) +
     labs(
       title = title,
