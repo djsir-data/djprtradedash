@@ -875,7 +875,7 @@ viz_NSW_Vic_Services_line_chart <- function(data = bop) {
   df %>%
     djpr_ts_linechart(
       col_var = .data$exports_imports,
-      label_num = round2(.data$value, 1),
+      label_num = paste0(round2(.data$value, 1),"%"),
       hline = 0
     ) +
     labs(
