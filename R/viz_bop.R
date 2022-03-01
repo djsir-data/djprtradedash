@@ -685,13 +685,20 @@ viz_trade_balance_line_chart <- function(data = bop) {
     dplyr::group_by(.data$goods_services) %>%
     dplyr::mutate(
       value = 100 * ((.data$value
-                      / dplyr::lag(.data$value,4)) - 1),
-      tooltip = paste0(
-        .data$goods_services, "\n",
-        format(.data$date, "%b %Y"), "\n",
-        round2(.data$value, 1), "%"
-      )
-    )
+                      / dplyr::lag(.data$value,4)) - 1)) %>%
+        dplyr::filter(!is.na(.data$value)) %>%
+        dplyr::ungroup()
+
+  #add tooltip
+  df <- df %>%
+    dplyr::mutate(
+  tooltip = paste0(
+    .data$goods_services, "\n",
+    format(.data$date, "%b %Y"), "\n",
+    round2(.data$value, 1), "%"
+  )
+
+  )
 
   total_latest <- df %>%
     dplyr::filter(.data$goods_services == "Goods and Services" &
@@ -715,7 +722,7 @@ viz_trade_balance_line_chart <- function(data = bop) {
   df %>%
     djpr_ts_linechart(
       col_var = .data$goods_services,
-      label_num = round2(.data$value, 1),
+      label_num = paste0(round2(.data$value, 1),"%"),
       hline = 0
     ) +
     labs(
