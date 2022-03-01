@@ -560,7 +560,7 @@ viz_goods_export_import_line <- function(data = bop) {
   df %>%
     djpr_ts_linechart(
       col_var = .data$exports_imports,
-      label_num = paste0(round2(.data$value, 1)),
+      label_num = paste0(round2(.data$value, 1),"%"),
       hline = 0
     ) +
     labs(
