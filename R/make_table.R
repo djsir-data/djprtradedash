@@ -29,7 +29,12 @@ make_table_launchpad <- function(data,
                                                 unset = "dashboard"
                        ),
                        notes = NULL,
-                       title = "") {
+                       title = "",
+                       header_row = c("",
+                                      "Current figure & share (%)",
+                                      "Change in latest period",
+                                      "Change in three months",
+                                      "Change in past year")) {
 
   stopifnot(destination %in% c("dashboard", "briefing"))
   stopifnot(inherits(data, "data.frame"))
@@ -68,13 +73,6 @@ make_table_launchpad <- function(data,
     flextable::valign()
 
   # Add an extra header row
-
-  header_row <- c(
-    "",
-    "Current figure & share (%)",
-    "Change in latest period",
-    "Change in three months",
-    "Change in past year")
 
   flex <- flex %>%
     flextable::add_header_row(values = header_row)
