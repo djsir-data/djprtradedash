@@ -232,14 +232,17 @@ viz_services_trade_line_chart <- function(data = bop) {
     dplyr::arrange(date)%>%
     dplyr::mutate(
       value = 100 * ((.data$value
-                              / dplyr::lag(.data$value,4)) - 1),
-      tooltip = paste0(
+                              / dplyr::lag(.data$value,4)) - 1)) %>%
+
+      dplyr::filter(!is.na(.data$value)) %>%
+      dplyr::ungroup()
+
+  df <- df %>%
+       dplyr::mutate( tooltip = paste0(
         .data$exports_imports, "\n",
         format(.data$date, "%b %Y"), "\n",
-        round2(.data$value, 1), "%"
-      )
-    ) %>%
-    dplyr::filter(date >= as.Date("2018-12-01"))
+        round2(.data$value, 1), "%"))
+
 
 
   latest_export <- df %>%
