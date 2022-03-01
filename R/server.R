@@ -94,6 +94,15 @@ server <- function(input, output, session) {
     make_table_launchpad(data = tab_launchpad_product_imp(rows = table_rowcount, sitc_level = 3)) %>%
       flextable::htmltools_value()
   })
+  output$launchpad_bop_table <- renderUI({
+    make_table_launchpad(data = launchpad_table_export_import(),
+                         header_row = c("",
+                                      "Current figure ($m)",
+                                      "Change since last quarter",
+                                      "Change in past year",
+                                      "Change since COVID")) %>%
+      flextable::htmltools_value()
+  })
 
   # Initialise country selection & URL query
   updateSelectInput(
