@@ -848,7 +848,8 @@ viz_good_services_import_chart <- function(data = bop) {
   df %>%
     djpr_ts_linechart(
       col_var = .data$goods_services,
-      label_num = paste0(scales::comma(round2(.data$value, 1))),
+      label_num = paste0("$",scales::comma(round2(.data$value, 1)),"m"),
+      y_labels = function(x) format(x, big.mark=",")
     ) +
     labs(
       title = title,
