@@ -15,6 +15,16 @@ merch_imp <- read_merch(series = "import")
 
 
 
+# Ensure merch files are data tables and filter for Victoria (to be reoved)
+setDT(merch)
+setDT(merch_imp)
+
+merch <- merch[origin == "Victoria"]
+merch_imp <- merch_imp[dest == "Victoria"]
+
+
+
+
 # ABS International Trade Supplementary Information data
 supp_cy <- read_supp("cy")
 supp_fy <- read_supp("fy")
