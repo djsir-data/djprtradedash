@@ -38,7 +38,8 @@ Imports:
     scales,
     data.table,
     purrr,
-    flextable
+    flextable,
+    duckdb
 Remotes: 
     djpr-data/djprshiny,
     djpr-data/djprtheme,
