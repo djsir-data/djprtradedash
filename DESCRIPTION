@@ -38,7 +38,9 @@ Imports:
     scales,
     data.table,
     purrr,
-    flextable
+    flextable,
+    duckdb,
+    pool
 Remotes: 
     djpr-data/djprshiny@accept-lazy-df,
     djpr-data/djprtheme,
