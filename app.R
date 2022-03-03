@@ -1,6 +1,7 @@
 
 
 # setup db connection
+pkgload::load_all()
 library(dplyr)
 library(dbplyr)
 library(glue)
@@ -36,5 +37,6 @@ merch_country_dest <- merch |>
 in_global <- ls()
 
 app()
+
 
 
