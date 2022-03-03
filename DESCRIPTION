@@ -41,7 +41,7 @@ Imports:
     flextable,
     duckdb
 Remotes: 
-    djpr-data/djprshiny,
+    djpr-data/djprshiny@accept-lazy-df,
     djpr-data/djprtheme,
     MattCowgill/readabs
 Depends: 
