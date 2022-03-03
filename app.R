@@ -1,10 +1,11 @@
-pkgload::load_all(".")
+
 
 # setup db connection
-library(pool)
 library(dplyr)
 library(dbplyr)
 library(glue)
+library(duckdb)
+library(djprtradedash)
 
 
 con <- duckdb::dbConnect(drv = duckdb::duckdb(),
