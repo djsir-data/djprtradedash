@@ -1,3 +1,11 @@
+#' Shiny App
+#'
+#' @param ...
+#'
+#' @return
+#' @export
+#'
+#' @examples
 app <- function(...) {
   trade_dash_cache <- cachem::cache_disk(
     dir = file.path(".", "app-cache")
