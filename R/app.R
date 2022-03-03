@@ -8,12 +8,12 @@ app <- function(...) {
   )
 
   # close db connection on exit
-  onStop(function() {
-    cat('Closing Pool')
-    duckdb::dbDisconnect(con, shutdown = TRUE)
-    rm(list = in_global, envir = .GlobalEnv)
-    rm(in_global, envir = .GlobalEnv)
-  })
+  # onStop(function() {
+  #   cat('Closing Pool')
+  #   duckdb::dbDisconnect(con, shutdown = TRUE)
+  #   rm(list = in_global, envir = .GlobalEnv)
+  #   rm(in_global, envir = .GlobalEnv)
+  # })
 
 
   shiny::shinyApp(ui(), server)
