@@ -112,17 +112,17 @@ viz_good_services_export_chart <- function(data = bop) {
 
   latest_change <- df %>%
     dplyr::filter(.data$goods_services == "Total") %>%
-    dplyr::mutate(change = .data$value - lag(.data$value, 1)) %>%
+    dplyr::mutate(change = .data$value - lag(.data$value, 4)) %>%
     dplyr::filter(!is.na(.data$change)) %>%
     dplyr::filter(.data$date == max(.data$date))
 
 
   title <-
     dplyr::case_when(
-      latest_change$change > 0 ~ paste0("Victoria's total exports rose by ", scales::comma(latest_change$change), " million dollars over the past quarter"),
-      latest_change$change < 0 ~ paste0("Victoria's total exports fell by ", scales::comma(abs(latest_change$change)), " million dollars over the past quarter"),
-      latest_change$change == 0 ~ "Victoria's total exports the same as over the past quarter ",
-      TRUE ~ "Victoria's total exports over the past quarter"
+      latest_change$change > 0 ~ paste0("Victoria's total exports rose by ", scales::comma(latest_change$change), " million dollars over the year"),
+      latest_change$change < 0 ~ paste0("Victoria's total exports fell by ", scales::comma(abs(latest_change$change)), " million dollars over the year"),
+      latest_change$change == 0 ~ "Victoria's total exports the same as over the past year ",
+      TRUE ~ "Victoria's total exports over the past year"
     )
 
 
@@ -132,7 +132,7 @@ viz_good_services_export_chart <- function(data = bop) {
   df %>%
     djpr_ts_linechart(
       col_var = .data$goods_services,
-      label_num = paste0(scales::comma(round2(.data$value, 1))),
+      label_num = paste0("$",scales::comma(round2(.data$value, 1)),"m"),
       y_labels = function(x) format(x, big.mark=",")
     ) +
     labs(
@@ -302,7 +302,7 @@ viz_service_bop_bar_chart <- function(data = bop) {
     ))
 
 
-  # % change of export and export since Dec 2029
+  # % change of export and export since Dec 2019
   df <- df %>%
     dplyr::group_by(.data$state, .data$exports_imports) %>%
     dplyr::arrange(.data$date)%>%
