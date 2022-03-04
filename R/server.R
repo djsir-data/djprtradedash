@@ -56,7 +56,7 @@ server <- function(input, output, session) {
   #   date_slider_value_min = Sys.Date() - lubridate::years(3),
   #   width_percent = 100,
   #   check_box_options = c(1,2,3),
-  #   check_box_selected = 3, 
+  #   check_box_selected = 3,
   #   check_box_var = nchar(sitc_code),
   #   interactive = TRUE
   #   )
@@ -92,6 +92,15 @@ server <- function(input, output, session) {
   })
   output$product_import_table <- renderUI({
     make_table_launchpad(data = tab_launchpad_product_imp(rows = table_rowcount, sitc_level = 3)) %>%
+      flextable::htmltools_value()
+  })
+  output$launchpad_bop_table <- renderUI({
+    make_table_launchpad(data = launchpad_table_export_import(),
+                         header_row = c("",
+                                      "Current figure ($m)",
+                                      "Change since last quarter",
+                                      "Change in past year",
+                                      "Change since COVID")) %>%
       flextable::htmltools_value()
   })
 
@@ -159,6 +168,11 @@ server <- function(input, output, session) {
 
   # Balance of Payments---
   # Goods and Services----
+  output$table_export_import <- renderUI({
+    table_export_import() %>%
+      flextable::htmltools_value()
+  })
+
   djpr_plot_server("total_bop_bar_chart",
     viz_total_bop_bar_chart,
     data = bop,

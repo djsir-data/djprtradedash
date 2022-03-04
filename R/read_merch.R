@@ -30,7 +30,7 @@ read_merch <- function(path = tempdir(),
     exports_dest_zip <- file.path(path, basename(url))
     download.file(url, exports_dest_zip, mode="wb")
     utils::unzip(exports_dest_zip, exdir=path)
-    exp_csv<- list.files(path, pattern="^MERCH_EXP_",full.names=TRUE)
+    exp_csv<- list.files(path, pattern="MERCH_EXP.csv",full.names=TRUE)
     merch <- data.table::fread(
       file.path(exp_csv),
       stringsAsFactors = TRUE,
@@ -85,7 +85,7 @@ read_merch <- function(path = tempdir(),
     imports_dest_zip <- file.path(path, basename(url))
     download.file(url, imports_dest_zip, mode="wb")
     utils::unzip(imports_dest_zip, exdir=path)
-    imp_csv<- list.files(path, pattern="^MERCH_IMP_",full.names=TRUE)
+    imp_csv<- list.files(path, pattern="MERCH_IMP.csv",full.names=TRUE)
     merch <- data.table::fread(
       file.path(imp_csv),
       stringsAsFactors = TRUE,
