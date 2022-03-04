@@ -22,7 +22,7 @@ page_launchpad <- function(...) {
         ),
       ),
     br(),
-    h6("Below is a summary of high-level trade data, at both product (SITC) and country level. For more granular or specific data related to trade please use the search box found below." ),
+    h6("Below is a summary of high-level trade data, at both product (SITC) and country level. For more granular or specific data related to trade please use the other tabs in this app where appropriate." ),
     br(),
     br(),
     h2("Countries", align='center'),
@@ -49,6 +49,10 @@ page_launchpad <- function(...) {
                     uiOutput("product_import_table", height = "600px"),
                     style='padding-left:20px; padding-right:0px;')
     ),
+    br(),
+    h2("Balance of Payments", align='center'),
+    br(),
+    uiOutput("launchpad_bop_table", height = "600px"),
     br(),
     centred_row(htmlOutput("launchpad_footnote")),
     br()
