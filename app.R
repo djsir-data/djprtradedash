@@ -12,27 +12,29 @@ library(djprtradedash)
 con <- duckdb::dbConnect(drv = duckdb::duckdb(),
                          db = "trade_database.duckdb")
 
-merch <- tbl(con, 'merch') # collect all here is 6 sec
-merch_imp <- tbl(con, 'merch_imp')
-supp_cy <- tbl(con, 'supp_cy')
-supp_fy <- tbl(con, 'supp_fy')
-bop <- tbl(con, 'bop')
+merch <- dplyr::tbl(con, 'merch') # collect all here is 6 sec
+merch_imp <- dplyr::tbl(con, 'merch_imp')
+supp_cy <- dplyr::tbl(con, 'supp_cy')
+supp_fy <- dplyr::tbl(con, 'supp_fy')
+bop <- dplyr::tbl(con, 'bop')
 
-merch_dates <- merch |>
-  summarise(
+merch_dates <- merch %>%
+  dplyr::summarise(
     min = min(date, na.rm = TRUE),
     max = max(date, na.rm = TRUE)
-    ) |>
-  collect() |>
-  mutate(across(everything(), as.Date))
+    ) %>%
+  dplyr::collect()  %>%
+  dplyr::mutate(dplyr::across(dplyr::everything(), as.Date))
 
-merch_sitc <- merch |>
-  summarize(sitc = distinct(sitc)) |>
-  collect() |> pull()
+merch_sitc <- merch  %>%
+  dplyr::summarize(sitc = distinct(sitc)) %>%
+  dplyr::collect() %>%
+  dplyr::pull()
 
-merch_country_dest <- merch |>
-  summarize(sitc = distinct(country_dest)) |>
-  collect() |> pull()
+merch_country_dest <- merch %>%
+  dplyr::summarize(sitc = dplyr::distinct(country_dest))  %>%
+  dplyr::collect() %>%
+  dplyr::pull()
 
 in_global <- ls()
 message(paste0(in_global, collapse = "\n"))
