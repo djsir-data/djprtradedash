@@ -10,7 +10,7 @@ library(djprtradedash)
 
 
 con <- duckdb::dbConnect(drv = duckdb::duckdb(),
-                         db = "trade")
+                         db = "trade_database.duckdb")
 
 merch <- tbl(con, 'merch') # collect all here is 6 sec
 merch_imp <- tbl(con, 'merch_imp')
@@ -35,6 +35,7 @@ merch_country_dest <- merch |>
   collect() |> pull()
 
 in_global <- ls()
+message(paste0(in_global, collapse = "\n"))
 
 app()
 
