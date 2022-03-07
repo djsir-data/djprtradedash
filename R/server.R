@@ -36,7 +36,7 @@ server <- function(input, output, session) {
     )
   })
 
-  output$launchpad_footnote <- output$bop_footnote <- output$merch_footnote <- output$country_footnote <- renderUI({
+  output$methodology_footnote <- output$launchpad_footnote <- output$bop_footnote <- output$merch_footnote <- output$country_footnote <- renderUI({
     footnote()
   })
 
