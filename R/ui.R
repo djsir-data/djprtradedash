@@ -5,6 +5,7 @@ ui <- function() {
     page_launchpad(),
     page_bop(),
     page_merch(),
-    page_country_profile()
+    page_methodology()#,
+    # page_country_profile()
   )
 }

@@ -36,7 +36,7 @@ server <- function(input, output, session) {
     )
   })
 
-  output$launchpad_footnote <- output$bop_footnote <- output$merch_footnote <- output$country_footnote <- renderUI({
+  output$methodology_footnote <- output$launchpad_footnote <- output$bop_footnote <- output$merch_footnote <- output$country_footnote <- renderUI({
     footnote()
   })
 
@@ -275,27 +275,27 @@ server <- function(input, output, session) {
   )
 
   # Country profiles
-  djpr_plot_server(
-    "country_top_exp",
-    viz_country_top_exp,
-    data = merch,
-    data_imp = merch_imp,
-    plt_change = plt_change,
-    country_select = reactive(input$country_select),
-    date_slider_value_min = Sys.Date() - lubridate::years(3),
-    height_percent = 160
-  )
-
-  output$country_1y_exp_stat <- reactive({
-    viz_country_1y_exp_stat(merch, input$country_select)
-  })
-
-  output$country_1y_imp_stat <- reactive({
-    viz_country_1y_imp_stat(merch_imp, input$country_select)
-  })
-
-  output$country_1y_exp_change_stat <- reactive({
-    viz_country_1y_exp_change_stat(merch, input$country_select)
-  })
+  # djpr_plot_server(
+  #   "country_top_exp",
+  #   viz_country_top_exp,
+  #   data = merch,
+  #   data_imp = merch_imp,
+  #   plt_change = plt_change,
+  #   country_select = reactive(input$country_select),
+  #   date_slider_value_min = Sys.Date() - lubridate::years(3),
+  #   height_percent = 160
+  # )
+  #
+  # output$country_1y_exp_stat <- reactive({
+  #   viz_country_1y_exp_stat(merch, input$country_select)
+  # })
+  #
+  # output$country_1y_imp_stat <- reactive({
+  #   viz_country_1y_imp_stat(merch_imp, input$country_select)
+  # })
+  #
+  # output$country_1y_exp_change_stat <- reactive({
+  #   viz_country_1y_exp_change_stat(merch, input$country_select)
+  # })
 
 }
