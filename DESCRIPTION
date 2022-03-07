@@ -36,7 +36,8 @@ Imports:
     scales,
     data.table,
     purrr,
-    flextable
+    flextable,
+    markdown
 Remotes: 
     djpr-data/djprshiny,
     djpr-data/djprtheme,
