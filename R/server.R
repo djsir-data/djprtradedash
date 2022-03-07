@@ -6,6 +6,7 @@
 #' @importFrom rlang .data .env
 
 server <- function(input, output, session) {
+
   plt_change <- reactive(input$plt_change) %>%
     debounce(2)
 

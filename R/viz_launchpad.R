@@ -30,7 +30,7 @@ viz_launchpad_countries <- function(data = merch,
   df <- df %>%
     mutate(date = as.Date(date))
 
-  print(glue('row num: {nrow(df)}'))
+  print(glue::glue('row num: {nrow(df)}'))
 
   #assertthat::assert_that(class(df$date) == 'Date', msg = 'incorrect date type')
 
@@ -69,7 +69,7 @@ viz_launchpad_chart <- function(data = merch,
                 code_level = 3,
                 top = 5) {
 
-  print(glue('viz_launchpad_chart / generate top goods plot: input {class(data)}'))
+  print(glue::glue('viz_launchpad_chart / generate top goods plot: input {class(data)}'))
 
   filtered <- data %>%
     filter(.data$country_dest %in% !!country,
@@ -218,7 +218,7 @@ viz_good_services_import_chart <- function(data = bop) {
     dplyr::mutate(value = abs(.data$value),
                   date = as.Date(date))
 
-  print(glue('row num: {nrow(df)}'))
+  print(glue::glue('row num: {nrow(df)}'))
 
   #assertthat::assert_that(class(df$date) == 'Date', msg = 'incorrect date type')
 
@@ -502,8 +502,8 @@ tab_launchpad_product_imp_exp <- function(direction = c('import', 'export'), dat
   )
 
   #generate table
-  country_filter <- glue('"{country_field}"')
-  source_filter <- glue('"{source_field}"')
+  country_filter <- glue::glue('"{country_field}"')
+  source_filter <- glue::glue('"{source_field}"')
 
   product_list <- data %>%
     group_by(sitc)%>%
