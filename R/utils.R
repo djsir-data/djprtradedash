@@ -73,6 +73,11 @@ slide_mean <- function(x, before = 5){
 }
 
 
+kill_cache <- function(...){
+  unlink("./app-cache/*", recursive = TRUE, force = TRUE)
+}
+
+
 #Unused
 append_header <- function(...){
   htmltools::tags$script(
