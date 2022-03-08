@@ -152,7 +152,7 @@ viz_goods_export_import_launchpad <- function(data = bop) {
 }
 
 # Victoria's historical imports of goods and services
-viz_good_services_import_chart <- function(data = bop) {
+viz_good_services_export_chart <- function(data = bop) {
   df <- data %>%
     dplyr::filter(
       .data$state == "Victoria",
@@ -183,8 +183,8 @@ viz_good_services_import_chart <- function(data = bop) {
 
   title <-
     dplyr::case_when(
-      latest_change$annual_pchange > 0 ~ paste0("Victoria's total exports rose by ", paste0(round(latest_change$annual_pchange*100,1),"%"), " over the year"),
-      latest_change$annual_pchange < 0 ~ paste0("Victoria's total exports fell by ", paste0(round(latest_change$annual_pchange*100,1),"%"), " over the year"),
+      latest_change$annual_pchange > 0 ~ paste0("Victoria's total exports rose by ", paste0(signif(latest_change$annual_pchange*100,2),"%"), " over the year"),
+      latest_change$annual_pchange < 0 ~ paste0("Victoria's total exports fell by ", paste0(signif(latest_change$annual_pchange*100,2),"%"), " over the year"),
       latest_change$annual_pchange == 0 ~ "Victoria's total exports the same as over the past quarter ",
       TRUE ~ "Victoria's total exports over the past quarter"
     )
@@ -565,7 +565,7 @@ tab_launchpad_product_imp <- function(data = merch_imp, sitc_level = 1, rows = 5
            !!paste0(nice_prev_qtr) := .data$prev_qtr_change,
            !!paste0(nice_prev_year) := .data$prev_year_change
     )%>%
-    head(rows) 
+    head(rows)
 
   return(product_imp_list)
 }
@@ -587,7 +587,7 @@ launchpad_table_export_import <- function(data = bop) {
       )) %>%
     select(date) %>%
     distinct() %>%
-    arrange(desc(date)) 
+    arrange(desc(date))
 
   #clean table headings
   latest_date <- datelist$date[1]
@@ -631,6 +631,6 @@ launchpad_table_export_import <- function(data = bop) {
            !!paste0(nice_prev_qtr) := .data$prev_qtr_change,
            !!paste0(nice_prev_year) := .data$prev_year_change,
            !!paste0(nice_since_covid) := .data$covid_change) %>%
-    relocate(` `) 
+    relocate(` `)
 }
 

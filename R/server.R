@@ -70,7 +70,7 @@ server <- function(input, output, session) {
     )
 
   djpr_plot_server("good_services_export_line_launchpad",
-    viz_good_services_import_chart,
+    viz_good_services_export_chart,
     data = bop,
     plt_change = plt_change,
     width_percent = 50
