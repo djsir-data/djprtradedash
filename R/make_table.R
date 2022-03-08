@@ -41,8 +41,17 @@ make_table_launchpad <- function(data,
   stopifnot(nrow(data) >= 1)
 
     # Create a basic flextable using the supplied dataframe
-  flex <- data%>%
-    flextable::flextable()
+  latest_date <- names(data)[2] %>% 
+    lubridate::my() %>%
+    format("%B %Y")
+
+  caption <- paste0("ABS.Stat Merchandise Exports by Commodity (latest data is from ", latest_date, "). Data has been smoothed using 12-month rolling averages." )
+
+  flex <- data %>%
+    flextable::flextable() %>%
+    flextable::add_footer(` ` = caption) %>%
+    flextable::fontsize(size = 7, part = "footer") %>%
+    flextable::merge_at(j = 1:5, part = "footer")
 
   if (destination == "dashboard") {
     # Define cell colours ----
