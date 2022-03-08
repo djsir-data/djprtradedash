@@ -10,7 +10,18 @@ page_launchpad <- function(...) {
         style = "font-size: 40px; color: #1F1547; font-family: 'Roboto Slab'"
       )
     ),
-    h2("Overview", align='center'),
+    fluidRow(
+      column(width = 5,
+        "Smooth using:\n",
+            shinyWidgets::materialSwitch("launch_smooth",
+              label = "12 month rolling average",
+              status = "primary",
+              value = FALSE
+            )),
+      column(width = 7,
+        h2("Overview", align='left'))
+      ),
+    br(),
     djpr_plot_ui("top_export_line_chart"),
     br(),
     fluidRow(

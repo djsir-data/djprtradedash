@@ -41,8 +41,16 @@ server <- function(input, output, session) {
   })
 
   #Launchpad tables and charts
+
+  viz_launch_chart <- shiny::reactive({
+    shiny::req(
+      input$launch_smooth
+      )
+    viz_launchpad_chart(smooth = input$launch_smooth)
+  })
+
   djpr_plot_server("top_export_line_chart",
-    viz_launchpad_chart,
+    viz_launch_chart(),
     data = merch,
     plt_change = plt_change,
     date_slider_value_min = Sys.Date() - lubridate::years(3),
@@ -78,22 +86,52 @@ server <- function(input, output, session) {
 
   table_rowcount <- 5
 
-  output$country_export_table <- renderUI({
-    make_table_launchpad(data = tab_launchpad_country_exp(rows = table_rowcount)) %>%
+  launch_country_exp <- shiny::reactive({
+    shiny::req(
+      input$launch_smooth
+    )
+    make_table_launchpad(data = tab_launchpad_country_exp(smooth = input$launch_smooth, rows = table_rowcount)) %>%
       flextable::htmltools_value()
+  })
+
+  launch_country_imp <- shiny::reactive({
+    shiny::req(
+      input$launch_smooth
+    )
+    make_table_launchpad(data = tab_launchpad_country_imp(smooth = input$launch_smooth, rows = table_rowcount)) %>%
+      flextable::htmltools_value()
+  })
+
+  launch_product_exp <- shiny::reactive({
+    shiny::req(
+      input$launch_smooth
+    )
+    make_table_launchpad(data = tab_launchpad_product_exp(smooth = input$launch_smooth, rows = table_rowcount, sitc_level = 3)) %>%
+      flextable::htmltools_value()
+  })
+
+  launch_product_imp <- shiny::reactive({
+    shiny::req(
+      input$launch_smooth
+    )
+    make_table_launchpad(data = tab_launchpad_product_imp(smooth = input$launch_smooth, rows = table_rowcount, sitc_level = 3)) %>%
+      flextable::htmltools_value()
+  })
+
+
+  output$country_export_table <- renderUI({
+    launch_country_exp()
   })
   output$country_import_table <- renderUI({
-    make_table_launchpad(data = tab_launchpad_country_imp(rows = table_rowcount)) %>%
-      flextable::htmltools_value()
+    launch_country_imp()
   })
   output$product_export_table <- renderUI({
-    make_table_launchpad(data = tab_launchpad_product_exp(rows = table_rowcount, sitc_level = 3)) %>%
-      flextable::htmltools_value()
+    launch_product_exp()
   })
   output$product_import_table <- renderUI({
-    make_table_launchpad(data = tab_launchpad_product_imp(rows = table_rowcount, sitc_level = 3)) %>%
-      flextable::htmltools_value()
+    launch_product_imp()
   })
+
   output$launchpad_bop_table <- renderUI({
     make_table_launchpad(data = launchpad_table_export_import(),
                          header_row = c("",
