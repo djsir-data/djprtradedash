@@ -965,7 +965,7 @@ viz_good_services_chart <- function(data = bop) {
     dplyr::mutate(value = abs(.data$value * 1000000))
 
 
-  latest_month <- format(max(df$date), "%B")
+  latest_month <- format(max(df$date), "%B %Y")
 
   df <- df %>%
     dplyr::mutate(tooltip = paste0(
