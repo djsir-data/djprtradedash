@@ -37,7 +37,8 @@ Imports:
     data.table,
     purrr,
     flextable,
-    markdown
+    markdown,
+    DT
 Remotes: 
     djpr-data/djprshiny,
     djpr-data/djprtheme,
