@@ -213,7 +213,8 @@ viz_good_trade_line_chart <- function(data = bop) {
   df %>%
     djpr_ts_linechart(
       col_var = .data$exports_imports,
-      label_num = round2(.data$value, 1),
+      label_num = scales::percent(.data$value, scale = 1),
+      y_labels = scales::label_percent(scale = 1)
     ) +
     labs(
       title = title,
@@ -278,7 +279,8 @@ viz_services_trade_line_chart <- function(data = bop) {
   df %>%
     djpr_ts_linechart(
       col_var = .data$exports_imports,
-      label_num = paste0(round2(.data$value, 1),"%")
+      label_num = paste0(round2(.data$value, 1),"%"),
+      y_labels = scales::label_percent(scale = 1)
     ) +
     labs(
       title = title,
@@ -358,7 +360,13 @@ viz_service_bop_bar_chart <- function(data = bop) {
   df <- df %>%
     dplyr::group_by(.data$state) %>%
     dplyr::filter(.data$date == max(.data$date)) %>%
-    dplyr::ungroup()
+    dplyr::mutate(
+      plot_order =
+        ifelse(.data$exports_imports == "Exports", value, as.numeric(NA))
+    ) %>%
+    dplyr::ungroup() %>%
+    dplyr::arrange(plot_order) %>%
+    dplyr::mutate(state = factor(.data$state, levels = unique(.data$state)))
 
 
   # draw bar chart for all state
@@ -370,20 +378,23 @@ viz_service_bop_bar_chart <- function(data = bop) {
     djpr_fill_manual(2) +
     geom_text(
       position = position_dodge(width = 1),
-      aes(label = round2(.data$value, 1)),
-      vjust = 0.5,
+      aes(
+        # y = .data$value + sign(.data$value),
+        label = scales::percent(.data$value, scale = 1),
+        hjust = ifelse(.data$value > 0, -0.1, 1.1)
+      ),
+      # vjust = 0.5,
       colour = "black",
-      hjust = 1.1,
+      # hjust = 1.1,
       size = 12 / .pt
     ) +
-    scale_x_discrete(expand = expansion(add = c(0.5, 0.65))) +
-    djpr_y_continuous() +
+    scale_y_continuous(expand = expansion(0.1, 0)) +
     theme(
       axis.text.x = element_blank(),
       axis.title = element_blank(),
       panel.grid = element_blank(),
       axis.line = element_blank(),
-      legend.position = c(0.1, 0.1),
+      legend.position = c(0.8, 0.1),
       legend.key.height = unit(1, "lines"),
       legend.key.width = unit(1, "lines"),
       legend.direction = "vertical",
@@ -822,6 +833,7 @@ viz_NSW_Vic_goods_line_chart <- function(data = bop) {
     djpr_ts_linechart(
       col_var = .data$exports_imports,
       label_num = paste0(round2(.data$value, 1),"%"),
+      y_labels = scales::label_percent(scale = 1),
       hline = 0
     ) +
     labs(
@@ -897,6 +909,7 @@ viz_NSW_Vic_Services_line_chart <- function(data = bop) {
     djpr_ts_linechart(
       col_var = .data$exports_imports,
       label_num = paste0(round2(.data$value, 1),"%"),
+      y_labels = scales::label_percent(scale = 1),
       hline = 0
     ) +
     labs(
