@@ -9,7 +9,7 @@ viz_merch_explorer <- function(data = merch,
   #   sitc_level <- c(1,2,3)
   # }
 
-  dates <- unique(data$date) 
+  dates <- unique(data$date)
 
   df <- data %>%
     dplyr::filter(
@@ -20,13 +20,14 @@ viz_merch_explorer <- function(data = merch,
     dplyr::mutate(
       group = paste(.data$country_dest, .data$sitc, sep = "-"),
       sitc = as.character(.data$sitc),
-      country_dest = as.character(.data$country_dest)
+      country_dest = as.character(.data$country_dest),
+      value = .data$value * 1000
     )
 
   combs <- df %>% dplyr::select(-date, -value) %>% unique()
-  
+
   df <- bind_rows(
-    merge(dates, combs) %>% 
+    merge(dates, combs) %>%
     dplyr::rename(date = 1) %>%
     dplyr::mutate(value = 0),
     df
@@ -129,5 +130,11 @@ viz_merch_explorer <- function(data = merch,
       theme_djpr()
   }
 
-  p
+  p +
+    ggplot2::scale_y_continuous(
+      label = scales::label_dollar(
+        scale = 1/1e06,
+        suffix = "m"
+      )
+      )
 }
