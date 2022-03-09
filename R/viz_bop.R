@@ -946,6 +946,78 @@ viz_good_services_import_chart <- function(data = bop) {
     )
 }
 
+# Victoria's historical imports and exports of goods and services
+viz_good_services_chart <- function(data = bop) {
+  df <- data %>%
+    dplyr::filter(
+      .data$state == "Victoria",
+    ) %>%
+    dplyr::select(-.data$series_id, -.data$unit) %>%
+    dplyr::filter(.data$indicator == "Chain Volume Measures") %>%
+    dplyr::mutate(goods_services = dplyr::if_else(.data$goods_services == "Goods and Services", "Total", .data$goods_services)) %>%
+    dplyr::mutate(value = abs(.data$value * 1000000))
+
+
+  latest_month <- format(max(df$date), "%B %Y")
+
+  df <- df %>%
+    dplyr::mutate(tooltip = paste0(
+      .data$state, "\n",
+      format(.data$date, "%b %Y"), "\n",
+      dollar_stat(.data$value)
+    ))
+
+  latest_change <- df %>%
+    dplyr::group_by(.data$exports_imports) %>%
+    dplyr::arrange(.data$date) %>%
+    dplyr::filter(.data$goods_services == "Total") %>%
+    dplyr::mutate(change = .data$value - lag(.data$value, 1)) %>%
+    dplyr::filter(.data$date == max(.data$date)) %>%
+    dplyr::ungroup()
+
+  title <- purrr::map2_chr(
+    latest_change$exports_imports,
+    latest_change$change,
+    ~paste0(
+      .x,
+      " ",
+      ifelse(.y > 0, "up ", "down "),
+      dollar_stat(abs(.y))
+      )
+  ) %>%
+  paste0(collapse = "; ") %>%
+  paste("This quarter:", .) %>%
+  stringr::str_to_sentence()
+
+
+  caption <- paste0(
+    "Source: ABS Balance of Payment quarterly (latest data is from ",
+    latest_month,
+    ")\nNote: Data seasonally Adjusted & Chain Volume Measures"
+    )
+
+
+  df %>%
+    djprshiny::djpr_ts_linechart(
+      col_var = .data$goods_services,
+      label_num = dollar_stat(value),
+      y_labels = scales::label_dollar(accuracy = 1, scale = 1e-09, suffix = "b")
+    ) +
+    ggplot2::facet_wrap(~exports_imports) +
+    ggplot2::theme(
+      strip.text = ggplot2::element_text(
+        family = "sans",
+        face = "bold",
+        size = 16
+      )
+    )+
+    ggplot2::labs(
+      title = title,
+      subtitle = "Total Victorian trade volumes",
+      caption = caption
+    )
+}
+
 # Victoria's exports of goods and services by calendar year
 viz_Vic_total_bop_bar_chart <- function(data = bop) {
   df <- data %>%

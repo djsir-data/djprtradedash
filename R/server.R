@@ -192,10 +192,11 @@ server <- function(input, output, session) {
 
   # Goods and Services: Goods and Services imports time series
 
-  djpr_plot_server("good_services_import_chart",
-    viz_good_services_import_chart,
+  djpr_plot_server("good_services_chart",
+    viz_good_services_chart,
     data = bop,
-    plt_change = plt_change
+    plt_change = plt_change,
+    date_slider_value_min = max(bop$date, na.rm = TRUE) - lubridate::years(5)
   )
 
   # Goods and Services: Annual growth in goods and services exports and imports
