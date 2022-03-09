@@ -556,11 +556,11 @@ viz_goods_export_import_line <- function(data = bop) {
 
   title <- dplyr::case_when(
     export_latest > import_latest ~
-    paste0("Exports of goods and services grew faster than imports in the year to ", latest_month),
+    paste0("Exports grew faster than imports in the year to ", latest_month),
     export_latest < import_latest ~
-    paste0("Imports of goods and services grew faster than exports in the year to ", latest_month),
+    paste0("Imports grew faster than exports in the year to ", latest_month),
     export_latest == import_latest ~
-    paste0("Exports of goods and services grew at around the same pace imports in the year to ", latest_month),
+    paste0("Exports grew at around the same pace imports in the year to ", latest_month),
     TRUE ~ paste0("Exports and imports of goods and services annual")
   )
 
@@ -577,7 +577,7 @@ viz_goods_export_import_line <- function(data = bop) {
     ) +
     labs(
       title = title,
-      subtitle = "Annual growth in goods and services export and import in Victoria (%)",
+      subtitle = "Annual growth in Victorian goods and services trade (%)",
       caption = caption
     ) +
     facet_wrap(~exports_imports, ncol = 1, scales = "free_y")
@@ -969,11 +969,11 @@ viz_good_services_chart <- function(data = bop) {
 
   df <- df %>%
     dplyr::mutate(tooltip = paste0(
-      "<h4> Victoian ",
+      "<p><b> Victoian ",
       .data$goods_services,
       " ",
       .data$exports_imports,
-      "</h4><br/><p><i>",
+      "</b></p><br/><p><i>",
       format(.data$date, "%b %Y"),
       "</i>",
       " - ",
@@ -1027,7 +1027,7 @@ viz_good_services_chart <- function(data = bop) {
     )+
     ggplot2::labs(
       title = title,
-      subtitle = "Total Victorian trade volumes",
+      subtitle = "Total Victorian trade volumes ($)",
       caption = caption
     )
 }
