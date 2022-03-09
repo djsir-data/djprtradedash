@@ -39,11 +39,11 @@ viz_total_bop_bar_chart <- function(data = bop) {
 
 
   title <- dplyr::case_when(
-    vic_rank == 1 ~ paste0("Victoria's total exports of goods and services are the highes exports of any Australian state"),
-    vic_rank == 2 ~ paste0("Victoria's total exports of goods and services are the second highest exports of any Australian state"),
-    vic_rank == 3 ~ paste0("Victoria's total exports of goods and services are the third highest exports of any Australian state"),
-    vic_rank <= 4 ~ paste0("Victoria's total exports of goods and services are the fourth highest exports of any Australian state in ", format(max(df$date), "%B %Y")),
-    TRUE ~ "Victoria's total exports of goods and services compared to other states and territories"
+    vic_rank == 1 ~ paste0("Victoria was Australia's largest exporter in ", format(max(bop$date), "the %B quarter %Y")),
+    vic_rank == 2 ~ paste0("Victoria was Australia's second largest exporter in ", format(max(bop$date), "the %B quarter %Y")),
+    vic_rank == 3 ~ paste0("Victoria was Australia's third largest exporter in ", format(max(bop$date), "the %B quarter %Y")),
+    vic_rank == 4 ~ paste0("Victoria was Australia's fourth largest exporter in ", format(max(bop$date), "the %B quarter %Y")),
+    TRUE ~ "Victoria's exports compared to other states"
   )
 
   caption <- paste0("Source: ABS Balance of Payment quarterly (latest data is from ", latest_month, "). Note: Data seasonally Adjusted & Chain Volume Measures")
@@ -89,10 +89,7 @@ viz_total_bop_bar_chart <- function(data = bop) {
     ) +
     labs(
       title = title,
-      subtitle = paste0(
-        "Export of goods and services by Australian states in ",
-        format(max(data$date), "%B %Y")
-      ),
+      subtitle = "Export of goods and services by Australian states ($)",
       caption = caption
     )
 }
