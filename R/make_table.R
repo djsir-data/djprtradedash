@@ -45,7 +45,13 @@ make_table_launchpad <- function(data,
     lubridate::my() %>%
     format("%B %Y")
 
-  caption <- paste0("ABS.Stat Merchandise Exports by Commodity (latest data is from ", latest_date, "). Data has been smoothed using 12-month rolling averages." )
+  if (is.element("sitc", names(data))){
+    caption <- paste0("ABS.Stat Merchandise Exports by Commodity (latest data is from ", latest_date, "). Data has been smoothed using 12-month rolling averages." )
+  } else {
+    caption <- paste0("ABS Balance of Payment quarterly data (latest data is from ", latest_date, ").  Note: Data seasonally Adjusted & Chain Volume Measures")
+  }
+
+
 
   flex <- data %>%
     flextable::flextable() %>%
