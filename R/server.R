@@ -299,4 +299,22 @@ server <- function(input, output, session) {
   #   viz_country_1y_exp_change_stat(merch, input$country_select)
   # })
 
+  # Notes
+  # SITC Information and Explorer
+
+  sitc_merch <- merch %>%
+      filter(country_dest == "Total",
+             date >= (max(merch$date) - months(12))) %>%
+      group_by(sitc_code, sitc) %>%
+      summarise(sum_value = sum(value)) %>%
+      mutate(sitc_level = as.character(nchar(sitc_code))) %>%
+      rename(`SITC Level` = sitc_level,
+             `SITC Code` = sitc_code,
+             `SITC Name` = sitc,
+             `Total Exports in Last 12 Months ($000s)` = sum_value)
+
+  output$sitc_table <- DT::renderDT(
+    sitc_merch,
+    filter = "top"
+  )
 }
