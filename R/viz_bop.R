@@ -52,6 +52,15 @@ viz_total_bop_bar_chart <- function(data = bop) {
 
   # draw bar chart for all state
   df %>%
+    dplyr::mutate(
+      state = factor(
+        .data$state,
+        levels = latest %>%
+          dplyr::arrange(dplyr::desc(rank)) %>%
+          dplyr::pull(state)
+        ),
+      value = .data$value * 1e06
+      ) %>%
     ggplot(aes(x = .data$state, y = .data$value, fill = factor(.data$goods_services))) +
     geom_bar(stat = "identity", position = "dodge") +
     coord_flip() +
@@ -59,10 +68,10 @@ viz_total_bop_bar_chart <- function(data = bop) {
     djpr_fill_manual(3) +
     geom_text(
       position = position_dodge(width = 1),
-      aes(label = paste0(scales::comma(round2(.data$value, 1)))),
+      aes(label = dollar_stat(.data$value)),
       vjust = 0.5,
       colour = "black",
-      hjust = 0,
+      hjust = -0.1,
       size = 12 / .pt
     ) +
     scale_x_discrete(expand = expansion(add = c(0.2, 0.85))) +
@@ -72,7 +81,7 @@ viz_total_bop_bar_chart <- function(data = bop) {
       axis.title = element_blank(),
       panel.grid = element_blank(),
       axis.line = element_blank(),
-      legend.position = c(0.6, 0.6),
+      legend.position = c(0.65, 0.1),
       legend.key.height = unit(1, "lines"),
       legend.key.width = unit(1, "lines"),
       legend.direction = "horizontal",
@@ -82,7 +91,7 @@ viz_total_bop_bar_chart <- function(data = bop) {
       title = title,
       subtitle = paste0(
         "Export of goods and services by Australian states in ",
-        format(max(data$date), "%B %Y")," ($m)"
+        format(max(data$date), "%B %Y")
       ),
       caption = caption
     )
@@ -566,6 +575,7 @@ viz_goods_export_import_line <- function(data = bop) {
     djpr_ts_linechart(
       col_var = .data$exports_imports,
       label_num = paste0(round2(.data$value, 1),"%"),
+      y_labels = scales::label_percent(scale = 1, accuracy = 1),
       hline = 0
     ) +
     labs(
@@ -958,13 +968,20 @@ viz_good_services_chart <- function(data = bop) {
     dplyr::mutate(value = abs(.data$value * 1000000))
 
 
-  latest_month <- format(max(df$date), "%B %Y")
+  latest_month <- format(max(df$date), "%B")
 
   df <- df %>%
     dplyr::mutate(tooltip = paste0(
-      .data$state, "\n",
-      format(.data$date, "%b %Y"), "\n",
-      dollar_stat(.data$value)
+      "<h4> Victoian ",
+      .data$goods_services,
+      " ",
+      .data$exports_imports,
+      "</h4><br/><p><i>",
+      format(.data$date, "%b %Y"),
+      "</i>",
+      " - ",
+      scales::dollar(.data$value, accuracy = 1.11, scale = 1e-09, suffix = "b"),
+      "</p>"
     ))
 
   latest_change <- df %>%
@@ -986,7 +1003,7 @@ viz_good_services_chart <- function(data = bop) {
       )
   ) %>%
   paste0(collapse = "; ") %>%
-  paste("This quarter:", .) %>%
+  paste(latest_month, "quarter", .) %>%
   stringr::str_to_sentence()
 
 
