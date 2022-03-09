@@ -1112,7 +1112,7 @@ viz_vic_total_bop_cumul_line <- function(data = bop) {
   df <- data %>%
     dplyr::select(-.data$series_id, -.data$unit) %>%
     dplyr::filter(.data$state == "Victoria", .data$indicator == "Chain Volume Measures", .data$exports_imports == "Exports") %>%
-    dplyr::mutate(value = abs(.data$value),
+    dplyr::mutate(value = abs(.data$value * 1e06),
                   year = lubridate::year(.data$date),
                   quarter = lubridate::quarter(.data$date)) %>%
     dplyr::ungroup()
@@ -1135,18 +1135,18 @@ viz_vic_total_bop_cumul_line <- function(data = bop) {
   if(latest_change$quarter == 1) {
     title <-
       dplyr::case_when(
-        latest_change$change > 0 ~ paste0("Victoria's total exports in Q", latest_change$quarter, " are ", scales::comma(latest_change$change), " million dollars higher than Q1 ", (latest_change$year-1)),
-        latest_change$change < 0 ~ paste0("Victoria's total exports in Q", latest_change$quarter, " are ", scales::comma(abs(latest_change$change)), " million dollars lower than Q1 ", (latest_change$year-1)),
-        latest_change$change == 0 ~ paste0("Victoria's total exports are the same as Q", latest_change$quarter, " ", (latest_change$year-1)),
-        TRUE ~ "Victoria's total exports over the past year"
+        latest_change$change > 0 ~ paste0("Victoria's exports in Q", latest_change$quarter, " are ", dollar_stat(abs(latest_change$change)), " higher than Q1 ", (latest_change$year-1)),
+        latest_change$change < 0 ~ paste0("Victoria's exports in Q", latest_change$quarter, " are ", dollar_stat(abs(latest_change$change)), " lower than Q1 ", (latest_change$year-1)),
+        latest_change$change == 0 ~ paste0("Victoria's  exports are the same as Q", latest_change$quarter, " ", (latest_change$year-1)),
+        TRUE ~ "Victoria's exports over the past year"
       )
   } else {
     title <-
       dplyr::case_when(
-        latest_change$change > 0 ~ paste0("Victoria's YTD total exports to Q", latest_change$quarter, " are ", scales::comma(latest_change$change), " million dollars higher than Q1 to Q", latest_change$quarter, " ", (latest_change$year-1)),
-        latest_change$change < 0 ~ paste0("Victoria's YTD total exports to Q", latest_change$quarter, " are ", scales::comma(abs(latest_change$change)), " million dollars lower than Q1 to Q", latest_change$quarter, " ", (latest_change$year-1)),
-        latest_change$change == 0 ~ paste0("Victoria's YTD total exports are the same as last year from Q1 to Q", latest_change$quarter, " ", (latest_change$year-1)),
-        TRUE ~ "Victoria's total exports over the past year"
+        latest_change$change > 0 ~ paste0("Victoria's year to date exports are ", dollar_stat(abs(latest_change$change)), " higher than", (latest_change$year-1)),
+        latest_change$change < 0 ~ paste0("Victoria's year to date exports are ", dollar_stat(abs(latest_change$change)), " lower than ", (latest_change$year-1)),
+        latest_change$change == 0 ~ paste0("Victoria's year to date exports are the same as ", (latest_change$year-1)),
+        TRUE ~ "Victoria's exports over the past year"
       )
   }
 
@@ -1156,40 +1156,53 @@ viz_vic_total_bop_cumul_line <- function(data = bop) {
 
 
   # draw line chart with relevant years
-  p <- df %>%
-    dplyr::mutate(tooltip = paste0(
-                  format(.data$date, "%b %Y"), "\n",
-                  format(round2(.data$value, 1),big.mark=",")
-                  ),
-                  date = lubridate::ymd(paste0(2021,"-", lubridate::month(.data$date),"-", "01"))) %>%
+  df %>%
+    dplyr::mutate(
+      tooltip = paste0(
+        format(.data$date, "%b %Y"), "\n",
+        scales::dollar(.data$value, accuracy = 1, scale = 1/1e09, suffix = "b")
+      ),
+      date = lubridate::ymd(paste0(2021,"-", lubridate::month(.data$date),"-", "01"))) %>%
     djprshiny::djpr_ts_linechart(
       y_var = .data$value,
-      y_labels = function(x) format(x, big.mark=","),
+      y_labels = scales::label_dollar(accuracy = 1, scale = 1/1e09, suffix = "b"),
       col_var = factor(.data$year),
       label = FALSE
-      ) +
+    ) +
     ggplot2::labs(
       title = title,
-      subtitle = "Victoria's cumulative exports of total goods and services ($m)",
+      subtitle = "Victoria's cumulative exports of total goods and services ($)",
       caption = caption
     ) +
     ggplot2::scale_x_date(expand = expansion(mult = c(0, 0.2)),
-                 date_labels = "%B",
-                 breaks = as.Date(c("2021-03-01","2021-06-01", "2021-09-01","2021-12-01"))) +
+                          date_labels = "%B",
+                          breaks = as.Date(c("2021-03-01","2021-06-01", "2021-09-01","2021-12-01"))) +
     ggrepel::geom_text_repel(
       direction = "y",
       hjust = -1,
       data = df %>%
         dplyr::mutate(tooltip = paste0(
-                  format(.data$date, "%b %Y"), "\n",
-                  "$", format(djprshiny::round2(.data$value, 1),big.mark=","), "m"
-                  ),
-                  date = lubridate::ymd(paste0(2021,"-", lubridate::month(.data$date),"-", "01"))) %>%
+          format(.data$date, "%b %Y"), "\n",
+          scales::dollar(.data$value, accuracy = 1, scale = 1/1e09, suffix = "b")
+        ),
+        date = lubridate::ymd(paste0(2021,"-", lubridate::month(.data$date),"-", "01"))) %>%
         dplyr::group_by(year) %>%
         filter(.data$date == max(.data$date)),
-      ggplot2::aes(label = paste0(.data$year, " Q", .data$quarter, "\n", paste0("$", format(.data$value, big.mark=","), "m")))
+      ggplot2::aes(
+        label = paste0(
+          "Q",
+          .data$quarter,
+          " ",
+          .data$year,
+          " ",
+          scales::dollar(.data$value, accuracy = 1, scale = 1/1e09, suffix = "b")
+          )
+        )
+    ) +
+    ggplot2::scale_y_continuous(
+      labels = scales::label_dollar(accuracy = 1, scale = 1/1e09, suffix = "b"),
+      expand = c(0.2, 0.2)
       ) +
     ggplot2::scale_color_grey(start = 0.8, end = 0)
 
-  p
 }
