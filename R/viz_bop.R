@@ -1110,22 +1110,28 @@ viz_Vic_total_bop_bar_chart <- function(data = bop) {
 # Victoria's exports of goods and services by calendar year
 viz_vic_total_bop_cumul_line <- function(data = bop) {
   df <- data %>%
-    dplyr::select(-.data$series_id, -.data$unit) %>%
-    dplyr::filter(.data$state == "Victoria", .data$indicator == "Chain Volume Measures", .data$exports_imports == "Exports") %>%
-    dplyr::mutate(value = abs(.data$value * 1e06),
-                  year = lubridate::year(.data$date),
-                  quarter = lubridate::quarter(.data$date)) %>%
-    dplyr::ungroup()
+    dplyr::filter(
+      .data$state == "Victoria",
+      .data$indicator == "Chain Volume Measures",
+      .data$exports_imports == "Exports",
+      .data$goods_services == "Goods and Services",
+      .data$date >=
+        max(.data$date, na.rm = TRUE) -
+        lubridate::years(5) +
+        lubridate::days(1)
+      ) %>%
+    dplyr::mutate(
+      value = abs(.data$value * 1e06),
+      year = lubridate::year(.data$date),
+      quarter = lubridate::quarter(.data$date)
+      ) %>%
+    dplyr::group_by(year) %>%
+    dplyr::arrange(date) %>%
+    dplyr::mutate(value = cumsum(.data$value)) %>%
+    dplyr::ungroup() %>%
+    dplyr::select(.data$date, .data$year, .data$quarter, .data$value)
 
   latest_month <- format(max(df$date), "%B %Y")
-
-  df <- df %>%
-    dplyr::filter(goods_services == "Goods and Services",
-                  format(date, "%Y") >= format(Sys.Date() - lubridate::years(5), "%Y")) %>%
-    dplyr::arrange(date) %>%
-    dplyr::group_by(year) %>%
-    dplyr::mutate(value = cumsum(.data$value)) %>%
-    dplyr::ungroup()
 
   latest_change <- df %>%
     dplyr::mutate(change = .data$value - lag(.data$value, 4)) %>%
@@ -1159,10 +1165,14 @@ viz_vic_total_bop_cumul_line <- function(data = bop) {
   df %>%
     dplyr::mutate(
       tooltip = paste0(
-        format(.data$date, "%b %Y"), "\n",
+        format(.data$date, "%b %Y"),
+        "\n",
         scales::dollar(.data$value, accuracy = 1, scale = 1/1e09, suffix = "b")
       ),
-      date = lubridate::ymd(paste0(2021,"-", lubridate::month(.data$date),"-", "01"))) %>%
+      date = lubridate::ymd(
+        paste0(2021,"-", lubridate::month(.data$date),"-", "01")
+        )
+      ) %>%
     djprshiny::djpr_ts_linechart(
       y_var = .data$value,
       y_labels = scales::label_dollar(accuracy = 1, scale = 1/1e09, suffix = "b"),
@@ -1174,9 +1184,11 @@ viz_vic_total_bop_cumul_line <- function(data = bop) {
       subtitle = "Victoria's cumulative exports of total goods and services ($)",
       caption = caption
     ) +
-    ggplot2::scale_x_date(expand = expansion(mult = c(0, 0.2)),
-                          date_labels = "%B",
-                          breaks = as.Date(c("2021-03-01","2021-06-01", "2021-09-01","2021-12-01"))) +
+    ggplot2::scale_x_date(
+      expand = expansion(mult = c(0, 0.2)),
+      date_labels = "%B",
+      breaks = as.Date(c("2021-03-01","2021-06-01", "2021-09-01","2021-12-01"))
+      ) +
     ggrepel::geom_text_repel(
       direction = "y",
       hjust = -1,
