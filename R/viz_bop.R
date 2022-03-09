@@ -89,7 +89,7 @@ viz_total_bop_bar_chart <- function(data = bop) {
     ) +
     labs(
       title = title,
-      subtitle = "Export of goods and services by Australian states ($)",
+      subtitle = "Export of goods and services by Australian state ($)",
       caption = caption
     )
 }
