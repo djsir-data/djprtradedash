@@ -1189,7 +1189,7 @@ viz_vic_total_bop_cumul_line <- function(data = bop) {
       tooltip = paste0(
         format(.data$date, "%b %Y"),
         "\n",
-        scales::dollar(.data$value, accuracy = 1, scale = 1/1e09, suffix = "b")
+        scales::dollar(.data$value, accuracy = 1.1, scale = 1/1e09, suffix = "b")
       ),
       date = lubridate::ymd(
         paste0(2021,"-", lubridate::month(.data$date),"-", "01")
@@ -1229,7 +1229,7 @@ viz_vic_total_bop_cumul_line <- function(data = bop) {
           " ",
           .data$year,
           " ",
-          scales::dollar(.data$value, accuracy = 1, scale = 1/1e09, suffix = "b")
+          scales::dollar(.data$value, accuracy = 1.1, scale = 1/1e09, suffix = "b")
           )
         )
     ) +
