@@ -29,7 +29,7 @@ server <- function(input, output, session) {
           "of Jobs, Precincts and Regions. ", # The <b>latest data in this ",
           # "dashboard is for ",
           # format(latest, "%B %Y"),
-          'Please <a href="mailto:spp-data@ecodev.vic.gov.au?subject=DJPR Jobs Dashboard">email us</a> with any comments or feedback.'
+          'Please <a href="mailto:spp-data@ecodev.vic.gov.au?subject=DJPR Trade Dashboard">email us</a> with any comments or feedback.'
         )
       ),
       style = "color: #828282; font-size: 0.75rem"
