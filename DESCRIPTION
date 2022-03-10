@@ -38,7 +38,8 @@ Imports:
     purrr,
     flextable,
     markdown,
-    DT
+    DT,
+    slider
 Remotes: 
     djpr-data/djprshiny,
     djpr-data/djprtheme,

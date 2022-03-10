@@ -50,7 +50,7 @@ viz_merch_explorer <- function(data = merch,
     df <- df %>%
       dplyr::group_by(.data$group) %>%
       dplyr::arrange(.data$date) %>%
-      dplyr::mutate(value = slide_mean(.data$value, before = 11L))
+      dplyr::mutate(value = slider::slide_mean(.data$value, before = 11L))
   }
 
   n_col <- length(unique(df$col))

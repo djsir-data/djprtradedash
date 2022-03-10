@@ -67,12 +67,6 @@ dollar_stat <- function(stat){
   )
 }
 
-slide_mean <- function(x, before = 5){
-  n_before <- c(seq_len(before), rep(before + 1, length(x) - before))
-  data.table::frollmean(x, n_before, adaptive = TRUE)
-}
-
-
 kill_cache <- function(...){
   unlink("./app-cache/*", recursive = TRUE, force = TRUE)
 }

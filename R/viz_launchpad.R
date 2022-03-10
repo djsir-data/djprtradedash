@@ -19,7 +19,7 @@ viz_launchpad_countries <- function(data = merch,
       dplyr::left_join(data, by = c("country_dest", "origin", "date")) %>%
       dplyr::group_by(country_dest, origin) %>%
       dplyr::mutate(value = tidyr::replace_na(value, 0),
-                    value = slide_mean(value, before = 11L)) %>%
+                    value = slider::slide_mean(value, before = 11L)) %>%
       dplyr::ungroup()
   }
 
@@ -94,7 +94,7 @@ viz_launchpad_chart <- function(data = merch,
       dplyr::left_join(data, by = c("sitc", "origin", "date")) %>%
       dplyr::group_by(sitc, origin) %>%
       dplyr::mutate(value = tidyr::replace_na(value, 0),
-                    value = slide_mean(value, before = 11L)) %>%
+                    value = slider::slide_mean(value, before = 11L)) %>%
       dplyr::ungroup()
   }
 
@@ -366,13 +366,13 @@ tab_launchpad_country_exp <- function(data = merch, rows = 5, smooth = TRUE) {
     all_dates <- data %>%
       dplyr::select(date) %>%
       unique()
-    
+
     country_exp_list <- data %>%
       tidyr::expand(country_dest, origin, all_dates) %>%
       dplyr::left_join(data, by = c("country_dest", "origin", "date")) %>%
       dplyr::group_by(country_dest, origin) %>%
       dplyr::mutate(value = tidyr::replace_na(value, 0),
-                    value = slide_mean(value, before = 11L)) %>%
+                    value = slider::slide_mean(value, before = 11L)) %>%
       dplyr::ungroup() %>%
       dplyr::select(country_dest, date, value) %>%
       dplyr::arrange(country_dest, date) %>%
@@ -460,13 +460,13 @@ tab_launchpad_country_imp <- function(data = merch_imp, rows = 5, smooth = TRUE)
     all_dates <- data %>%
       dplyr::select(date) %>%
       unique()
-    
+
     country_imp_list <- data %>%
       tidyr::expand(country_origin, dest, all_dates) %>%
       dplyr::left_join(data, by = c("country_origin", "dest", "date")) %>%
       dplyr::group_by(country_origin, dest) %>%
       dplyr::mutate(value = tidyr::replace_na(value, 0),
-                    value = slide_mean(value, before = 11L)) %>%
+                    value = slider::slide_mean(value, before = 11L)) %>%
       dplyr::ungroup() %>%
       dplyr::select(country_origin, date, value) %>%
       dplyr::arrange(country_origin, date) %>%
@@ -559,13 +559,13 @@ tab_launchpad_product_exp <- function(data = merch, sitc_level = 1, rows = 5, sm
     all_dates <- data %>%
       dplyr::select(date) %>%
       unique()
-    
+
     product_exp_list <- data %>%
       tidyr::expand(sitc, origin, all_dates) %>%
       dplyr::left_join(data, by = c("sitc", "origin", "date")) %>%
       dplyr::group_by(sitc, origin) %>%
       dplyr::mutate(value = tidyr::replace_na(value, 0),
-                    value = slide_mean(value, before = 11L)) %>%
+                    value = slider::slide_mean(value, before = 11L)) %>%
       dplyr::ungroup() %>%
       dplyr::select(sitc, date, value) %>%
       dplyr::arrange(sitc, date) %>%
@@ -658,13 +658,13 @@ tab_launchpad_product_imp <- function(data = merch_imp, sitc_level = 1, rows = 5
     all_dates <- data %>%
       dplyr::select(date) %>%
       unique()
-    
+
     product_imp_list <- data %>%
       tidyr::expand(sitc, dest, all_dates) %>%
       dplyr::left_join(data, by = c("sitc", "dest", "date")) %>%
       dplyr::group_by(sitc, dest) %>%
       dplyr::mutate(value = tidyr::replace_na(value, 0),
-                    value = slide_mean(value, before = 11L)) %>%
+                    value = slider::slide_mean(value, before = 11L)) %>%
       dplyr::ungroup() %>%
       dplyr::select(sitc, date, value) %>%
       dplyr::arrange(sitc, date) %>%
