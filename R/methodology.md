@@ -2,7 +2,7 @@
 
 ## Introduction
 
-The **DJPR Trade Dashboard** includes detailed export and import data compiled and released by the *Australian Bureau of Statistics*, the *Department of Foreign Affairs and Trade* (DFAT) and the *Australian Border Force*. References and citations under respective charts will specify the time period of the data (i.e. whether it is produced on a monthly, quarterly or annual basis), as well as whether it is original (raw) data, seasonally adjusted, and/or revised.
+The **DJPR Trade Dashboard** includes detailed export and import data compiled and released by the *Australian Bureau of Statistics*, the *Department of Foreign Affairs and Trade* (DFAT) and the *Australian Border Force*. References and citations under respective charts will specify the time period of the data (i.e. whether it is produced on a monthly, quarterly or annual basis), as well as whether it is original (raw) data, seasonally adjusted, and/or revised. State level trade data is reflecting the exports/imports of businesses located within a particular state and not the value of goods that arrive at ports located within the state of interest.
 
 ## Balance of Payments Data
 
@@ -14,14 +14,9 @@ Though efforts are made to align monthly and quarterly data, monthly seasonally 
 
 The conceptual framework used in compiling Victoria's balance of payment statistics is based on the International Monetary Fund's [Balance of Payments and International Investment Position Manual, Sixth Edition](https://www.imf.org/external/pubs/ft/bop/2007/bopman6.htm) (BPM6).  
 
+The BoP data in this dashboard covers the current account (not the capital account or financial account), which measures exports and imports of goods and services. In many cases in this dashboard as well, Chain Volume Measures of balance of payment data are used. Chain volume data shows changes in volume over time, with prices held constant. It should be interpreted as the value of trade in any particular year when measured in the year prior to the latest complete financial year prices, not the $ value of trade recorded in that year. For further information on chain volume measures refer to Page 5 the ABS publication: Information paper, Australian National Accounts, Introduction of Chain Volume and Price Indexes ([Catalogue 5248.0](https://www.abs.gov.au/AUSSTATS/abs@.nsf/Lookup/5248.0Main+Features1Sep%201997?OpenDocument)).
 
-BoP statements cover a wide range of economic transactions which are classified into: 
-
-- the current account, which measures exports and imports of goods and services, primary income and secondary income  
-- the capital account, which records acquisitions/disposals of non-produced, non-financial assets and capital transfers 
-- the financial account, which records transactions in foreign financial assets and liabilities (such as shares, bonds and loans) between residents and non-residents.
-
-The balance on current account is derived by aggregating all relevant transactions (i.e. trade in goods, trade in services, primary income and secondary income). A balance is said to be in surplus if credit entries exceed debit entries or in deficit if debit entries exceed credit entries. 
+The balance on current account is derived by aggregating all relevant transactions (i.e. trade in goods, trade in services, primary income and secondary income). A balance is said to be in surplus if credit entries exceed debit entries or in deficit if debit entries exceed credit entries.  
 
 A summary of Australia's BoP can be found in table 1 of [Balance of Payments and International Investment Position, Australia](https://www.abs.gov.au/statistics/economy/international-trade/balance-payments-and-international-investment-position-australia/latest-release#data-download) (cat. no. 5302.0). 
 
@@ -35,7 +30,7 @@ Goods credits (export) data are based on information provided by exporters to th
 
 For commodities such as iron ore and coal, newly negotiated contract prices are not fully reflected in data first reported to Home Affairs. When additional information on quantity and/or unit price for these commodities is available, the ABS may adjust the data to reflect actual transaction values. 
 
-A summary of revisions made to Victoria's goods exports can be found within the 'Supplementary Information' tab [here](https://www.abs.gov.au/statistics/economy/international-trade/balance-payments-and-international-investment-position-australia/latest-release).  
+A summary of revisions made to Victoria's goods exports can be found within the 'Supplementary Information' tab [here](https://www.abs.gov.au/statistics/economy/international-trade/international-trade-goods-and-services-australia/latest-release#supplementary-information).  
 While every effort is made to ensure the accuracy and reliability of estimates, most series are subject to revision as more complete and accurate information becomes available. Care should be exercised in the use and interpretation of monthly merchandise data. The revisions are applied differently for merchandise trade and balance of payments series. Each month, merchandise trade data are revised for the previous six months to incorporate latest available data. 
 
 ### Confidential Items of Trade
@@ -44,7 +39,7 @@ The ABS makes some data confidential. Further information can be found in the [C
 
 ### SITC Classification
 
-The merchandise trade data on an international merchandise trade basis are presented using the Standard International Trade Classification Revision 4 (SITC Rev. 4) commodity classification, abbreviated as SITC.  
+Merchandise trade data are reported on an international merchandise trade basis, using the Standard International Trade Classification Revision 4 (SITC Rev. 4) commodity classification, abbreviated as SITC.  
 
 SITC, Rev. 4 was accepted by the United Nations Statistical Commission at its thirty-seventh session (March 2006). The Interagency Task Force on International Merchandise Trade Statistics recommends SITC, Rev. 4 for use in the analysis of international merchandise trade by interested countries and international organizations. 
 
