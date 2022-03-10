@@ -1022,7 +1022,7 @@ viz_good_services_chart <- function(data = bop) {
       )
   ) %>%
   paste0(collapse = "; ") %>%
-  paste(latest_month, "quarter", .) %>%
+  paste(latest_month, "quarterly", .) %>%
   stringr::str_to_sentence()
 
 
