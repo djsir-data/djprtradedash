@@ -146,7 +146,7 @@ server <- function(input, output, session) {
 
   sitc_merch <- merch %>%
       filter(country_dest == "Total",
-             date >= (max(merch$date) - months(12))) %>%
+             date >= (max(merch_dates$max) - months(12))) %>%
       group_by(sitc_code, sitc) %>%
       summarise(sum_value = sum(value)) %>%
       mutate(sitc_level = as.character(nchar(sitc_code))) %>%

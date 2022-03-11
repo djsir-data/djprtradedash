@@ -19,7 +19,7 @@ page_methodology <- function(...) {
 	    div(
 	    	HTML(paste0(
 	    		"Source: ABS.Stat Merchandise Exports data per commodity. Latest data is from ",
-	    		format(max(merch$date), "%B %Y"), "."
+	    		format(merch_dates$max, "%B %Y"), "."
 	    		)
 	    		),
 	    	style = "font-size: 0.75rem"
