@@ -140,10 +140,6 @@ viz_launchpad_chart <- function(data = merch,
   latest_month <- format(max(df$date, na.rm = TRUE), "%B %Y")
 
   if(smooth) {
-    df <- df %>%
-      dplyr::filter(.data$country_dest %in% .env$country,
-                    .data$origin %in% .env$region,
-                    nchar(.data$sitc_code) == .env$code_level)
 
     all_dates <- df %>%
       dplyr::select(df) %>%
