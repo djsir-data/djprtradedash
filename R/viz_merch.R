@@ -1,9 +1,10 @@
 viz_merch_explorer <- function(data = merch,
                                countries = c("Thailand", "Malaysia"),
-                               goods = "Medicinal and pharmaceutical products",
+                               goods = "Medicinal and pharmaceutical products (excl. medicaments of group 542)",
                                origin = "Victoria",
                                facet_by = "country_dest",
                                smooth = FALSE) {
+
   data_dates <- data |>
     summarise(
       min = min(date, na.rm = TRUE),
@@ -11,6 +12,7 @@ viz_merch_explorer <- function(data = merch,
     ) |>
     collect() |>
     mutate(across(everything(), as.Date))
+
 
   df <- data %>%
     dplyr::filter(
@@ -32,8 +34,23 @@ viz_merch_explorer <- function(data = merch,
     dplyr::mutate(
       group = paste(.data$country_dest, .data$sitc, sep = "-"),
       sitc = as.character(.data$sitc),
-      country_dest = as.character(.data$country_dest)
+      country_dest = as.character(.data$country_dest),
+      value = .data$value * 1000
     )
+
+  combs <- df %>% dplyr::select(-date, -value) %>% unique()
+
+  df <- bind_rows(
+    merge(dates, combs) %>%
+    dplyr::rename(date = 1) %>%
+    dplyr::mutate(value = 0),
+    df
+    ) %>%
+  dplyr::group_by(group, date) %>%
+  dplyr::slice(n()) %>%
+  dplyr::ungroup() %>%
+  dplyr::mutate(value = tidyr::replace_na(value, 0)) # %>%
+  # dplyr::filter(nchar(.data$sitc_code) %in% sitc_level)
 
   if (facet_by == "country_dest") {
     df <- df %>%
@@ -47,7 +64,7 @@ viz_merch_explorer <- function(data = merch,
     df <- df %>%
       dplyr::group_by(.data$group) %>%
       dplyr::arrange(.data$date) %>%
-      dplyr::mutate(value = slide_mean(.data$value, before = 11L))
+      dplyr::mutate(value = slider::slide_mean(.data$value, before = 11L))
   }
 
   n_col <- length(unique(df$col))
@@ -127,5 +144,11 @@ viz_merch_explorer <- function(data = merch,
       theme_djpr()
   }
 
-  p
+  p +
+    ggplot2::scale_y_continuous(
+      label = scales::label_dollar(
+        scale = 1/1e06,
+        suffix = "m"
+      )
+      )
 }

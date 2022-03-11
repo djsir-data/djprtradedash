@@ -1,5 +1,6 @@
 
-pkgload::load_all()
+pkgload::load_all(".")
+# kill_cache()
 app()
 
 

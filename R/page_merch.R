@@ -37,8 +37,8 @@ page_merch <- function(...) {
         shinyWidgets::multiInput(
           inputId = "merch_sitc",
           label = "Goods",
-          choices = sort(merch_sitc),
-          selected = "Medicinal and pharmaceutical products",
+          choices = "",
+          selected = "Medicinal and pharmaceutical products (excl. medicaments of group 542)",
           width = "100%",
           options = list(
             non_selected_header = "All goods:",
@@ -51,7 +51,23 @@ page_merch <- function(...) {
         # djpr_plot_ui("merch_explorer")
         fluidRow(
           column(
-            6,
+            4,
+            shinyWidgets::awesomeRadio(
+              inputId = "merch_explorer_sitc",
+              label = "SITC Level: ",
+              choices = c(
+                1,
+                2,
+                3,
+                "All"
+              ),
+              selected = 3,
+              inline = TRUE,
+              status = "primary"
+            )
+          ),
+          column(
+            4,
             shinyWidgets::awesomeRadio(
               inputId = "merch_explorer_facets",
               label = "Facet on: ",
@@ -65,7 +81,7 @@ page_merch <- function(...) {
             )
           ),
           column(
-            6,
+            4,
             "Smooth using:\n",
             shinyWidgets::materialSwitch("merch_explorer_smooth",
               label = "12 month rolling average",

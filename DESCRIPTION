@@ -40,7 +40,9 @@ Imports:
     purrr,
     flextable,
     duckdb,
-    pool
+    markdown,
+    DT,
+    slider
 Remotes: 
     djpr-data/djprshiny@accept-lazy-df,
     djpr-data/djprtheme,

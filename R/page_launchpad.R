@@ -11,6 +11,8 @@ page_launchpadUI <- function(id) {
         style = "font-size: 40px; color: #1F1547; font-family: 'Roboto Slab'"
       )
     ),
+    br(),
+    h2("Overview", align='center'),
     djpr_plot_ui("top_export_line_chart"),
     br(),
     fluidRow(
@@ -22,25 +24,18 @@ page_launchpadUI <- function(id) {
         ),
       ),
     br(),
-    h6("Below is a summary of high-level trade data, at both product (SITC) and country level. For more granular or specific data related to trade please use the search box found below." ),
+    h6("Below is a summary of high-level trade data, at both product (SITC) and country level. For more granular or specific data related to trade please use the other tabs in this app where appropriate." ),
     br(),
-    # shinyWidget::searchInput(
-    #   inputId = "search", label = "Enter your text",
-    #   placeholder = "A placeholder",
-    #   btnSearch = icon("search"),
-    #   btnReset = icon("remove"),
-    #   width = "450px"
-    # ),
     br(),
     h2("Countries", align='center'),
     br(),
     fluidRow(
       column(width = 6,
-             h4("Top 5 Exports"),
+             h4("Top 5 Exports ($m)"),
              uiOutput("country_export_table", height = "600px"),
              style='padding-left:0px; padding-right:20px;'),
       column(width = 6,
-             h4("Top 5 Imports"),
+             h4("Top 5 Imports ($m)"),
              uiOutput("country_import_table", height = "600px"),
              style='padding-left:20px; padding-right:0px;')
     ),
@@ -48,14 +43,18 @@ page_launchpadUI <- function(id) {
     h2("Products", align='center'),
     br(),
     fluidRow(column(width = 6,
-                    h4("Top 5 Exports"),
+                    h4("Top 5 Exports ($m)"),
                     uiOutput("product_export_table", height = "600px"),
                     style='padding-left:0px; padding-right:20px;'),
              column(width = 6,
-                    h4("Top 5 Imports"),
+                    h4("Top 5 Imports ($m)"),
                     uiOutput("product_import_table", height = "600px"),
                     style='padding-left:20px; padding-right:0px;')
     ),
+    br(),
+    h2("Balance of Payments", align='center'),
+    br(),
+    uiOutput("launchpad_bop_table", height = "600px"),
     br(),
     centred_row(htmlOutput("launchpad_footnote")),
     br()
@@ -84,7 +83,7 @@ page_launchpad <- function(input, output, session, plt_change, table_rowcount = 
   print('plot1 done')
 
   djprshiny::djpr_plot_server("good_services_export_line_launchpad",
-                              viz_good_services_import_chart,
+                              viz_good_services_export_chart,
                               data = bop,
                               plt_change = plt_change,
                               date_slider_value_min = Sys.Date() - lubridate::years(2),
@@ -117,13 +116,24 @@ page_launchpad <- function(input, output, session, plt_change, table_rowcount = 
       flextable::htmltools_value()
   })
   output$product_export_table <- renderUI({
-    make_table_launchpad(data = tab_launchpad_product_imp_exp('export', merch, rows = table_rowcount, sitc_level = 1)) %>%
+    make_table_launchpad(data = tab_launchpad_product_imp_exp('export', merch, rows = table_rowcount, sitc_level = 3)) %>%
       flextable::htmltools_value()
   })
   output$product_import_table <- renderUI({
-    make_table_launchpad(data = tab_launchpad_product_imp_exp('import', merch_imp, rows = table_rowcount, sitc_level = 1)) %>%
+    make_table_launchpad(data = tab_launchpad_product_imp_exp('import', merch_imp, rows = table_rowcount, sitc_level = 3)) %>%
       flextable::htmltools_value()
   })
+
+  output$launchpad_bop_table <- renderUI({
+    make_table_launchpad(data = launchpad_table_export_import(),
+                         header_row = c("",
+                                        "Current figure ($m)",
+                                        "Change since last quarter",
+                                        "Change in past year",
+                                        "Change since COVID")) %>%
+      flextable::htmltools_value()
+  })
+
 
   print('all tables rendered')
 

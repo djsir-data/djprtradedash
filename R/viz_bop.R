@@ -1,3 +1,160 @@
+#-------------------- Goods & Services -----------------------
+
+# Latest period exports of goods and services by state
+viz_total_bop_bar_chart <- function(data = bop) {
+  df <- data %>%
+    dplyr::select(-.data$series_id, -.data$unit) %>%
+    dplyr::filter(.data$indicator == "Chain Volume Measures", .data$exports_imports == "Exports") %>%
+    dplyr::mutate(value = abs(.data$value)) %>%
+    dplyr::filter(.data$date == max(.data$date)) %>%
+    dplyr::filter(
+      !.data$state == "Australian Capital Territory",
+      !.data$state == "Northern Territory"
+    ) %>%
+    dplyr::mutate(state = dplyr::case_when(
+      .data$state == "New South Wales" ~ "NSW",
+      .data$state == "Victoria" ~ "Vic",
+      .data$state == "Queensland" ~ "Qld",
+      .data$state == "South Australia" ~ "SA",
+      .data$state == "Western Australia" ~ "WA",
+      .data$state == "Tasmania" ~ "Tas",
+    )) %>%
+    dplyr::mutate(goods_services = dplyr::if_else(.data$goods_services == "Goods and Services", "Total", .data$goods_services))
+
+
+
+  latest_month <- format(max(df$date), "%B %Y")
+
+
+  latest <- df %>%
+    dplyr::filter(
+      .data$date == max(.data$date)
+    ) %>%
+    dplyr::filter(.data$goods_services == "Total") %>%
+    dplyr::select(.data$state, .data$value) %>%
+    dplyr::mutate(rank = dplyr::min_rank(-.data$value))
+
+
+  vic_rank <- latest$rank[latest$state == "Vic"]
+
+
+  title <- dplyr::case_when(
+    vic_rank == 1 ~ paste0("Victoria was Australia's largest exporter in ", format(max(bop$date), "the %B quarter %Y")),
+    vic_rank == 2 ~ paste0("Victoria was Australia's second largest exporter in ", format(max(bop$date), "the %B quarter %Y")),
+    vic_rank == 3 ~ paste0("Victoria was Australia's third largest exporter in ", format(max(bop$date), "the %B quarter %Y")),
+    vic_rank == 4 ~ paste0("Victoria was Australia's fourth largest exporter in ", format(max(bop$date), "the %B quarter %Y")),
+    TRUE ~ "Victoria's exports compared to other states"
+  )
+
+  caption <- paste0("Source: ABS Balance of Payment quarterly (latest data is from ", latest_month, "). Note: Data seasonally Adjusted & Chain Volume Measures")
+
+
+
+  # draw bar chart for all state
+  df %>%
+    dplyr::mutate(
+      state = factor(
+        .data$state,
+        levels = latest %>%
+          dplyr::arrange(dplyr::desc(rank)) %>%
+          dplyr::pull(state)
+        ),
+      value = .data$value * 1e06
+      ) %>%
+    ggplot(aes(x = .data$state, y = .data$value, fill = factor(.data$goods_services))) +
+    geom_bar(stat = "identity", position = "dodge") +
+    coord_flip() +
+    theme_djpr(flipped = TRUE) +
+    djpr_fill_manual(3) +
+    geom_text(
+      position = position_dodge(width = 1),
+      aes(label = dollar_stat(.data$value)),
+      vjust = 0.5,
+      colour = "black",
+      hjust = -0.1,
+      size = 12 / .pt
+    ) +
+    scale_x_discrete(expand = expansion(add = c(0.2, 0.85))) +
+    scale_y_continuous(expand = expansion(mult = c(0, 0.15))) +
+    theme(
+      axis.text.x = element_blank(),
+      axis.title = element_blank(),
+      panel.grid = element_blank(),
+      axis.line = element_blank(),
+      legend.position = c(0.65, 0.1),
+      legend.key.height = unit(1, "lines"),
+      legend.key.width = unit(1, "lines"),
+      legend.direction = "horizontal",
+      axis.ticks = element_blank()
+    ) +
+    labs(
+      title = title,
+      subtitle = "Export of goods and services by Australian state ($)",
+      caption = caption
+    )
+}
+
+# Victoria's historical exports of goods and services
+viz_good_services_export_chart <- function(data = bop) {
+  df <- data %>%
+    dplyr::filter(
+      .data$state == "Victoria",
+    ) %>%
+    dplyr::select(-.data$series_id, -.data$unit) %>%
+    dplyr::filter(.data$exports_imports == "Exports", .data$indicator == "Chain Volume Measures") %>%
+    dplyr::mutate(goods_services = dplyr::if_else(.data$goods_services == "Goods and Services", "Total", .data$goods_services)) %>%
+    dplyr::mutate(value = abs(.data$value))
+
+
+  latest_month <- format(max(df$date), "%B %Y")
+
+
+  df <- df %>%
+    dplyr::mutate(tooltip = paste0(
+      .data$goods_services, "\n",
+      format(.data$date, "%b %Y"), "\n",
+      round2(.data$value, 1)
+    ))
+
+  latest_change <- df %>%
+    dplyr::filter(.data$goods_services == "Total") %>%
+    dplyr::mutate(change = .data$value - lag(.data$value, 1)) %>%
+    dplyr::filter(!is.na(.data$change)) %>%
+    dplyr::filter(.data$date == max(.data$date))
+
+
+  title <-
+    dplyr::case_when(
+      latest_change$change > 0 ~ paste0("Victoria's total exports rose by ", scales::comma(latest_change$change), " million dollars over the past quarter"),
+      latest_change$change < 0 ~ paste0("Victoria's total exports fell by ", scales::comma(abs(latest_change$change)), " million dollars over the past quarter"),
+      latest_change$change == 0 ~ "Victoria's total exports the same as over the past quarter ",
+      TRUE ~ "Victoria's total exports over the past quarter"
+    )
+
+
+  caption <- paste0("Source: ABS Balance of Payment quarterly (latest data is from ", latest_month, "). Note: Data seasonally Adjusted & Chain Volume Measures")
+
+
+  df %>%
+    djpr_ts_linechart(
+      col_var = .data$goods_services,
+      label_num = paste0(scales::comma(round2(.data$value, 1))),
+      y_labels = function(x) format(x, big.mark=",")
+    ) +
+    labs(
+      title = title,
+      subtitle = "Victoria's exports of goods and services ($m)",
+      caption = caption
+    )
+}
+
+#-------------------- Goods  ---------------------------------
+
+#-------------------- Services  ------------------------------
+
+#-------------------- Balance of Trade  ----------------------
+
+
 # Cumulative Change in Victoria's goods exports and imports since COVID
 viz_good_trade_line_chart <- function(data = bop) {
   df <- data %>%
@@ -12,19 +169,23 @@ viz_good_trade_line_chart <- function(data = bop) {
   latest_month <- format(max(df$date), "%B %Y")
   year_prior <- format(max(df$date)-months(12), "%B %Y")
 
+
   df <- df %>%
     dplyr::group_by(.data$exports_imports) %>%
     dplyr::arrange(date)%>%
     dplyr::mutate(
       value = 100 * ((.data$value
-        / dplyr::lag(.data$value,4)) - 1),
-      tooltip = paste0(
-        .data$exports_imports, "\n",
-        format(.data$date, "%b %Y"), "\n",
-        round2(.data$value, 1), "%"
-      )
-    ) %>%
-    dplyr::filter(date >= as.Date("2018-12-01"))
+                      / dplyr::lag(.data$value,4)) - 1)) %>%
+
+    dplyr::filter(!is.na(.data$value)) %>%
+    dplyr::ungroup()
+
+  df <- df %>%
+    dplyr::mutate( tooltip = paste0(
+      .data$exports_imports, "\n",
+      format(.data$date, "%b %Y"), "\n",
+      round2(.data$value, 1), "%"))
+
 
 
   latest_export <- df %>%
@@ -52,12 +213,12 @@ viz_good_trade_line_chart <- function(data = bop) {
   df %>%
     djpr_ts_linechart(
       col_var = .data$exports_imports,
-      label_num = paste0(round2(.data$value, 1), "%"),
-      y_labels = function(x) paste0(x, "%"),
+      label_num = scales::percent(.data$value, scale = 1),
+      y_labels = scales::label_percent(scale = 1)
     ) +
     labs(
       title = title,
-      subtitle = paste0("Cumulative annual change in Victorian exports and imports in ",latest_month),
+      subtitle = paste0("Cumulative annual change in Victorian exports and imports in ",latest_month," (%)"),
       caption = caption
     )
 }
@@ -82,15 +243,16 @@ viz_services_trade_line_chart <- function(data = bop) {
     dplyr::arrange(date)%>%
     dplyr::mutate(
       value = 100 * ((.data$value
-                              / dplyr::lag(.data$value,4)) - 1),
-      tooltip = paste0(
+                              / dplyr::lag(.data$value,4)) - 1)) %>%
+
+      dplyr::filter(!is.na(.data$value)) %>%
+      dplyr::ungroup()
+
+  df <- df %>%
+       dplyr::mutate( tooltip = paste0(
         .data$exports_imports, "\n",
         format(.data$date, "%b %Y"), "\n",
-        round2(.data$value, 1), "%"
-      )
-    ) %>%
-    dplyr::filter(date >= as.Date("2018-12-01"))
-
+        round2(.data$value, 1), "%"))
 
   latest_export <- df %>%
     dplyr::filter(
@@ -117,12 +279,12 @@ viz_services_trade_line_chart <- function(data = bop) {
   df %>%
     djpr_ts_linechart(
       col_var = .data$exports_imports,
-      label_num = paste0(round2(.data$value, 1), "%"),
-      y_labels = function(x) paste0(x, "%"),
+      label_num = paste0(round2(.data$value, 1),"%"),
+      y_labels = scales::label_percent(scale = 1)
     ) +
     labs(
       title = title,
-      subtitle = paste0("Cumulative annual change in Victorian exports and imports in ", latest_month),
+      subtitle = paste0("Cumulative annual change in Victorian exports and imports in ", latest_month," (%)"),
       caption = caption
     )
 }
@@ -198,7 +360,13 @@ viz_service_bop_bar_chart <- function(data = bop) {
   df <- df %>%
     dplyr::group_by(.data$state) %>%
     dplyr::filter(.data$date == max(.data$date)) %>%
-    dplyr::ungroup()
+    dplyr::mutate(
+      plot_order =
+        ifelse(.data$exports_imports == "Exports", value, as.numeric(NA))
+    ) %>%
+    dplyr::ungroup() %>%
+    dplyr::arrange(plot_order) %>%
+    dplyr::mutate(state = factor(.data$state, levels = unique(.data$state)))
 
 
   # draw bar chart for all state
@@ -210,20 +378,23 @@ viz_service_bop_bar_chart <- function(data = bop) {
     djpr_fill_manual(2) +
     geom_text(
       position = position_dodge(width = 1),
-      aes(label = paste0(round2(.data$value, 1), "%")),
-      vjust = 0.5,
+      aes(
+        # y = .data$value + sign(.data$value),
+        label = scales::percent(.data$value, scale = 1),
+        hjust = ifelse(.data$value > 0, -0.1, 1.1)
+      ),
+      # vjust = 0.5,
       colour = "black",
-      hjust = 1.1,
+      # hjust = 1.1,
       size = 12 / .pt
     ) +
-    scale_x_discrete(expand = expansion(add = c(0.5, 0.65))) +
-    djpr_y_continuous() +
+    scale_y_continuous(expand = expansion(0.1, 0)) +
     theme(
       axis.text.x = element_blank(),
       axis.title = element_blank(),
       panel.grid = element_blank(),
       axis.line = element_blank(),
-      legend.position = c(0.1, 0.1),
+      legend.position = c(0.8, 0.1),
       legend.key.height = unit(1, "lines"),
       legend.key.width = unit(1, "lines"),
       legend.direction = "vertical",
@@ -233,7 +404,7 @@ viz_service_bop_bar_chart <- function(data = bop) {
       title = title,
       subtitle = paste0(
         "Growth in exports and imports of services between ", year_prior," and ",
-        format(max(data$date), "%B %Y")
+        format(max(data$date), "%B %Y")," (%)"
       ),
       caption = caption
     )
@@ -309,7 +480,13 @@ viz_goods_bop_bar_chart <- function(data = bop) {
   df <- df %>%
     dplyr::group_by(.data$state) %>%
     dplyr::filter(.data$date == max(.data$date)) %>%
-    dplyr::ungroup()
+    dplyr::mutate(
+      plot_order =
+        ifelse(.data$exports_imports == "Exports", value, as.numeric(NA))
+      ) %>%
+    dplyr::ungroup() %>%
+    dplyr::arrange(plot_order) %>%
+    dplyr::mutate(state = factor(.data$state, levels = unique(.data$state)))
 
   # draw bar chart for all state
   df %>%
@@ -320,20 +497,23 @@ viz_goods_bop_bar_chart <- function(data = bop) {
     djpr_fill_manual(2) +
     geom_text(
       position = position_dodge(width = 1),
-      aes(label = paste0(round2(.data$value, 1), "%")),
-      vjust = 0.5,
+      aes(
+        # y = .data$value + sign(.data$value),
+        label = scales::percent(.data$value, scale = 1),
+        hjust = ifelse(.data$value > 0, -0.1, 1.1)
+        ),
+      # vjust = 0.5,
       colour = "black",
-      hjust = 1.1,
+      # hjust = 1.1,
       size = 12 / .pt
     ) +
-    scale_x_discrete(expand = expansion(add = c(0.5, 0.85))) +
-    djpr_y_continuous() +
+    scale_y_continuous(expand = expansion(0.1, 0)) +
     theme(
       axis.text.x = element_blank(),
       axis.title = element_blank(),
       panel.grid = element_blank(),
       axis.line = element_blank(),
-      legend.position = c(0.8, 1),
+      legend.position = c(0.8, 0.1),
       legend.key.height = unit(1, "lines"),
       legend.key.width = unit(1, "lines"),
       legend.direction = "horizontal",
@@ -343,7 +523,7 @@ viz_goods_bop_bar_chart <- function(data = bop) {
       title = title,
       subtitle = paste0(
         "Growth in exports and imports of goods between ", year_prior," and ",
-        format(max(data$date), "%B %Y")
+        format(max(data$date), "%B %Y")," (%)"
       ),
       caption = caption
     )
@@ -396,11 +576,11 @@ viz_goods_export_import_line <- function(data = bop) {
 
   title <- dplyr::case_when(
     export_latest > import_latest ~
-    paste0("Exports of goods and services grew faster than imports in the year to ", latest_month),
+    paste0("Exports grew faster than imports in the year to ", latest_month),
     export_latest < import_latest ~
-    paste0("Imports of goods and services grew faster than exports in the year to ", latest_month),
+    paste0("Imports grew faster than exports in the year to ", latest_month),
     export_latest == import_latest ~
-    paste0("Exports of goods and services grew at around the same pace imports in the year to ", latest_month),
+    paste0("Exports grew at around the same pace imports in the year to ", latest_month),
     TRUE ~ paste0("Exports and imports of goods and services annual")
   )
 
@@ -411,13 +591,13 @@ viz_goods_export_import_line <- function(data = bop) {
   df %>%
     djpr_ts_linechart(
       col_var = .data$exports_imports,
-      label_num = paste0(round2(.data$value, 1), "%"),
-      y_labels = function(x) paste0(x, "%"),
+      label_num = paste0(round2(.data$value, 1),"%"),
+      y_labels = scales::label_percent(scale = 1, accuracy = 1),
       hline = 0
     ) +
     labs(
       title = title,
-      subtitle = "Annual growth in goods and services export and import in Victoria",
+      subtitle = "Annual growth in Victorian goods and services trade (%)",
       caption = caption
     ) +
     facet_wrap(~exports_imports, ncol = 1, scales = "free_y")
@@ -537,13 +717,20 @@ viz_trade_balance_line_chart <- function(data = bop) {
     dplyr::group_by(.data$goods_services) %>%
     dplyr::mutate(
       value = 100 * ((.data$value
-                      / dplyr::lag(.data$value,4)) - 1),
-      tooltip = paste0(
-        .data$goods_services, "\n",
-        format(.data$date, "%b %Y"), "\n",
-        round2(.data$value, 1), "%"
-      )
-    )
+                      / dplyr::lag(.data$value,4)) - 1)) %>%
+        dplyr::filter(!is.na(.data$value)) %>%
+        dplyr::ungroup()
+
+  #add tooltip
+  df <- df %>%
+    dplyr::mutate(
+  tooltip = paste0(
+    .data$goods_services, "\n",
+    format(.data$date, "%b %Y"), "\n",
+    round2(.data$value, 1), "%"
+  )
+
+  )
 
   total_latest <- df %>%
     dplyr::filter(.data$goods_services == "Goods and Services" &
@@ -567,13 +754,12 @@ viz_trade_balance_line_chart <- function(data = bop) {
   df %>%
     djpr_ts_linechart(
       col_var = .data$goods_services,
-      label_num = paste0(round2(.data$value, 1), "%"),
-      y_labels = function(x) paste0(x, "%"),
+      label_num = paste0(round2(.data$value, 1),"%"),
       hline = 0
     ) +
     labs(
       title = title,
-      subtitle = paste0("Cumulative annual change in Victorian exports and imports in ", latest_month),
+      subtitle = paste0("Cumulative annual change in Victorian exports and imports in ", latest_month, "(%)"),
       caption = caption
     )
 }
@@ -646,13 +832,13 @@ viz_NSW_Vic_goods_line_chart <- function(data = bop) {
   df %>%
     djpr_ts_linechart(
       col_var = .data$exports_imports,
-      label_num = paste0(round2(.data$value, 1), "%"),
-      y_labels = function(x) paste0(x, "%"),
+      label_num = paste0(round2(.data$value, 1),"%"),
+      y_labels = scales::label_percent(scale = 1),
       hline = 0
     ) +
     labs(
       title = title,
-      subtitle = "Annual growth in goods exports and imports in New South Wales and VIctoria",
+      subtitle = "Annual growth in goods exports and imports in New South Wales and Victoria (%)",
       caption = caption
     ) +
     facet_wrap(~state, ncol = 1, scales = "free_y")
@@ -722,160 +908,19 @@ viz_NSW_Vic_Services_line_chart <- function(data = bop) {
   df %>%
     djpr_ts_linechart(
       col_var = .data$exports_imports,
-      label_num = paste0(round2(.data$value, 1), "%"),
-      y_labels = function(x) paste0(x, "%"),
+      label_num = paste0(round2(.data$value, 1),"%"),
+      y_labels = scales::label_percent(scale = 1),
       hline = 0
     ) +
     labs(
       title = title,
-      subtitle = "Annual growth in services exports and imports in NSW and Victoria",
+      subtitle = "Annual growth in services exports and imports in NSW and Victoria (%)",
       caption = caption
     ) +
     facet_wrap(~state, ncol = 1, scales = "free_y")
 }
 
 
-# Latest period exports of goods and services by state
-viz_total_bop_bar_chart <- function(data = bop) {
-  df <- data %>%
-    dplyr::select(-.data$series_id, -.data$unit) %>%
-    dplyr::filter(.data$indicator == "Chain Volume Measures", .data$exports_imports == "Exports") %>%
-    dplyr::mutate(value = abs(.data$value)) %>%
-    dplyr::filter(.data$date == max(.data$date)) %>%
-    dplyr::filter(
-      !.data$state == "Australian Capital Territory",
-      !.data$state == "Northern Territory"
-    ) %>%
-    dplyr::mutate(state = dplyr::case_when(
-      .data$state == "New South Wales" ~ "NSW",
-      .data$state == "Victoria" ~ "Vic",
-      .data$state == "Queensland" ~ "Qld",
-      .data$state == "South Australia" ~ "SA",
-      .data$state == "Western Australia" ~ "WA",
-      .data$state == "Tasmania" ~ "Tas",
-    )) %>%
-    dplyr::mutate(goods_services = dplyr::if_else(.data$goods_services == "Goods and Services", "Total", .data$goods_services))
-
-
-
-  latest_month <- format(max(df$date), "%B %Y")
-
-
-  latest <- df %>%
-    dplyr::filter(
-      .data$date == max(.data$date)
-    ) %>%
-    dplyr::filter(.data$goods_services == "Total") %>%
-    dplyr::select(.data$state, .data$value) %>%
-    dplyr::mutate(rank = dplyr::min_rank(-.data$value))
-
-
-  vic_rank <- latest$rank[latest$state == "Vic"]
-
-
-  title <- dplyr::case_when(
-    vic_rank == 1 ~ paste0("Victoria's total exports of goods and services are the highes exports of any Australian state"),
-    vic_rank == 2 ~ paste0("Victoria's total exports of goods and services are the second highest exports of any Australian state"),
-    vic_rank == 3 ~ paste0("Victoria's total exports of goods and services are the third highest exports of any Australian state"),
-    vic_rank <= 4 ~ paste0("Victoria's total exports of goods and services are the fourth highest exports of any Australian state in ", format(max(df$date), "%B %Y")),
-    TRUE ~ "Victoria's total exports of goods and services compared to other states and territories"
-  )
-
-  caption <- paste0("Source: ABS Balance of Payment quarterly (latest data is from ", latest_month, ". Note: Data seasonally Adjusted & Chain Volume Measures")
-
-
-
-  # draw bar chart for all state
-  df %>%
-    ggplot(aes(x = .data$state, y = .data$value, fill = factor(.data$goods_services))) +
-    geom_bar(stat = "identity", position = "dodge") +
-    coord_flip() +
-    theme_djpr(flipped = TRUE) +
-    djpr_fill_manual(3) +
-    geom_text(
-      position = position_dodge(width = 1),
-      aes(label = paste0(scales::comma(round2(.data$value, 1)))),
-      vjust = 0.5,
-      colour = "black",
-      hjust = 0,
-      size = 12 / .pt
-    ) +
-    scale_x_discrete(expand = expansion(add = c(0.2, 0.85))) +
-    scale_y_continuous(expand = expansion(mult = c(0, 0.15))) +
-    theme(
-      axis.text.x = element_blank(),
-      axis.title = element_blank(),
-      panel.grid = element_blank(),
-      axis.line = element_blank(),
-      legend.position = c(0.6, 0.6),
-      legend.key.height = unit(1, "lines"),
-      legend.key.width = unit(1, "lines"),
-      legend.direction = "horizontal",
-      axis.ticks = element_blank()
-    ) +
-    labs(
-      title = title,
-      subtitle = paste0(
-        "Export of goods and services in million dollars by Australian states in ",
-        format(max(data$date), "%B %Y")
-      ),
-      caption = caption
-    )
-}
-
-# Victoria's historical exports of goods and services
-viz_good_services_export_chart <- function(data = bop) {
-  df <- data %>%
-    dplyr::filter(
-      .data$state == "Victoria",
-    ) %>%
-    dplyr::select(-.data$series_id, -.data$unit) %>%
-    dplyr::filter(.data$exports_imports == "Exports", .data$indicator == "Chain Volume Measures") %>%
-    dplyr::mutate(goods_services = dplyr::if_else(.data$goods_services == "Goods and Services", "Total", .data$goods_services)) %>%
-    dplyr::mutate(value = abs(.data$value))
-
-
-  latest_month <- format(max(df$date), "%B %Y")
-
-
-  df <- df %>%
-    dplyr::mutate(tooltip = paste0(
-      .data$goods_services, "\n",
-      format(.data$date, "%b %Y"), "\n",
-      round2(.data$value, 1)
-    ))
-
-  latest_change <- df %>%
-    dplyr::filter(.data$goods_services == "Total") %>%
-    dplyr::mutate(change = .data$value - lag(.data$value, 1)) %>%
-    dplyr::filter(!is.na(.data$change)) %>%
-    dplyr::filter(.data$date == max(.data$date))
-
-
-  title <-
-    dplyr::case_when(
-      latest_change$change > 0 ~ paste0("Victoria's total exports rose by ", scales::comma(latest_change$change), " million dollars over the past quarter"),
-      latest_change$change < 0 ~ paste0("Victoria's total exports fell by ", scales::comma(abs(latest_change$change)), " million dollars over the past quarter"),
-      latest_change$change == 0 ~ "Victoria's total exports the same as over the past quarter ",
-      TRUE ~ "Victoria's total exports over the past quarter"
-    )
-
-
-  caption <- paste0("Source: ABS Balance of Payment quarterly (latest data is from ", latest_month, ". Note: Data seasonally Adjusted & Chain Volume Measures")
-
-
-  df %>%
-    djpr_ts_linechart(
-      col_var = .data$goods_services,
-      label_num = paste0(scales::comma(round2(.data$value, 1))),
-      # y_labels = function(x) paste0(x, "%"),
-    ) +
-    labs(
-      title = title,
-      subtitle = "Victoria's exports of goods and services in million dollars",
-      caption = caption
-    )
-}
 
 # Victoria's historical imports of goods and services
 viz_good_services_import_chart <- function(data = bop) {
@@ -925,7 +970,86 @@ viz_good_services_import_chart <- function(data = bop) {
     ) +
     labs(
       title = title,
-      subtitle = "Victoria's imports of goods and services in million dollars",
+      subtitle = "Victoria's imports of goods and services ($m)",
+      caption = caption
+    )
+}
+
+# Victoria's historical imports and exports of goods and services
+viz_good_services_chart <- function(data = bop) {
+  df <- data %>%
+    dplyr::filter(
+      .data$state == "Victoria",
+    ) %>%
+    dplyr::select(-.data$series_id, -.data$unit) %>%
+    dplyr::filter(.data$indicator == "Chain Volume Measures") %>%
+    dplyr::mutate(goods_services = dplyr::if_else(.data$goods_services == "Goods and Services", "Total", .data$goods_services)) %>%
+    dplyr::mutate(value = abs(.data$value * 1000000))
+
+
+  latest_month <- format(max(df$date), "%B %Y")
+
+  df <- df %>%
+    dplyr::mutate(tooltip = paste0(
+      "<p><b> Victoian ",
+      .data$goods_services,
+      " ",
+      .data$exports_imports,
+      "</b></p><br/><p><i>",
+      format(.data$date, "%b %Y"),
+      "</i>",
+      " - ",
+      scales::dollar(.data$value, accuracy = 1.11, scale = 1e-09, suffix = "b"),
+      "</p>"
+    ))
+
+  latest_change <- df %>%
+    dplyr::group_by(.data$exports_imports) %>%
+    dplyr::arrange(.data$date) %>%
+    dplyr::filter(.data$goods_services == "Total") %>%
+    dplyr::mutate(change = .data$value - lag(.data$value, 1)) %>%
+    dplyr::filter(.data$date == max(.data$date)) %>%
+    dplyr::ungroup()
+
+  title <- purrr::map2_chr(
+    latest_change$exports_imports,
+    latest_change$change,
+    ~paste0(
+      .x,
+      " ",
+      ifelse(.y > 0, "up ", "down "),
+      dollar_stat(abs(.y))
+      )
+  ) %>%
+  paste0(collapse = "; ") %>%
+  paste(latest_month, "quarterly", .) %>%
+  stringr::str_to_sentence()
+
+
+  caption <- paste0(
+    "Source: ABS Balance of Payment quarterly (latest data is from ",
+    latest_month,
+    ")\nNote: Data seasonally Adjusted & Chain Volume Measures"
+    )
+
+
+  df %>%
+    djprshiny::djpr_ts_linechart(
+      col_var = .data$goods_services,
+      label_num = dollar_stat(value),
+      y_labels = scales::label_dollar(accuracy = 1, scale = 1e-09, suffix = "b")
+    ) +
+    ggplot2::facet_wrap(~exports_imports) +
+    ggplot2::theme(
+      strip.text = ggplot2::element_text(
+        family = "sans",
+        face = "bold",
+        size = 16
+      )
+    )+
+    ggplot2::labs(
+      title = title,
+      subtitle = "Total Victorian trade volumes ($)",
       caption = caption
     )
 }
@@ -966,7 +1090,7 @@ viz_Vic_total_bop_bar_chart <- function(data = bop) {
       TRUE ~ "Victoria's total exports over the past year"
     )
 
-  caption <- paste0("Source: ABS Balance of Payment quarterly (latest data is from ", latest_month, ". Note: Data seasonally Adjusted & Chain Volume Measures")
+  caption <- paste0("Source: ABS Balance of Payment quarterly (latest data is from ", latest_month, "). Note: Data seasonally Adjusted & Chain Volume Measures")
 
 
 
@@ -1000,7 +1124,119 @@ viz_Vic_total_bop_bar_chart <- function(data = bop) {
     ) +
     labs(
       title = title,
-      subtitle = "Victoria's exports of goods and services in million dollars ",
+      subtitle = "Victoria's exports of goods and services ($m) ",
       caption = caption
     )
+}
+
+# Victoria's exports of goods and services by calendar year
+viz_vic_total_bop_cumul_line <- function(data = bop) {
+  df <- data %>%
+    dplyr::filter(
+      .data$state == "Victoria",
+      .data$indicator == "Chain Volume Measures",
+      .data$exports_imports == "Exports",
+      .data$goods_services == "Goods and Services",
+      .data$date >=
+        max(.data$date, na.rm = TRUE) -
+        lubridate::years(5) +
+        lubridate::days(1)
+      ) %>%
+    dplyr::mutate(
+      value = abs(.data$value * 1e06),
+      year = lubridate::year(.data$date),
+      quarter = lubridate::quarter(.data$date)
+      ) %>%
+    dplyr::group_by(year) %>%
+    dplyr::arrange(date) %>%
+    dplyr::mutate(value = cumsum(.data$value)) %>%
+    dplyr::ungroup() %>%
+    dplyr::select(.data$date, .data$year, .data$quarter, .data$value)
+
+  latest_month <- format(max(df$date), "%B %Y")
+
+  latest_change <- df %>%
+    dplyr::mutate(change = .data$value - lag(.data$value, 4)) %>%
+    dplyr::filter(!is.na(.data$change)) %>%
+    dplyr::filter(.data$date == max(.data$date))
+
+  if(latest_change$quarter == 1) {
+    title <-
+      dplyr::case_when(
+        latest_change$change > 0 ~ paste0("Victoria's exports in Q", latest_change$quarter, " are ", dollar_stat(abs(latest_change$change)), " higher than Q1 ", (latest_change$year-1)),
+        latest_change$change < 0 ~ paste0("Victoria's exports in Q", latest_change$quarter, " are ", dollar_stat(abs(latest_change$change)), " lower than Q1 ", (latest_change$year-1)),
+        latest_change$change == 0 ~ paste0("Victoria's  exports are the same as Q", latest_change$quarter, " ", (latest_change$year-1)),
+        TRUE ~ "Victoria's exports over the past year"
+      )
+  } else {
+    title <-
+      dplyr::case_when(
+        latest_change$change > 0 ~ paste0("Victoria's year to date exports are ", dollar_stat(abs(latest_change$change)), " higher than", (latest_change$year-1)),
+        latest_change$change < 0 ~ paste0("Victoria's year to date exports are ", dollar_stat(abs(latest_change$change)), " lower than ", (latest_change$year-1)),
+        latest_change$change == 0 ~ paste0("Victoria's year to date exports are the same as ", (latest_change$year-1)),
+        TRUE ~ "Victoria's exports over the past year"
+      )
+  }
+
+
+  caption <- paste0("Source: ABS Balance of Payment quarterly (latest data is from ", latest_month, "). Note: Seasonally Adjusted Chain Volume Measure Data")
+
+
+
+  # draw line chart with relevant years
+  df %>%
+    dplyr::mutate(
+      tooltip = paste0(
+        format(.data$date, "%b %Y"),
+        "\n",
+        scales::dollar(.data$value, accuracy = 1.1, scale = 1/1e09, suffix = "b")
+      ),
+      date = lubridate::ymd(
+        paste0(2021,"-", lubridate::month(.data$date),"-", "01")
+        )
+      ) %>%
+    djprshiny::djpr_ts_linechart(
+      y_var = .data$value,
+      y_labels = scales::label_dollar(accuracy = 1, scale = 1/1e09, suffix = "b"),
+      col_var = factor(.data$year),
+      label = FALSE
+    ) +
+    ggplot2::labs(
+      title = title,
+      subtitle = "Victoria's cumulative exports of total goods and services ($)",
+      caption = caption
+    ) +
+    ggplot2::scale_x_date(
+      expand = expansion(mult = c(0, 0.2)),
+      date_labels = "%B",
+      breaks = as.Date(c("2021-03-01","2021-06-01", "2021-09-01","2021-12-01"))
+      ) +
+    ggrepel::geom_text_repel(
+      direction = "y",
+      hjust = -1,
+      data = df %>%
+        dplyr::mutate(tooltip = paste0(
+          format(.data$date, "%b %Y"), "\n",
+          scales::dollar(.data$value, accuracy = 1, scale = 1/1e09, suffix = "b")
+        ),
+        date = lubridate::ymd(paste0(2021,"-", lubridate::month(.data$date),"-", "01"))) %>%
+        dplyr::group_by(year) %>%
+        filter(.data$date == max(.data$date)),
+      ggplot2::aes(
+        label = paste0(
+          "Q",
+          .data$quarter,
+          " ",
+          .data$year,
+          " ",
+          scales::dollar(.data$value, accuracy = 1.1, scale = 1/1e09, suffix = "b")
+          )
+        )
+    ) +
+    ggplot2::scale_y_continuous(
+      labels = scales::label_dollar(accuracy = 1, scale = 1/1e09, suffix = "b"),
+      expand = c(0.2, 0.2)
+      ) +
+    ggplot2::scale_color_grey(start = 0.8, end = 0)
+
 }

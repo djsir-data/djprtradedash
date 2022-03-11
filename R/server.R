@@ -30,22 +30,25 @@ server <- function(input, output, session) {
           "of Jobs, Precincts and Regions. ", # The <b>latest data in this ",
           # "dashboard is for ",
           # format(latest, "%B %Y"),
-          'Please <a href="mailto:spp-data@ecodev.vic.gov.au?subject=DJPR Jobs Dashboard">email us</a> with any comments or feedback.'
+          'Please <a href="mailto:spp-data@ecodev.vic.gov.au?subject=DJPR Trade Dashboard">email us</a> with any comments or feedback.'
         )
       ),
       style = "color: #828282; font-size: 0.75rem"
     )
   })
 
-  output$launchpad_footnote <- output$bop_footnote <- output$merch_footnote <- output$country_footnote <- renderUI({
+  output$methodology_footnote <- output$launchpad_footnote <- output$bop_footnote <- output$merch_footnote <- output$country_footnote <- renderUI({
     footnote()
   })
 
   print('up2 module')
 
+
   page_launchpad(input, output, session, plt_change, table_rowcount = 5)
 
   page_bop(input, output, session, plt_change, table_rowcount = 5)
+
+
 
 
 
@@ -64,12 +67,28 @@ server <- function(input, output, session) {
     )
   )
 
+  merch_df <- shiny::reactive({
+    if(input$merch_explorer_sitc %in% c(1,2,3)) {
+      merch %>%
+        dplyr::filter(nchar(.data$sitc_code) == input$merch_explorer_sitc) %>%
+        dplyr::mutate(code_name = paste0(.data$sitc_code, ": ", .data$sitc))
+    } else {
+      merch %>%
+        dplyr::mutate(code_name = paste0(.data$sitc_code, ": ", .data$sitc))
+    }
+  })
+
+  observeEvent(merch_df(), {
+    shinyWidgets::updateMultiInput(session = session, inputId = "merch_sitc", choices = unique(merch_df()$code_name))
+  })
+
   merch_explorer_plot <- shiny::reactive({
     shiny::req(
       input$merch_explorer_dates,
       input$merch_countries,
       input$merch_sitc,
-      input$merch_explorer_facets
+      input$merch_explorer_facets,
+      input$merch_explorer_sitc
     )
 
     merch %>%
@@ -79,7 +98,7 @@ server <- function(input, output, session) {
       ) %>%
       viz_merch_explorer(
         countries = input$merch_countries,
-        goods = input$merch_sitc,
+        goods = sub(".[0-9]*:\\s", "", input$merch_sitc),
         facet_by = input$merch_explorer_facets,
         smooth = input$merch_explorer_smooth
       )
@@ -94,6 +113,7 @@ server <- function(input, output, session) {
     plot = merch_explorer_plot(),
     plot_name = "merch_explorer_plot"
   )
+
 
 
   # Country profiles
@@ -119,5 +139,25 @@ server <- function(input, output, session) {
   # output$country_1y_exp_change_stat <- reactive({
   #   viz_country_1y_exp_change_stat(merch, input$country_select)
   # })
+
+
+  # Notes
+  # SITC Information and Explorer
+
+  sitc_merch <- merch %>%
+      filter(country_dest == "Total",
+             date >= (max(merch$date) - months(12))) %>%
+      group_by(sitc_code, sitc) %>%
+      summarise(sum_value = sum(value)) %>%
+      mutate(sitc_level = as.character(nchar(sitc_code))) %>%
+      rename(`SITC Level` = sitc_level,
+             `SITC Code` = sitc_code,
+             `SITC Name` = sitc,
+             `Total Exports in Last 12 Months ($000s)` = sum_value)
+
+  output$sitc_table <- DT::renderDT(
+    sitc_merch,
+    filter = "top"
+  )
 
 }

@@ -29,15 +29,35 @@ make_table_launchpad <- function(data,
                                                 unset = "dashboard"
                        ),
                        notes = NULL,
-                       title = "") {
+                       title = "",
+                       header_row = c("",
+                                      "Current figure & share (%)",
+                                      "Change in latest period",
+                                      "Change in three months",
+                                      "Change in past year")) {
 
   stopifnot(destination %in% c("dashboard", "briefing"))
   stopifnot(inherits(data, "data.frame"))
   stopifnot(nrow(data) >= 1)
 
     # Create a basic flextable using the supplied dataframe
-  flex <- data%>%
-    flextable::flextable()
+  latest_date <- names(data)[2] %>% 
+    lubridate::my() %>%
+    format("%B %Y")
+
+  if (is.element("Dec 2019", names(data))){
+    caption <- paste0("ABS Balance of Payment quarterly data (latest data is from ", latest_date, ").  Note: Data seasonally Adjusted & Chain Volume Measures")
+  } else {
+    caption <- paste0("ABS.Stat Merchandise Exports by Commodity (latest data is from ", latest_date, "). Data has been smoothed using 12-month rolling averages." )
+  }
+
+
+
+  flex <- data %>%
+    flextable::flextable() %>%
+    flextable::add_footer(` ` = caption) %>%
+    flextable::fontsize(size = 7, part = "footer") %>%
+    flextable::merge_at(j = 1:5, part = "footer")
 
   if (destination == "dashboard") {
     # Define cell colours ----
@@ -68,13 +88,6 @@ make_table_launchpad <- function(data,
     flextable::valign()
 
   # Add an extra header row
-
-  header_row <- c(
-    "",
-    "Current figure & share (%)",
-    "Change in latest period",
-    "Change in past quarter",
-    "Change in past year")
 
   flex <- flex %>%
     flextable::add_header_row(values = header_row)
