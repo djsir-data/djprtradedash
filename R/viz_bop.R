@@ -499,7 +499,7 @@ viz_goods_bop_bar_chart <- function(data = bop) {
       position = position_dodge(width = 1),
       aes(
         # y = .data$value + sign(.data$value),
-        label = scales::percent(.data$value, scale = 1),
+        label = scales::percent(.data$value, scale = 1,accuracy =0.1),
         hjust = ifelse(.data$value > 0, -0.1, 1.1)
         ),
       # vjust = 0.5,
