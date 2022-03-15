@@ -37,7 +37,7 @@ page_merchUI <- function(...) {
         shinyWidgets::multiInput(
           inputId = "merch_sitc",
           label = "Goods",
-          choices = "",
+          choices = sort(merch_sitc),
           selected = "Medicinal and pharmaceutical products (excl. medicaments of group 542)",
           width = "100%",
           options = list(
@@ -136,15 +136,16 @@ page_merch <- function(input, output, session, plt_change, merch = merch){
       dplyr::mutate(code_name = paste0(.data$sitc_code, ": ", .data$sitc)) %>%
       dplyr::collect()
     }
-    merch
+    merch |> pull(code_name) |> unique()
   })
 
-  observeEvent(merch_df(), {
+  observe({
     shinyWidgets::updateMultiInput(session = session, inputId = "merch_sitc",
-                                   choices = unique(merch_df()$code_name))
+                                   choices = merch_df())
   })
 
-  merch_explorer_plot <- shiny::reactive({
+  observe({
+
     shiny::req(
       input$merch_explorer_dates,
       input$merch_countries,
@@ -153,22 +154,29 @@ page_merch <- function(input, output, session, plt_change, merch = merch){
       input$merch_explorer_sitc
     )
 
-    merch %>%
+    print('merch plot reactive')
+
+    merch_plt <- merch %>%
       dplyr::filter(
         .data$date >= !!input$merch_explorer_dates[1],
         .data$date <= !!input$merch_explorer_dates[2]
-      ) %>%
+      ) %>% #collect() %>%
       viz_merch_explorer(
         countries = input$merch_countries,
         goods = sub(".[0-9]*:\\s", "", input$merch_sitc),
         facet_by = input$merch_explorer_facets,
         smooth = input$merch_explorer_smooth
       )
+
+    output$merch_explorer <- shiny::renderPlot({
+      print('render merch plot')
+      merch_plt
+    })
+
   })
 
-  output$merch_explorer <- shiny::renderPlot({
-    merch_explorer_plot()
-  })
+
+
 
   djprshiny::download_server(
     id = "merch_explorer_dl",
