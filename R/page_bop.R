@@ -73,6 +73,16 @@ page_bop <- function(input, output, session, plt_change, table_rowcount = 5){
                    plt_change = plt_change
   )
 
+  # Totals imports and exports since COVID
+  djpr_plot_server("total_bop_bar_chart",
+                   viz_total_bop_bar_chart,
+                   data = bop,
+                   height_percent = 75,
+                   plt_change = plt_change,
+                   date_slider = FALSE,
+                   interactive = FALSE
+  )
+
   # Goods and Services: Goods and Services imports time series
 
   djpr_plot_server("good_services_chart",
