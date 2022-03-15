@@ -165,7 +165,8 @@ page_merch <- function(input, output, session, plt_change, merch = merch){
         countries = input$merch_countries,
         goods = sub(".[0-9]*:\\s", "", input$merch_sitc),
         facet_by = input$merch_explorer_facets,
-        smooth = input$merch_explorer_smooth
+        smooth = input$merch_explorer_smooth,
+        merch_explorer_sitc = input$merch_explorer_sitc
       )
 
     output$merch_explorer <- shiny::renderPlot({
