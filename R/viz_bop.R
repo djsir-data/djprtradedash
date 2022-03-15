@@ -755,6 +755,7 @@ viz_trade_balance_line_chart <- function(data = bop) {
     djpr_ts_linechart(
       col_var = .data$goods_services,
       label_num = paste0(round2(.data$value, 1),"%"),
+      y_labels = scales::label_percent(scale = 1),
       hline = 0
     ) +
     labs(
