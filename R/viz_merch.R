@@ -6,7 +6,7 @@ viz_merch_explorer <- function(data = merch,
                                smooth = FALSE,
                                merch_explorer_sitc) {
 
-  dates <- data %>%
+  all_dates <- data %>%
     dplyr::summarise(date = DISTINCT(date)) %>%
     dplyr::collect()# %>%
     # dplyr::mutate(date = lubridate::ymd(date))
@@ -48,8 +48,9 @@ viz_merch_explorer <- function(data = merch,
 
   combs <- df %>% dplyr::select(-date, -value) %>% unique()
 
-  df <- dplyr::bind_rows(
-    merge(dates$date, combs) %>%
+
+  df <- bind_rows(
+    dplyr::merge(all_dates$date, combs) %>%
     dplyr::rename(date = 1) %>%
     dplyr::mutate(value = 0),
     df
