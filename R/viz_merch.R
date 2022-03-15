@@ -3,7 +3,8 @@ viz_merch_explorer <- function(data = merch,
                                goods = "Medicinal and pharmaceutical products (excl. medicaments of group 542)",
                                origin = "Victoria",
                                facet_by = "country_dest",
-                               smooth = FALSE) {
+                               smooth = FALSE,
+                               merch_explorer_sitc) {
 
   dates <- data %>%
     dplyr::summarise(date = DISTINCT(date)) %>%
