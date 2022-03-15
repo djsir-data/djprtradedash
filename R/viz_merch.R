@@ -5,6 +5,12 @@ viz_merch_explorer <- function(data = merch,
                                facet_by = "country_dest",
                                smooth = FALSE) {
 
+  dates <- data %>%
+    summarise(date = DISTINCT(date)) %>%
+    collect() %>%
+    mutate(date = lubridate::ymd(date))
+
+
   data_dates <- data |>
     summarise(
       min = min(date, na.rm = TRUE),
@@ -41,7 +47,7 @@ viz_merch_explorer <- function(data = merch,
   combs <- df %>% dplyr::select(-date, -value) %>% unique()
 
   df <- bind_rows(
-    merge(dates, combs) %>%
+    merge(dates$date, combs) %>%
     dplyr::rename(date = 1) %>%
     dplyr::mutate(value = 0),
     df
