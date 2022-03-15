@@ -8,8 +8,8 @@ viz_merch_explorer <- function(data = merch,
 
   dates <- data %>%
     dplyr::summarise(date = DISTINCT(date)) %>%
-    dplyr::collect() %>%
-    dplyr::mutate(date = lubridate::ymd(date))
+    dplyr::collect()# %>%
+    # dplyr::mutate(date = lubridate::ymd(date))
 
 
   data_dates <- data |>
@@ -26,12 +26,13 @@ viz_merch_explorer <- function(data = merch,
       .data$sitc %in% .env$goods,
       .data$country_dest %in% .env$countries,
       .data$origin == .env$origin
-    )
+    ) %>%
+    dplyr::collect()
 
   if ('tbl_lazy' %in% class(df)) {
     df <- df %>%
-      collect() %>%
-      mutate(date = as.Date(date))
+      dplyr::collect() %>%
+      dplyr::mutate(date = as.Date(date))
     print('collect lazy for viz merch')
     print(class(df))
     print(class(df$date))
