@@ -32,6 +32,14 @@ app <- function(...) {
     dplyr::collect()  %>%
     dplyr::mutate(dplyr::across(dplyr::everything(), as.Date))
 
+  bop_dates <<- bop %>%
+    dplyr::summarise(
+      min = min(.data$date, na.rm = TRUE),
+      max = max(.data$date, na.rm = TRUE)
+    ) %>%
+    dplyr::collect()  %>%
+    dplyr::mutate(dplyr::across(dplyr::everything(), as.Date))
+
   merch_sitc <<- merch  %>%
     dplyr::summarize(sitc = distinct(sitc)) %>%
     dplyr::collect() %>%
