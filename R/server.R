@@ -41,82 +41,31 @@ server <- function(input, output, session) {
     footnote()
   })
 
-  print('up2 module')
-
-
+  message('server pages:')
   page_launchpad(input, output, session, plt_change, table_rowcount = 5)
-
+  message("Launchpad working")
   page_bop(input, output, session, plt_change, table_rowcount = 5)
-
+  message("bop working")
+  page_merch(input, output, session, plt_change)
+  message("merch working")
 
 
 
 
   # Initialise country selection & URL query
-  updateSelectInput(
-    inputId = "country_select",
-    choices = merch_country_dest,
-    selected = "China (excludes SARs and Taiwan)"
-  )
-
-  output$country_select <- renderText(
-    paste0(
-      "Victoria-",
-      stringr::str_remove_all(input$country_select, " (.+)"),
-      " Trade"
-    )
-  )
-
-  merch_df <- shiny::reactive({
-    if(input$merch_explorer_sitc %in% c(1,2,3)) {
-      merch <- merch %>%
-        dplyr::filter(nchar(.data$sitc_code) == input$merch_explorer_sitc) %>%
-        dplyr::collect()
-    } else {}
-    merch |>
-      dplyr::mutate(code_name = paste0(.data$sitc_code, ": ", .data$sitc)) |>
-      collect()
-  })
-
-  observeEvent(merch_df(), {
-    shinyWidgets::updateMultiInput(session = session, inputId = "merch_sitc",
-                                   choices = unique(merch_df()$code_name))
-  })
-
-  merch_explorer_plot <- shiny::reactive({
-    shiny::req(
-      input$merch_explorer_dates,
-      input$merch_countries,
-      input$merch_sitc,
-      input$merch_explorer_facets,
-      input$merch_explorer_sitc
-    )
-
-    merch %>%
-      dplyr::filter(
-        .data$date >= !!input$merch_explorer_dates[1],
-        .data$date <= !!input$merch_explorer_dates[2]
-      ) %>%
-      viz_merch_explorer(
-        countries = input$merch_countries,
-        goods = sub(".[0-9]*:\\s", "", input$merch_sitc),
-        facet_by = input$merch_explorer_facets,
-        smooth = input$merch_explorer_smooth
-      )
-  })
-
-  output$merch_explorer <- shiny::renderPlot({
-    merch_explorer_plot()
-  })
-
-  djprshiny::download_server(
-    id = "merch_explorer_dl",
-    plot = merch_explorer_plot(),
-    plot_name = "merch_explorer_plot"
-  )
-
-
-
+  # updateSelectInput(
+  #   inputId = "country_select",
+  #   choices = merch_country_dest,
+  #   selected = "China (excludes SARs and Taiwan)"
+  # )
+  #
+  # output$country_select <- renderText(
+  #   paste0(
+  #     "Victoria-",
+  #     stringr::str_remove_all(input$country_select, " (.+)"),
+  #     " Trade"
+  #   )
+  # )
   # Country profiles
   # djpr_plot_server(
   #   "country_top_exp",
@@ -147,7 +96,7 @@ server <- function(input, output, session) {
 
   sitc_merch <- merch %>%
       filter(country_dest == "Total",
-             date >= (max(merch_dates$max) - months(12))) %>%
+             date >= (merch_dates$max - months(12))) %>%
       group_by(sitc_code, sitc) %>%
       summarise(sum_value = sum(value)) %>%
       mutate(sitc_level = as.character(nchar(sitc_code))) %>%

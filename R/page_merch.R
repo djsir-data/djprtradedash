@@ -1,4 +1,4 @@
-page_merch <- function(...) {
+page_merchUI <- function(...) {
   # djpr_tab_panel(
   selecter_height <- 325
   inner_height <- selecter_height - 44
@@ -120,5 +120,58 @@ page_merch <- function(...) {
     br(),
     centred_row(htmlOutput("merch_footnote")),
     br()
+  )
+}
+
+
+page_merch <- function(input, output, session, plt_change, merch = merch){
+
+  merch_df <- shiny::reactive({
+    if(input$merch_explorer_sitc %in% c(1,2,3)) {
+      merch <- merch %>%
+        dplyr::filter(nchar(.data$sitc_code) == input$merch_explorer_sitc) %>%
+        dplyr::collect()
+    } else {
+      merch <- merch %>%
+      dplyr::mutate(code_name = paste0(.data$sitc_code, ": ", .data$sitc)) %>%
+      dplyr::collect()
+    }
+  })
+
+  observeEvent(merch_df(), {
+    shinyWidgets::updateMultiInput(session = session, inputId = "merch_sitc",
+                                   choices = unique(merch_df()$code_name))
+  })
+
+  merch_explorer_plot <- shiny::reactive({
+    shiny::req(
+      input$merch_explorer_dates,
+      input$merch_countries,
+      input$merch_sitc,
+      input$merch_explorer_facets,
+      input$merch_explorer_sitc
+    )
+
+    merch %>%
+      dplyr::filter(
+        .data$date >= !!input$merch_explorer_dates[1],
+        .data$date <= !!input$merch_explorer_dates[2]
+      ) %>%
+      viz_merch_explorer(
+        countries = input$merch_countries,
+        goods = sub(".[0-9]*:\\s", "", input$merch_sitc),
+        facet_by = input$merch_explorer_facets,
+        smooth = input$merch_explorer_smooth
+      )
+  })
+
+  output$merch_explorer <- shiny::renderPlot({
+    merch_explorer_plot()
+  })
+
+  djprshiny::download_server(
+    id = "merch_explorer_dl",
+    plot = merch_explorer_plot(),
+    plot_name = "merch_explorer_plot"
   )
 }
