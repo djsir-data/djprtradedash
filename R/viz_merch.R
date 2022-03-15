@@ -6,18 +6,18 @@ viz_merch_explorer <- function(data = merch,
                                smooth = FALSE) {
 
   dates <- data %>%
-    summarise(date = DISTINCT(date)) %>%
-    collect() %>%
-    mutate(date = lubridate::ymd(date))
+    dplyr::summarise(date = DISTINCT(date)) %>%
+    dplyr::collect() %>%
+    dplyr::mutate(date = lubridate::ymd(date))
 
 
   data_dates <- data |>
-    summarise(
+    dplyr::summarise(
       min = min(date, na.rm = TRUE),
       max = max(date, na.rm = TRUE)
     ) |>
-    collect() |>
-    mutate(across(everything(), as.Date))
+    dplyr::collect() |>
+    dplyr::mutate(dplyr::across(dplyr::everything(), as.Date))
 
 
   df <- data %>%
@@ -46,7 +46,7 @@ viz_merch_explorer <- function(data = merch,
 
   combs <- df %>% dplyr::select(-date, -value) %>% unique()
 
-  df <- bind_rows(
+  df <- dplyr::bind_rows(
     merge(dates$date, combs) %>%
     dplyr::rename(date = 1) %>%
     dplyr::mutate(value = 0),
@@ -96,31 +96,31 @@ viz_merch_explorer <- function(data = merch,
   )
 
   p <- df %>%
-    ggplot(aes(
+    ggplot2::ggplot(aes(
       x = .data$date,
       y = .data$value,
       col = .data$col,
       group = .data$group
     )) +
-    geom_line() +
-    geom_point(
+    ggplot2::geom_line() +
+    ggplot2::geom_point(
       data = ~ dplyr::group_by(., .data$group) %>%
         dplyr::filter(.data$date == max(.data$date)),
       fill = "white",
       show.legend = FALSE,
       stroke = 1.5, size = 2.5, shape = 21
     ) +
-    scale_colour_manual(values = cols) +
-    facet_wrap(facets = facet_by)
+    ggplot2::scale_colour_manual(values = cols) +
+    ggplot2::facet_wrap(facets = facet_by)
 
   if (show_legend) {
     p <- p +
-      theme_djpr(legend = "top") +
-      theme(
+      theme_djpr::theme_djpr(legend = "top") +
+      ggplot2::theme(
         legend.direction = "vertical",
         legend.text = element_text(size = 11)
       ) +
-      scale_x_date(
+      ggplot2::scale_x_date(
         breaks = x_breaks,
         date_labels = "%b\n%Y"
       )
@@ -132,7 +132,7 @@ viz_merch_explorer <- function(data = merch,
           .,
           .data$date == max(.data$date)
         ),
-        aes(label = stringr::str_wrap(
+        ggplot2::aes(label = stringr::str_wrap(
           .data$col,
           10
         )),
@@ -143,11 +143,11 @@ viz_merch_explorer <- function(data = merch,
         seed = 123, show.legend = FALSE,
         direction = "y"
       ) +
-      scale_x_date(
+      ggplot2::scale_x_date(
         expand = expansion(mult = c(0, 0.28)),
         breaks = x_breaks, date_labels = "%b\n%Y"
       ) +
-      theme_djpr()
+      djprtheme::theme_djpr()
   }
 
   p +
