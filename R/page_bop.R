@@ -89,7 +89,7 @@ page_bop <- function(input, output, session, plt_change, table_rowcount = 5){
                    viz_good_services_chart,
                    data = bop,
                    plt_change = plt_change,
-                   date_slider_value_min = bop_dates$max - lubridate::years(4)
+                   date_slider_value_min = bop_dates$max - lubridate::years(5)
   )
 
   # Goods and Services: Annual growth in goods and services exports and imports

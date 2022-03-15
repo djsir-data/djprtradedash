@@ -407,7 +407,7 @@ viz_service_bop_bar_chart <- function(data = bop) {
       title = title,
       subtitle = paste0(
         "Growth in exports and imports of services between ", year_prior," and ",
-        format(max(data$date), "%B %Y")," (%)"
+        format(max(.data$date), "%B %Y")," (%)"
       ),
       caption = caption
     )
@@ -526,7 +526,7 @@ viz_goods_bop_bar_chart <- function(data = bop) {
       title = title,
       subtitle = paste0(
         "Growth in exports and imports of goods between ", year_prior," and ",
-        format(max(data$date), "%B %Y")," (%)"
+        format(max(.data$date), "%B %Y")," (%)"
       ),
       caption = caption
     )
