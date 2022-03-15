@@ -129,13 +129,14 @@ page_merch <- function(input, output, session, plt_change, merch = merch){
   merch_df <- shiny::reactive({
     if(input$merch_explorer_sitc %in% c(1,2,3)) {
       merch <- merch %>%
-        dplyr::filter(nchar(.data$sitc_code) == input$merch_explorer_sitc) %>%
+        dplyr::filter(nchar(.data$sitc_code) == !!input$merch_explorer_sitc) %>%
         dplyr::collect()
     } else {
       merch <- merch %>%
       dplyr::mutate(code_name = paste0(.data$sitc_code, ": ", .data$sitc)) %>%
       dplyr::collect()
     }
+    merch
   })
 
   observeEvent(merch_df(), {

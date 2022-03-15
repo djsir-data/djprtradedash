@@ -94,16 +94,20 @@ server <- function(input, output, session) {
   # Notes
   # SITC Information and Explorer
 
+  merch_last_12 <- merch_dates$max - months(12)
+
   sitc_merch <- merch %>%
-      filter(country_dest == "Total",
-             date >= (merch_dates$max - months(12))) %>%
-      group_by(sitc_code, sitc) %>%
-      summarise(sum_value = sum(value)) %>%
-      mutate(sitc_level = as.character(nchar(sitc_code))) %>%
-      rename(`SITC Level` = sitc_level,
-             `SITC Code` = sitc_code,
-             `SITC Name` = sitc,
-             `Total Exports in Last 12 Months ($000s)` = sum_value)
+    dplyr::filter(country_dest == "Total", date >= !!merch_last_12) %>%
+    dplyr::group_by(sitc_code, sitc) %>%
+    dplyr::summarise(sum_value = sum(value)) %>%
+    dplyr::collect() %>%
+    dplyr::mutate(sitc_level = as.character(nchar(sitc_code))) %>%
+    dplyr::rename(
+      `SITC Level` = sitc_level,
+      `SITC Code` = sitc_code,
+      `SITC Name` = sitc,
+      `Total Exports in Last 12 Months ($000s)` = sum_value
+      )
 
   output$sitc_table <- DT::renderDT(
     sitc_merch,
