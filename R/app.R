@@ -40,15 +40,17 @@ app <- function(...) {
     dplyr::collect()  %>%
     dplyr::mutate(dplyr::across(dplyr::everything(), as.Date))
 
-  merch_sitc <<- merch  %>%
-    dplyr::summarize(sitc = distinct(sitc)) %>%
-    dplyr::collect() %>%
-    dplyr::pull()
+  merch_sitc_lu <<- merch  %>%
+    dplyr::group_by(sitc, sitc_code) %>%
+    dplyr::summarize(n = length(sitc_code)) %>%
+    dplyr::collect()
 
   merch_country_dest <<- merch %>%
     dplyr::summarize(sitc = dplyr::distinct(country_dest))  %>%
     dplyr::collect() %>%
     dplyr::pull()
+
+
 
   in_global <<- ls(envir = .GlobalEnv)
 
