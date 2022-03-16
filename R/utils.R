@@ -26,6 +26,13 @@ error_safe_plotfun <- function(plotfun){
     function(...) plotfun(...) %iferror% data_unavil_ggplot("Data unavailable")
 }
 
+assign_table_global <- function(con, tables){
+  lapply(tables, function(tab){
+    assign(tab, dplyr::tbl(con, tab), envir = .GlobalEnv)
+  })
+}
+
+
 dollar_stat <- function(stat){
   dplyr::case_when(
     stat > 1e10 ~ scales::dollar(

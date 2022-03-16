@@ -171,7 +171,6 @@ page_merch <- function(input, output, session, plt_change){
       )
 
     output$merch_explorer <- shiny::renderPlot({
-      print('render merch plot')
       merch_plt
     })
 

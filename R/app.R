@@ -15,44 +15,58 @@ app <- function(...) {
     cache = trade_dash_cache
   )
 
-  con <<- duckdb::dbConnect(drv = duckdb::duckdb(),
-                            db = "trade_database.duckdb")
+  assign(
+    x = "con",
+    value = duckdb::dbConnect(
+      drv = duckdb::duckdb(),
+      db = "trade_database.duckdb"
+      ),
+    envir = .GlobalEnv
+  )
 
-  merch <<- dplyr::tbl(con, 'merch') # collect all here is 6 sec
-  merch_imp <<- dplyr::tbl(con, 'merch_imp')
-  supp_cy <<- dplyr::tbl(con, 'supp_cy')
-  supp_fy <<- dplyr::tbl(con, 'supp_fy')
-  bop <<- dplyr::tbl(con, 'bop')
+  assign_table_global(
+    con = con,
+    tables = c(
+      "merch",
+      "merch_imp",
+      "supp_cy",
+      "supp_fy",
+      "bop"
+    )
+  )
 
-  merch_dates <<- merch %>%
+    merch %>%
     dplyr::summarise(
       min = min(date, na.rm = TRUE),
       max = max(date, na.rm = TRUE)
     ) %>%
     dplyr::collect()  %>%
-    dplyr::mutate(dplyr::across(dplyr::everything(), as.Date))
+    dplyr::mutate(dplyr::across(dplyr::everything(), as.Date)) %>%
+    assign("merch_dates", ., envir = .GlobalEnv)
 
-  bop_dates <<- bop %>%
+  bop %>%
     dplyr::summarise(
       min = min(.data$date, na.rm = TRUE),
       max = max(.data$date, na.rm = TRUE)
     ) %>%
     dplyr::collect()  %>%
-    dplyr::mutate(dplyr::across(dplyr::everything(), as.Date))
+    dplyr::mutate(dplyr::across(dplyr::everything(), as.Date)) %>%
+    assign("bop_dates", ., envir = .GlobalEnv)
 
-  merch_sitc_lu <<- merch  %>%
+  merch %>%
     dplyr::group_by(sitc, sitc_code) %>%
     dplyr::summarize(n = length(sitc_code)) %>%
-    dplyr::collect()
+    dplyr::collect() %>%
+    assign("merch_sitc_lu", ., envir = .GlobalEnv)
 
-  merch_country_dest <<- merch %>%
+  merch %>%
     dplyr::summarize(sitc = dplyr::distinct(country_dest))  %>%
     dplyr::collect() %>%
-    dplyr::pull()
+    dplyr::pull() %>%
+    assign("merch_country_dest", ., envir = .GlobalEnv)
 
 
-
-  in_global <<- ls(envir = .GlobalEnv)
+  assign("in_global", ls(envir = .GlobalEnv), envir = .GlobalEnv)
 
 
 

@@ -37,8 +37,6 @@ viz_launchpad_countries <- function(data = merch,
   df <- df %>%
     mutate(date = as.Date(date))
 
-  print(glue::glue('row num: {nrow(df)}'))
-
 
   if(smooth) {
 
@@ -98,8 +96,6 @@ viz_launchpad_chart <- function(data = merch,
                 code_level = 3,
                 top = 5,
                 smooth = TRUE) {
-
-  print(glue::glue('viz_launchpad_chart / generate top goods plot: input {class(data)}'))
 
   filtered <- data %>%
     filter(.data$country_dest %in% !!country,
@@ -250,7 +246,6 @@ viz_goods_export_import_launchpad <- function(data = bop) {
 # Victoria's historical imports of goods and services
 viz_good_services_export_chart <- function(data = bop) {
 
-  print('generate vic imports g&s')
 
   filtered <- data %>%
     dplyr::filter(
@@ -261,7 +256,6 @@ viz_good_services_export_chart <- function(data = bop) {
 
 
   if ('tbl_lazy' %in% class(filtered)) {
-    print('lazy data collect')
     filtered <- filtered %>%
       collect() %>%
       mutate(date = lubridate::ymd(date))
@@ -273,8 +267,6 @@ viz_good_services_export_chart <- function(data = bop) {
     dplyr::mutate(goods_services = dplyr::if_else(.data$goods_services == "Goods and Services", "Total", .data$goods_services)) %>%
     dplyr::mutate(value = abs(.data$value),
                   date = as.Date(date))
-
-  print(glue::glue('row num: {nrow(df)}'))
 
   #assertthat::assert_that(class(df$date) == 'Date', msg = 'incorrect date type')
 
@@ -433,8 +425,6 @@ clean_dates <- function(data){
   since_prev_qtr = paste0("Since ", nice_prev_qtr)
   since_prev_year = paste0("Since ", nice_prev_year)
 
-  print('dates cleaned')
-
   list(
     datelist = datelist,
     latest_date = latest_date,
@@ -568,8 +558,6 @@ tab_launchpad_country_imp_exp <- function(direction = c('import', 'export'), dat
     )%>%
     head(rows)
 
-  print(glue::glue('country top {rows} {direction} data length: {nrow(country_list)}'))
-
   return(country_list)
 }
 
@@ -673,8 +661,6 @@ tab_launchpad_product_imp_exp <- function(direction = c('import', 'export'), dat
            !!paste0(nice_prev_year) := .data$prev_year_change
     )%>%
     head(rows)
-
-  print(glue::glue('Product top {rows} {direction} data length: {nrow(product_list)}'))
 
   return(product_list)
 }

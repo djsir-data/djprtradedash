@@ -33,9 +33,6 @@ viz_merch_explorer <- function(dataset,
     df <- df %>%
       dplyr::collect() %>%
       dplyr::mutate(date = lubridate::ymd(date))
-    print('collect lazy for viz merch')
-    print(class(df))
-    print(class(df$date))
   }
 
 

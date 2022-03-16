@@ -41,13 +41,9 @@ server <- function(input, output, session) {
     footnote()
   })
 
-  message('server pages:')
   page_launchpad(input, output, session, plt_change, table_rowcount = 5)
-  message("Launchpad working")
   page_bop(input, output, session, plt_change, table_rowcount = 5)
-  message("bop working")
   page_merch(input, output, session, plt_change)
-  message("merch working")
 
 
 
