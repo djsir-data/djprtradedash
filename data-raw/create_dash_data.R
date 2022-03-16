@@ -3,7 +3,6 @@
 
 # Load required packages & set options
 pkgload::load_all()
-options("timeout" = 180)
 
 
 
