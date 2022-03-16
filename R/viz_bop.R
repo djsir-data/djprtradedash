@@ -295,10 +295,11 @@ viz_service_bop_bar_chart <- function(data = bop) {
   df <- data %>%
     dplyr::select(-.data$series_id, -.data$unit) %>%
     dplyr::filter(.data$goods_services == "Services", .data$indicator == "Chain Volume Measures") %>%
-    dplyr::mutate(value = abs(.data$value)) %>%
+    dplyr::mutate(value = abs(.data$value),
+                  date = lubridate::ymd(date)) %>%
     dplyr::filter(
-      !.data$state == "Australian Capital Territory",
-      !.data$state == "Northern Territory"
+      .data$state != "Australian Capital Territory",
+      .data$state != "Northern Territory"
     ) %>%
     dplyr::mutate(state = dplyr::case_when(
       .data$state == "Australian Capital Territory" ~
@@ -405,7 +406,7 @@ viz_service_bop_bar_chart <- function(data = bop) {
       title = title,
       subtitle = paste0(
         "Growth in exports and imports of services between ", year_prior," and ",
-        format(max(data$date), "%B %Y")," (%)"
+        format(max(df$date), "%B %Y")," (%)"
       ),
       caption = caption
     )
@@ -417,10 +418,11 @@ viz_goods_bop_bar_chart <- function(data = bop) {
   df <- data %>%
     dplyr::select(-.data$series_id, -.data$unit) %>%
     dplyr::filter(.data$goods_services == "Goods", .data$indicator == "Chain Volume Measures") %>%
-    dplyr::mutate(value = abs(.data$value)) %>%
+    dplyr::mutate(value = abs(.data$value),
+                  date = lubridate::ymd(date)) %>%
     dplyr::filter(
-      !.data$state == "Australian Capital Territory",
-      !.data$state == "Northern Territory"
+      .data$state != "Australian Capital Territory",
+      .data$state != "Northern Territory"
     ) %>%
     dplyr::mutate(state = dplyr::case_when(
       .data$state == "New South Wales" ~ "NSW",
@@ -524,7 +526,7 @@ viz_goods_bop_bar_chart <- function(data = bop) {
       title = title,
       subtitle = paste0(
         "Growth in exports and imports of goods between ", year_prior," and ",
-        format(max(data$date), "%B %Y")," (%)"
+        format(max(df$date), "%B %Y")," (%)"
       ),
       caption = caption
     )
