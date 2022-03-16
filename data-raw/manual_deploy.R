@@ -11,6 +11,8 @@ rsconnect::deployApp(
     "app.R",
     "DESCRIPTION",
     "djprtradedash.Rproj",
-    "NAMESPACE"
+    "NAMESPACE",
+    "trade_database.duckdb",
+    "trade_database.duckdb.wal"
   )
 )
