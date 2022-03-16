@@ -37,7 +37,7 @@ page_merchUI <- function(...) {
         shinyWidgets::multiInput(
           inputId = "merch_sitc",
           label = "Goods",
-          choices = sort(merch_sitc),
+          choices = sort(merch_sitc_lu$sitc),
           selected = "Medicinal and pharmaceutical products (excl. medicaments of group 542)",
           width = "100%",
           options = list(
@@ -124,24 +124,22 @@ page_merchUI <- function(...) {
 }
 
 
-page_merch <- function(input, output, session, plt_change, merch = merch){
+page_merch <- function(input, output, session, plt_change){
 
-  merch_df <- shiny::reactive({
+  sitc_lu <- shiny::reactive({
     if(input$merch_explorer_sitc %in% c(1,2,3)) {
-      merch <- merch %>%
-        dplyr::filter(nchar(.data$sitc_code) == !!input$merch_explorer_sitc) %>%
-        dplyr::collect()
+      lu <- merch_sitc_lu %>%
+        dplyr::filter(n == !!input$merch_explorer_sitc)
     } else {
-      merch <- merch %>%
-      dplyr::mutate(code_name = paste0(.data$sitc_code, ": ", .data$sitc)) %>%
-      dplyr::collect()
+      lu <- merch_sitc_lu %>%
+      dplyr::mutate(sitc = paste0(.data$sitc_code, ": ", .data$sitc))
     }
-    merch |> pull(code_name) |> unique()
+    lu |> pull(sitc) |> unique()
   })
 
   observe({
     shinyWidgets::updateMultiInput(session = session, inputId = "merch_sitc",
-                                   choices = merch_df())
+                                   choices = sitc_lu())
   })
 
   observe({
@@ -156,12 +154,17 @@ page_merch <- function(input, output, session, plt_change, merch = merch){
 
     print('merch plot reactive')
 
-    merch_plt <- merch %>%
+    mindate <- input$merch_explorer_dates[1]
+    maxdate <- input$merch_explorer_dates[2]
+
+    merch_plt_data <- merch %>%
       dplyr::filter(
-        .data$date >= !!input$merch_explorer_dates[1],
-        .data$date <= !!input$merch_explorer_dates[2]
-      ) %>% #collect() %>%
-      viz_merch_explorer(
+        .data$date >= !!mindate,
+        .data$date <= !!maxdate
+      )
+
+    merch_plt <- viz_merch_explorer(
+        merch_plt_data,
         countries = input$merch_countries,
         goods = sub(".[0-9]*:\\s", "", input$merch_sitc),
         facet_by = input$merch_explorer_facets,
