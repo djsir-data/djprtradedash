@@ -1,4 +1,4 @@
-viz_merch_explorer <- function(data = merch,
+viz_merch_explorer <- function(dataset,
                                countries = c("Thailand", "Malaysia"),
                                goods = "Medicinal and pharmaceutical products (excl. medicaments of group 542)",
                                origin = "Victoria",
@@ -6,13 +6,14 @@ viz_merch_explorer <- function(data = merch,
                                smooth = FALSE,
                                merch_explorer_sitc) {
 
-  all_dates <- data %>%
+
+  all_dates <- dataset %>%
     dplyr::summarise(date = DISTINCT(date)) %>%
     dplyr::collect() %>%
     dplyr::mutate(date = lubridate::ymd(date))
 
 
-  data_dates <- data |>
+  data_dates <- dataset |>
     dplyr::summarise(
       min = min(date, na.rm = TRUE),
       max = max(date, na.rm = TRUE)
@@ -21,7 +22,7 @@ viz_merch_explorer <- function(data = merch,
     dplyr::mutate(dplyr::across(dplyr::everything(), as.Date))
 
 
-  df <- data %>%
+  df <- dataset %>%
     dplyr::filter(
       .data$sitc %in% .env$goods,
       .data$country_dest %in% .env$countries,
@@ -37,6 +38,7 @@ viz_merch_explorer <- function(data = merch,
     print(class(df$date))
   }
 
+
   df <- df %>%
     dplyr::mutate(
       group = paste(.data$country_dest, .data$sitc, sep = "-"),
@@ -49,7 +51,7 @@ viz_merch_explorer <- function(data = merch,
 
 
   df <- bind_rows(
-    dplyr::merge(all_dates$date, combs) %>%
+    merge(all_dates$date, combs) %>%
     dplyr::rename(date = 1) %>%
     dplyr::mutate(value = 0),
     df
@@ -117,7 +119,7 @@ viz_merch_explorer <- function(data = merch,
 
   if (show_legend) {
     p <- p +
-      theme_djpr::theme_djpr(legend = "top") +
+      djprtheme::theme_djpr(legend = "top") +
       ggplot2::theme(
         legend.direction = "vertical",
         legend.text = element_text(size = 11)
