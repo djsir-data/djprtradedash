@@ -2,7 +2,6 @@
 
 export("%>%")
 export(app)
-export(create_merch_lookup)
 export(read_bop)
 export(read_merch)
 export(read_supp)
