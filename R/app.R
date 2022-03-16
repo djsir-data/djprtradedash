@@ -11,7 +11,7 @@ app <- function(...) {
     dir = file.path(".", "app-cache")
   )
 
-  shinyOptions(
+  shiny::shinyOptions(
     cache = trade_dash_cache
   )
 
@@ -20,7 +20,7 @@ app <- function(...) {
     value = duckdb::dbConnect(
       drv = duckdb::duckdb(),
       db = "trade_database.duckdb"
-      ),
+    ),
     envir = .GlobalEnv
   )
 
@@ -35,7 +35,7 @@ app <- function(...) {
     )
   )
 
-    merch %>%
+  merch %>%
     dplyr::summarise(
       min = min(date, na.rm = TRUE),
       max = max(date, na.rm = TRUE)
@@ -67,17 +67,6 @@ app <- function(...) {
 
 
   assign("in_global", ls(envir = .GlobalEnv), envir = .GlobalEnv)
-
-
-
-  # close db connection on exit
-  # onStop(function() {
-  #   cat('Closing Pool')
-  #   duckdb::dbDisconnect(con, shutdown = TRUE)
-  #   rm(list = in_global, envir = .GlobalEnv)
-  #   rm(in_global, envir = .GlobalEnv)
-  # })
-
 
   shiny::shinyApp(ui = ui(), server = server)
 }
