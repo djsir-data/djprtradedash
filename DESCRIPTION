@@ -31,7 +31,6 @@ Imports:
     rlang,
     shiny,
     shinyWidgets,
-    readsdmx,
     readabs (>= 0.4.10.901),
     tidyr,
     stringr,
