@@ -5,39 +5,57 @@ viz_launchpad_countries <- function(data = merch,
                                     top = 5,
                                     smooth = TRUE) {
 
-  if(smooth) {
-    data <- data %>%
-      dplyr::filter(.data$sitc == "Total",
-             .data$origin %in% .env$region)
+  filtered <- data %>%
+    filter(.data$origin %in% .env$region,
+           .data$sitc == "Total")
 
-    all_dates <- data %>%
+
+
+  # TODO: Need to finalise and improve method for calculating top N. Current does not account for smoothed numbers
+  ## could use window functions in DB to calc top N separately https://duckdb.org/docs/sql/window_functions
+  top_5_country <- filtered %>%
+    filter(.data$country_dest != "Total",
+           .data$origin %in% .env$region,
+           .data$sitc == "Total") %>%
+    arrange(desc(date), desc(value)) %>%
+    select(country_dest) %>% collect() %>%
+    unique() %>%
+    head(top) %>%
+    as.matrix()
+
+
+  df <- filtered %>%
+    filter(.data$country_dest %in% top_5_country) %>%
+    select(country_dest, origin, date, value)
+
+
+  if ('tbl_lazy' %in% class(df)) {
+    df <- df %>%
+      collect()
+  }
+
+  df <- df %>%
+    mutate(date = as.Date(date))
+
+
+  if(smooth) {
+
+    all_dates <- df %>%
       dplyr::select(date) %>%
       unique()
 
-    data <- data %>%
+    df <- df %>%
       tidyr::expand(country_dest, origin, all_dates) %>%
-      dplyr::left_join(data, by = c("country_dest", "origin", "date")) %>%
+      dplyr::left_join(df, by = c("country_dest", "origin", "date")) %>%
       dplyr::group_by(country_dest, origin) %>%
       dplyr::mutate(value = tidyr::replace_na(value, 0),
                     value = slider::slide_mean(value, before = 11L)) %>%
       dplyr::ungroup()
   }
 
-  top_5_country <- data %>%
-    filter(.data$origin %in% .env$region,
-           .data$sitc == "Total",
-           .data$country_dest != "Total") %>%
-    arrange(desc(date), desc(value)) %>%
-    select(country_dest) %>%
-    unique() %>%
-    head(top) %>%
-    as.matrix()
 
-  df <- data %>%
-    filter(.data$origin %in% .env$region,
-           .data$sitc == "Total",
-           .data$country_dest %in% top_5_country) %>%
-    select(country_dest, origin, date, value)
+
+  #assertthat::assert_that(class(df$date) == 'Date', msg = 'incorrect date type')
 
   latest_month <- format(max(df$date), "%B %Y")
 
@@ -52,14 +70,14 @@ viz_launchpad_countries <- function(data = merch,
            tooltip = paste0(
             country_dest, "\n",
             format(.data$date, "%b %Y"), "\n",
-            format(round2(.data$value, 1), big.mark=",")
+            format(round(.data$value, 1), big.mark=",")
             ))
 
   df %>%
     djpr_ts_linechart(
       col_var = .data$country_dest,
       y_labels = function(x) format(x, big.mark=","),
-      label_wrap_length = 15,
+      #label_wrap_length = 15,
       x_expand_mult = c(0, 0.30)
 
     ) +
@@ -79,45 +97,60 @@ viz_launchpad_chart <- function(data = merch,
                 top = 5,
                 smooth = TRUE) {
 
-  if(smooth) {
-    data <- data %>%
-      dplyr::filter(.data$country_dest %in% .env$country,
-             .data$origin %in% .env$region,
-             nchar(.data$sitc_code) == .env$code_level)
+  filtered <- data %>%
+    filter(.data$country_dest %in% !!country,
+           .data$origin %in% region,
+           nchar(.data$sitc_code) == .env$code_level)
 
-    all_dates <- data %>%
+  top_5_code <- filtered %>%
+    filter(country_dest %in% country,
+           origin %in% region,
+           .data$sitc != "Total",
+           nchar(.data$sitc_code) == !!code_level) %>%
+    arrange(desc(date), desc(value)) %>%
+    select(sitc_code) %>%
+    collect() %>%
+    unique() %>%
+    head(top) %>%
+    as.matrix()
+
+  df <- filtered %>%
+    filter(country_dest %in% country,
+           origin %in% region,
+           sitc_code %in% !!top_5_code) %>%
+    select(sitc, date, value, sitc_code)
+
+
+  if ('tbl_lazy' %in% class(df)) {
+    df <- df %>%
+      collect() %>%
+      mutate(date = lubridate::ymd(date))
+  }
+
+  df <- df %>%
+    group_by(sitc) %>%
+    mutate(sitc_shrink = paste0(sitc_code, ": ", stringr::str_trunc(sitc, 20, "right")),
+           #sitc_shrink = strsplit(sitc, "[(]")[[1]][1],
+           date = lubridate::ymd(date))
+
+  latest_month <- format(max(df$date, na.rm = TRUE), "%B %Y")
+
+  if(smooth) {
+
+    all_dates <- df %>%
+      ungroup() %>%
       dplyr::select(date) %>%
       unique()
 
-    data <- data %>%
-      tidyr::expand(sitc, origin, all_dates) %>%
-      dplyr::left_join(data, by = c("sitc", "origin", "date")) %>%
-      dplyr::group_by(sitc, origin) %>%
+    df <- df %>%
+      tidyr::expand(sitc, all_dates) %>%
+      dplyr::left_join(df, by = c("sitc", "date")) %>%
+      dplyr::group_by(sitc) %>%
       dplyr::mutate(value = tidyr::replace_na(value, 0),
                     value = slider::slide_mean(value, before = 11L)) %>%
       dplyr::ungroup()
   }
 
-	top_5_code <- data %>%
-		filter(country_dest %in% country,
-			   origin %in% region,
-         sitc != "Total",
-         nchar(sitc_code) == code_level) %>%
-		arrange(desc(date), desc(value)) %>%
-    select(sitc_code) %>%
-    unique() %>%
-    head(top) %>%
-    as.matrix()
-
-  df <- data %>%
-    filter(country_dest %in% country,
-         origin %in% region,
-         sitc_code %in% top_5_code) %>%
-    select(sitc, date, value, sitc_code) %>%
-    group_by(sitc) %>%
-    mutate(sitc_shrink = paste0(sitc_code, ": ", stringr::str_trunc(sitc, 20, "right")))
-
-  latest_month <- format(max(df$date), "%B %Y")
 
   caption <- paste0("Source: ABS.Stat Merchandise Exports by Commodity (latest data is from ", latest_month, ").")
 
@@ -137,7 +170,7 @@ viz_launchpad_chart <- function(data = merch,
     djpr_ts_linechart(
       col_var = .data$sitc_shrink,
       y_labels = function(x) format(x, big.mark=","),
-      label_wrap_length = 25,
+      #label_wrap_length = 25,
       x_expand_mult = c(0, 0.25)
     ) +
     labs(
@@ -149,12 +182,22 @@ viz_launchpad_chart <- function(data = merch,
 
 # Annual growth of Victoria's imports and exports of goods & services
 viz_goods_export_import_launchpad <- function(data = bop) {
-  df <- data %>%
+
+  filtered <- data %>%
     dplyr::filter(
       .data$state == "Victoria",
-    ) %>%
+      .data$exports_imports == "Exports",
+      .data$indicator == "Chain Volume Measures"
+    )
+
+  if (!any(class(filtered) == 'data.frame')) {
+    filtered <- filtered %>%
+      collect() %>%
+      mutate(date = lubridate::ymd(date))
+  }
+
+  df <- filtered %>%
     dplyr::select(-.data$series_id, -.data$unit) %>%
-    dplyr::filter(.data$exports_imports == "Exports", .data$indicator == "Chain Volume Measures") %>%
     dplyr::mutate(goods_services = dplyr::if_else(.data$goods_services == "Goods and Services", "Total", .data$goods_services)) %>%
     dplyr::mutate(value = abs(.data$value))
 
@@ -202,15 +245,30 @@ viz_goods_export_import_launchpad <- function(data = bop) {
 
 # Victoria's historical imports of goods and services
 viz_good_services_export_chart <- function(data = bop) {
-  df <- data %>%
+
+
+  filtered <- data %>%
     dplyr::filter(
       .data$state == "Victoria",
-    ) %>%
-    dplyr::select(-.data$series_id, -.data$unit) %>%
-    dplyr::filter(.data$exports_imports == "Exports", .data$indicator == "Chain Volume Measures") %>%
-    dplyr::mutate(goods_services = dplyr::if_else(.data$goods_services == "Goods and Services", "Total", .data$goods_services)) %>%
-    dplyr::mutate(value = abs(.data$value))
+      .data$exports_imports == "Exports",
+      .data$indicator == "Chain Volume Measures"
+    )
 
+
+  if ('tbl_lazy' %in% class(filtered)) {
+    filtered <- filtered %>%
+      collect() %>%
+      mutate(date = lubridate::ymd(date))
+  }
+
+
+  df <- filtered %>%
+    dplyr::select(-.data$series_id, -.data$unit) %>%
+    dplyr::mutate(goods_services = dplyr::if_else(.data$goods_services == "Goods and Services", "Total", .data$goods_services)) %>%
+    dplyr::mutate(value = abs(.data$value),
+                  date = as.Date(date))
+
+  #assertthat::assert_that(class(df$date) == 'Date', msg = 'incorrect date type')
 
   latest_month <- format(max(df$date), "%B %Y")
 
@@ -261,25 +319,32 @@ viz_exportlist <- function(data = merch,
 						   country = c("Total"),
 						   date = "max") {
 
+  filtered <- data %>%
+    filter(country_dest %in% country,
+           origin == "Victoria")
+
+  if (!any(class(filtered) == 'data.frame')) {
+    filtered <- filtered %>%
+      collect() %>%
+      mutate(date = lubridate::ymd(date))
+  }
+
+
 	if(class(date) == "character") {
-		ref_date <- max(data$date)
+		ref_date <- max(filtered$date)
 	} else {
-			ref_date <- lubridate::floor_date(date, unit = "months")
+			ref_date <- lubridate::floor_date(filtered, unit = "months")
 		}
 
-	df_month <- format(max(data$date), format = "%Y-%b")
+	df_month <- format(max(filtered$date), format = "%Y-%b")
 
-	df_2020 <- data %>%
-		filter(country_dest %in% country,
-			   origin == "Victoria") %>%
+	df_2020 <- filtered %>%
 		filter(date %in% c(ref_date, seq.Date(ref_date, by = "-1 year", length.out = 2)[2])) %>%
 		arrange(desc(date), desc(value)) %>%
 		select(date, sitc, sitc_code, value) %>%
 		filter(date < lubridate::floor_date(ref_date, unit = "years"))
 
-	df_2021 <- data %>%
-		filter(country_dest %in% country,
-			   origin == "Victoria") %>%
+	df_2021 <- filtered %>%
 		filter(date %in% c(ref_date, seq.Date(ref_date, by = "-1 year", length.out = 2)[2])) %>%
 		arrange(desc(date), desc(value)) %>%
 		select(date, sitc, sitc_code, value) %>%
@@ -308,10 +373,19 @@ viz_exportlist <- function(data = merch,
 # Top 10 Markets for Goods Exports
 
 viz_launchpad_marketlist <- function(data = merch) {
-	country_list <- data %>%
-		filter(country_dest != "Total",
-			   sitc == "Total",
-			   origin == "Victoria") %>%
+
+  filtered <- data %>%
+    filter(country_dest != "Total",
+           sitc == "Total",
+           origin == "Victoria")
+
+  if (!any(class(filtered) == 'data.frame')) {
+    filtered <- filtered %>%
+      collect() %>%
+      mutate(date = lubridate::ymd(date))
+  }
+
+	country_list <- filtered %>%
 		arrange(desc(date), desc(value)) %>%
 		head(10) %>%
 		select(country_dest) %>%
@@ -330,161 +404,128 @@ viz_launchpad_headline2 <- function(data = supp_cy) {
 
 }
 
-# Tables - Country
+clean_dates <- function(data){
 
-tab_launchpad_country_exp <- function(data = merch, rows = 5, smooth = TRUE) {
-
-  datelist<-data%>%
-    select(date)%>%
-    distinct()%>%
-    arrange(desc(date))%>%
+  datelist = data %>%
+    select(date) %>%
+    distinct() %>%
+    arrange(desc(date)) %>% collect() %>%
+    mutate(date = lubridate::ymd(date)) %>%
     slice(1,2,4,13)
 
-  #clean table headings
-  latest_date <- datelist$date[1]
-  prev_date <- datelist$date[2]
-  prev_qtr <- datelist$date[3]
-  prev_year <- datelist$date[4]
+  latest_date = datelist$date[1]
+  prev_date = datelist$date[2]
+  prev_qtr = datelist$date[3]
+  prev_year = datelist$date[4]
+  nice_latest_date = format(latest_date, "%b %Y")
+  nice_prev_date = format(prev_date, "%b %Y")
+  nice_prev_qtr = format(prev_qtr, "%b %Y")
+  nice_prev_year = format(prev_year, "%b %Y")
+  since_prev_date = paste0("Since ", nice_prev_date)
+  since_prev_qtr = paste0("Since ", nice_prev_qtr)
+  since_prev_year = paste0("Since ", nice_prev_year)
 
-  nice_latest_date <- format(latest_date, "%b %Y")
-  nice_prev_date <- format(prev_date, "%b %Y")
-  nice_prev_qtr <- format(prev_qtr, "%b %Y")
-  nice_prev_year <- format(prev_year, "%b %Y")
+  list(
+    datelist = datelist,
+    latest_date = latest_date,
+    prev_date = prev_date,
+    prev_qtr = prev_qtr,
+    prev_year = prev_year,
+    nice_latest_date = nice_latest_date,
+    nice_prev_date = nice_prev_date,
+    nice_prev_qtr = nice_prev_qtr,
+    nice_prev_year = nice_prev_year,
+    since_prev_date = since_prev_date,
+    since_prev_qtr = since_prev_qtr,
+    since_prev_year = since_prev_year
+  )
 
-  since_prev_date <- paste0("Since ", nice_prev_date)
-  since_prev_qtr <- paste0("Since ", nice_prev_qtr)
-  since_prev_year <- paste0("Since ", nice_prev_year)
-
-  #generate table
-
-  if(smooth) {
-    data <- data %>%
-      dplyr::filter(country_dest != "Total",
-           sitc == "Total",
-           origin == "Victoria")
-
-    all_dates <- data %>%
-      dplyr::select(date) %>%
-      unique()
-
-    country_exp_list <- data %>%
-      tidyr::expand(country_dest, origin, all_dates) %>%
-      dplyr::left_join(data, by = c("country_dest", "origin", "date")) %>%
-      dplyr::group_by(country_dest, origin) %>%
-      dplyr::mutate(value = tidyr::replace_na(value, 0),
-                    value = slider::slide_mean(value, before = 11L)) %>%
-      dplyr::ungroup() %>%
-      dplyr::select(country_dest, date, value) %>%
-      dplyr::arrange(country_dest, date) %>%
-      dplyr::filter(date %in% datelist$date)
-  } else {
-    country_exp_list <- data %>%
-    group_by(country_dest)%>%
-    filter(date %in% datelist$date,
-           country_dest != "Total",
-           sitc == "Total",
-           origin == "Victoria") %>%
-    select(country_dest,date,value)%>%
-    arrange(country_dest,date) %>%
-    ungroup()
-  }
-
-  country_exp_list <- country_exp_list %>%
-    group_by(country_dest) %>%
-    mutate(prev_month_change    = paste0(scales::comma(value-dplyr::lag(value,1), accuracy = 1),
-                                        "\n(",
-                                        scales::percent((value-dplyr::lag(value,1))/dplyr::lag(value,1)),
-                                        ")"),
-           prev_qtr_change      = paste0(scales::comma(value-dplyr::lag(value,2), accuracy = 1),
-                                        "\n(",
-                                        scales::percent((value-dplyr::lag(value,2))/dplyr::lag(value,2)),
-                                        ")"),
-           prev_year_change     = paste0(scales::comma(value-dplyr::lag(value,3), accuracy = 1),
-                                        "\n(",
-                                        scales::percent((value-dplyr::lag(value,3))/dplyr::lag(value,3)),
-                                        ")")
-           )%>%
-    ungroup()%>%
-    filter(date==datelist$date[1])%>%
-    arrange(desc(value))%>%
-    group_by(date) %>%
-    mutate()%>%
-    mutate(value = paste0(scales::comma(value, accuracy = 1),
-                          "\n(",
-                          scales::percent(value/sum(value[!is.na(value)]), accuracy = 1.1),
-                          ")"))%>%
-    ungroup()%>%
-    select(-c(date))%>%
-    rename(` ` = "country_dest",
-           !!paste0(nice_latest_date) := .data$value,
-           !!paste0(nice_prev_date) := .data$prev_month_change,
-           !!paste0(nice_prev_qtr) := .data$prev_qtr_change,
-           !!paste0(nice_prev_year) := .data$prev_year_change
-           )%>%
-    head(rows)
-
-  return(country_exp_list)
 }
 
-tab_launchpad_country_imp <- function(data = merch_imp, rows = 5, smooth = TRUE) {
 
-  datelist<-data%>%
-    select(date)%>%
-    distinct()%>%
-    arrange(desc(date))%>%
-    slice(1,2,4,13)
 
-  #clean table headings
-  latest_date <- datelist$date[1]
-  prev_date <- datelist$date[2]
-  prev_qtr <- datelist$date[3]
-  prev_year <- datelist$date[4]
+# Tables - Country
 
-  nice_latest_date <- format(latest_date, "%b %Y")
-  nice_prev_date <- format(prev_date, "%b %Y")
-  nice_prev_qtr <- format(prev_qtr, "%b %Y")
-  nice_prev_year <- format(prev_year, "%b %Y")
+tab_launchpad_country_imp_exp <- function(direction = c('import', 'export'), data, rows = 5, smooth = TRUE) {
 
-  since_prev_date <- paste0("Since ", nice_prev_date)
-  since_prev_qtr <- paste0("Since ", nice_prev_qtr)
-  since_prev_year <- paste0("Since ", nice_prev_year)
+  direction = match.arg(direction)
+
+  imp_ext_fields <- list(
+    import = list(partner = 'country_origin',
+                  vic = 'dest'),
+    export = list(vic = 'origin',
+                  partner = 'country_dest')
+  )
+
+  dir_fields <- imp_ext_fields[[direction]]
+
+  list2env(
+    clean_dates(data), envir = environment()
+  )
 
   #generate table
 
-  if(smooth) {
-    data <- data %>%
-      dplyr::filter(country_origin != "Total",
-           sitc == "Total",
-           dest == "Victoria")
+  #country_list <- data %>%
+    #filter(#date %in% !!datelist$date,  ############  IMPORTANT)
 
-    all_dates <- data %>%
-      dplyr::select(date) %>%
-      unique()
-
-    country_imp_list <- data %>%
-      tidyr::expand(country_origin, dest, all_dates) %>%
-      dplyr::left_join(data, by = c("country_origin", "dest", "date")) %>%
-      dplyr::group_by(country_origin, dest) %>%
-      dplyr::mutate(value = tidyr::replace_na(value, 0),
-                    value = slider::slide_mean(value, before = 11L)) %>%
-      dplyr::ungroup() %>%
-      dplyr::select(country_origin, date, value) %>%
-      dplyr::arrange(country_origin, date) %>%
-      dplyr::filter(date %in% datelist$date)
-  } else {
-    country_imp_list <- data %>%
-    group_by(country_origin)%>%
-    filter(date %in% datelist$date,
-           country_origin != "Total",
-           sitc == "Total",
-           dest == "Victoria") %>%
-    select(country_origin,date,value)%>%
-    arrange(country_origin,date) %>%
-    ungroup()
+  # imports
+  if (direction == 'import') {
+    country_list <- data %>%
+      filter(sitc == "Total",
+             country_origin != "Total",
+             dest == "Victoria")
+  # exports
+  } else if (direction == 'export') {
+    country_list <- data |>
+      filter(sitc == "Total",
+             country_dest != "Total")
   }
 
-  country_imp_list <- country_imp_list %>%
-    group_by(country_origin) %>%
+
+  country_list <- country_list %>%
+    collect() |>
+    dplyr::mutate(date = lubridate::ymd(date))
+
+
+  if(smooth) {
+
+    all_dates <- country_list %>%
+      dplyr::select(date) %>%
+    unique()
+
+    country_list <- country_list %>%
+      tidyr::expand(.data[[dir_fields$vic]], .data[[dir_fields$partner]], all_dates) %>%
+      dplyr::left_join(country_list, by = c(dir_fields$vic, dir_fields$partner, "date")) %>%
+      dplyr::group_by(.data[[dir_fields$vic]], .data[[dir_fields$partner]]) %>%
+      dplyr::mutate(value = tidyr::replace_na(value, 0),
+                    value = slider::slide_mean(value, before = 11L)) %>%
+      dplyr::ungroup()
+
+  } else {
+
+    country_list <- country_list %>%
+      group_by(.data[[dir_fields$partner]]) %>%
+      ungroup()
+
+  }
+
+
+  country_list <- country_list %>%
+    dplyr::filter(date %in% datelist$date) %>%
+    dplyr::group_by(.data[[dir_fields$partner]], date) %>%
+    summarise(value = sum(value, na.rm = TRUE)) %>%
+    select(one_of(dir_fields$partner), date, value) %>%
+    mutate(date = lubridate::ymd(date)) %>%
+    arrange(.data[[dir_fields$partner]], date)
+    #ungroup()%>%
+    #ungroup()%>%
+    #group_by(.data[[direction]]) %>%
+
+
+
+
+  country_list <- country_list %>%
+    group_by(.data[[dir_fields$partner]]) %>%
     mutate(prev_month_change    = paste0(scales::comma(value-dplyr::lag(value,1), accuracy = 1),
                                          "\n(",
                                          scales::percent((value-dplyr::lag(value,1))/dplyr::lag(value,1)),
@@ -498,18 +539,18 @@ tab_launchpad_country_imp <- function(data = merch_imp, rows = 5, smooth = TRUE)
                                          scales::percent((value-dplyr::lag(value,3))/dplyr::lag(value,3)),
                                          ")")
     )%>%
-    ungroup()%>%
+    #ungroup()%>%
     filter(date==datelist$date[1])%>%
     arrange(desc(value))%>%
     group_by(date) %>%
-    mutate()%>%
+    #mutate()%>%
     mutate(value = paste0(scales::comma(value, accuracy = 1),
                           "\n(",
                           scales::percent(value/sum(value[!is.na(value)]), accuracy = 1.1),
                           ")"))%>%
     ungroup()%>%
-    select(-c(date))%>%
-    rename(` ` = "country_origin",
+    select(-c(date)) %>%
+    rename(#` ` = direction,
            !!paste0(nice_latest_date) := .data$value,
            !!paste0(nice_prev_date) := .data$prev_month_change,
            !!paste0(nice_prev_qtr) := .data$prev_qtr_change,
@@ -517,76 +558,79 @@ tab_launchpad_country_imp <- function(data = merch_imp, rows = 5, smooth = TRUE)
     )%>%
     head(rows)
 
-
-  return(country_imp_list)
+  return(country_list)
 }
+
+
+
+
 
 # Tables - Product
 
-tab_launchpad_product_exp <- function(data = merch, sitc_level = 1, rows = 5, smooth = TRUE) {
+tab_launchpad_product_imp_exp <- function(direction = c('import', 'export'), data, sitc_level = 1, rows = 5, smooth = TRUE) {
 
-  datelist<-data%>%
-    select(date)%>%
-    distinct()%>%
-    arrange(desc(date))%>%
-    slice(1,2,4,13)
 
-  #clean table headings
-  latest_date <- datelist$date[1]
-  prev_date <- datelist$date[2]
-  prev_qtr <- datelist$date[3]
-  prev_year <- datelist$date[4]
+  direction = match.arg(direction)
 
-  nice_latest_date <- format(latest_date, "%b %Y")
-  nice_prev_date <- format(prev_date, "%b %Y")
-  nice_prev_qtr <- format(prev_qtr, "%b %Y")
-  nice_prev_year <- format(prev_year, "%b %Y")
+  country_field <- switch(direction,
+                      'import' = 'country_origin',
+                      'export' = 'country_dest'
+  )
+  source_field <- switch(direction,
+                          'import' = 'dest',
+                          'export' = 'origin'
+  )
 
-  since_prev_date <- paste0("Since ", nice_prev_date)
-  since_prev_qtr <- paste0("Since ", nice_prev_qtr)
-  since_prev_year <- paste0("Since ", nice_prev_year)
+  list2env(
+    clean_dates(data), envir = environment()
+  )
 
   #generate table
 
-  if(smooth) {
-    data <- data %>%
-      dplyr::filter(country_dest == "Total",
-           sitc != "Total",
-           origin == "Victoria",
-           nchar(sitc_code) == sitc_level) %>%
-      mutate(sitc = paste0(sitc_code, ": ", stringr::str_trunc(sitc, 30, "right")))
+  country_filter <- glue::glue('"{country_field}"')
+  source_filter <- glue::glue('"{source_field}"')
 
-    all_dates <- data %>%
+  product_list <- data %>%
+    group_by(sitc)%>%
+    filter(date %in% !!datelist$date,
+           sitc != "Total",
+           !!sql(country_filter) == "Total",
+           !!sql(source_filter) == "Victoria",
+           nchar(sitc_code) == !!sitc_level) %>%
+    collect() %>%
+    mutate(date = lubridate::ymd(date)) %>%
+    ungroup() %>%
+    mutate(sitc = paste0(sitc_code, ": ", stringr::str_trunc(sitc, 30, "right")))
+
+
+  if(smooth) {
+
+    all_dates <- product_list %>%
       dplyr::select(date) %>%
       unique()
 
-    product_exp_list <- data %>%
-      tidyr::expand(sitc, origin, all_dates) %>%
-      dplyr::left_join(data, by = c("sitc", "origin", "date")) %>%
-      dplyr::group_by(sitc, origin) %>%
+    product_list <- product_list %>%
+      tidyr::expand(sitc, .data[[source_field]], all_dates) %>%
+      dplyr::left_join(product_list, by = c("sitc", source_field, "date")) %>%
+      dplyr::group_by(sitc, .data[[source_field]]) %>%
       dplyr::mutate(value = tidyr::replace_na(value, 0),
                     value = slider::slide_mean(value, before = 11L)) %>%
-      dplyr::ungroup() %>%
-      dplyr::select(sitc, date, value) %>%
-      dplyr::arrange(sitc, date) %>%
-      dplyr::filter(date %in% datelist$date)
+      dplyr::ungroup()
+
   } else {
-    product_exp_list <- data %>%
-    mutate(sitc = paste0(sitc_code, ": ", stringr::str_trunc(sitc, 30, "right"))) %>%
-    group_by(sitc)%>%
-    filter(date %in% datelist$date,
-           sitc != "TOT: Total",
-           country_dest == "Total",
-           origin == "Victoria",
-           nchar(sitc_code) == sitc_level) %>%
-    select(sitc,date,value)%>%
-    arrange(sitc,date) %>%
-    ungroup()
+
+    product_list <- product_list %>%
+      dplyr::group_by(sitc) %>%
+      dplyr::ungroup()
+
   }
 
-  product_exp_list <- product_exp_list %>%
-    group_by(sitc) %>%
-    mutate(prev_month_change    = paste0(scales::comma(value-dplyr::lag(value,1), accuracy = 1),
+  product_list <- product_list %>%
+    dplyr::filter(.data$date %in% !!datelist$date) %>%
+    dplyr::select(.data$sitc, .data$date, .data$value)%>%
+    dplyr::arrange(.data$sitc, .data$date) %>%
+    dplyr::group_by(.data$sitc) %>%
+    dplyr::mutate(prev_month_change    = paste0(scales::comma(value-dplyr::lag(value,1), accuracy = 1),
                                          "\n(",
                                          scales::percent((value-dplyr::lag(value,1))/dplyr::lag(value,1)),
                                          ")"),
@@ -599,18 +643,18 @@ tab_launchpad_product_exp <- function(data = merch, sitc_level = 1, rows = 5, sm
                                          scales::percent((value-dplyr::lag(value,3))/dplyr::lag(value,3)),
                                          ")")
     )%>%
-    ungroup()%>%
-    filter(date==datelist$date[1])%>%
-    arrange(desc(value))%>%
-    group_by(date) %>%
-    mutate()%>%
-    mutate(value = paste0(scales::comma(value, accuracy = 1),
+    dplyr::ungroup()%>%
+    dplyr::filter(date==datelist$date[1])%>%
+    dplyr::arrange(desc(value))%>%
+    dplyr::group_by(date) %>%
+    dplyr::mutate()%>%
+    dplyr::mutate(value = paste0(scales::comma(value, accuracy = 1),
                           "\n(",
                           scales::percent(value/sum(value[!is.na(value)]), accuracy = 1.1),
                           ")"))%>%
-    ungroup()%>%
-    select(-c(date))%>%
-    rename(` ` = "sitc",
+    dplyr::ungroup()%>%
+    dplyr::select(-c(date))%>%
+    dplyr::rename(` ` = "sitc",
            !!paste0(nice_latest_date) := .data$value,
            !!paste0(nice_prev_date) := .data$prev_month_change,
            !!paste0(nice_prev_qtr) := .data$prev_qtr_change,
@@ -618,110 +662,22 @@ tab_launchpad_product_exp <- function(data = merch, sitc_level = 1, rows = 5, sm
     )%>%
     head(rows)
 
-  return(product_exp_list)
+  return(product_list)
 }
 
-tab_launchpad_product_imp <- function(data = merch_imp, sitc_level = 1, rows = 5, smooth = TRUE) {
 
 
-  datelist <-data%>%
-    select(date)%>%
-    distinct()%>%
-    arrange(desc(date))%>%
-    slice(1,2,4,13)
-
-  #clean table headings
-  latest_date <- datelist$date[1]
-  prev_date <- datelist$date[2]
-  prev_qtr <- datelist$date[3]
-  prev_year <- datelist$date[4]
-
-  nice_latest_date <- format(latest_date, "%b %Y")
-  nice_prev_date <- format(prev_date, "%b %Y")
-  nice_prev_qtr <- format(prev_qtr, "%b %Y")
-  nice_prev_year <- format(prev_year, "%b %Y")
-
-  since_prev_date <- paste0("Since ", nice_prev_date)
-  since_prev_qtr <- paste0("Since ", nice_prev_qtr)
-  since_prev_year <- paste0("Since ", nice_prev_year)
-
-  #generate table
-
-  if(smooth) {
-    data <- data %>%
-      dplyr::filter(country_origin == "Total",
-           sitc != "Total",
-           dest == "Victoria",
-           nchar(sitc_code) == sitc_level) %>%
-      mutate(sitc = paste0(sitc_code, ": ", stringr::str_trunc(sitc, 30, "right")))
-
-    all_dates <- data %>%
-      dplyr::select(date) %>%
-      unique()
-
-    product_imp_list <- data %>%
-      tidyr::expand(sitc, dest, all_dates) %>%
-      dplyr::left_join(data, by = c("sitc", "dest", "date")) %>%
-      dplyr::group_by(sitc, dest) %>%
-      dplyr::mutate(value = tidyr::replace_na(value, 0),
-                    value = slider::slide_mean(value, before = 11L)) %>%
-      dplyr::ungroup() %>%
-      dplyr::select(sitc, date, value) %>%
-      dplyr::arrange(sitc, date) %>%
-      dplyr::filter(date %in% datelist$date)
-  } else {
-    product_imp_list <- data %>%
-    mutate(sitc = paste0(sitc_code, ": ", stringr::str_trunc(sitc, 30, "right"))) %>%
-    group_by(sitc)%>%
-    filter(date %in% datelist$date,
-           sitc != "TOT: Total",
-           country_origin == "Total",
-           dest == "Victoria",
-           nchar(sitc_code) == sitc_level) %>%
-    select(sitc,date,value)%>%
-    arrange(sitc,date) %>%
-    ungroup()
-  }
-
-  product_imp_list <- product_imp_list %>%
-    group_by(sitc) %>%
-    mutate(prev_month_change    = paste0(scales::comma(value-dplyr::lag(value,1), accuracy = 1),
-                                         "\n(",
-                                         scales::percent((value-dplyr::lag(value,1))/dplyr::lag(value,1)),
-                                         ")"),
-           prev_qtr_change      = paste0(scales::comma(value-dplyr::lag(value,2), accuracy = 1),
-                                         "\n(",
-                                         scales::percent((value-dplyr::lag(value,2))/dplyr::lag(value,2)),
-                                         ")"),
-           prev_year_change     = paste0(scales::comma(value-dplyr::lag(value,3), accuracy = 1),
-                                         "\n(",
-                                         scales::percent((value-dplyr::lag(value,3))/dplyr::lag(value,3)),
-                                         ")")
-    )%>%
-    ungroup()%>%
-    filter(date==datelist$date[1])%>%
-    arrange(desc(value))%>%
-    group_by(date) %>%
-    mutate()%>%
-    mutate(value = paste0(scales::comma(value, accuracy = 1),
-                          "\n(",
-                          scales::percent(value/sum(value[!is.na(value)]), accuracy = 1.1),
-                          ")"))%>%
-    ungroup()%>%
-    select(-c(date))%>%
-    rename(` ` = "sitc",
-           !!paste0(nice_latest_date) := .data$value,
-           !!paste0(nice_prev_date) := .data$prev_month_change,
-           !!paste0(nice_prev_qtr) := .data$prev_qtr_change,
-           !!paste0(nice_prev_year) := .data$prev_year_change
-    )%>%
-    head(rows)
-
-  return(product_imp_list)
-}
 
 # The table that shows the change in exports and imports of goods and services
 launchpad_table_export_import <- function(data = bop) {
+
+  if ('tbl_lazy' %in% class(data)) {
+    data <- data %>%
+      collect() %>%
+      mutate(date = as.Date(date))
+  }
+
+
   df <- data %>%
     dplyr::select(-.data$series_id, -.data$unit) %>%
     dplyr::filter(.data$indicator == "Chain Volume Measures",

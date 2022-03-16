@@ -2,14 +2,16 @@
 
 # Latest period exports of goods and services by state
 viz_total_bop_bar_chart <- function(data = bop) {
+
   df <- data %>%
     dplyr::select(-.data$series_id, -.data$unit) %>%
-    dplyr::filter(.data$indicator == "Chain Volume Measures", .data$exports_imports == "Exports") %>%
+    dplyr::filter(.data$indicator == "Chain Volume Measures",
+                  .data$exports_imports == "Exports") %>%
     dplyr::mutate(value = abs(.data$value)) %>%
     dplyr::filter(.data$date == max(.data$date)) %>%
     dplyr::filter(
-      !.data$state == "Australian Capital Territory",
-      !.data$state == "Northern Territory"
+      .data$state != "Australian Capital Territory",
+      .data$state != "Northern Territory"
     ) %>%
     dplyr::mutate(state = dplyr::case_when(
       .data$state == "New South Wales" ~ "NSW",
@@ -20,7 +22,6 @@ viz_total_bop_bar_chart <- function(data = bop) {
       .data$state == "Tasmania" ~ "Tas",
     )) %>%
     dplyr::mutate(goods_services = dplyr::if_else(.data$goods_services == "Goods and Services", "Total", .data$goods_services))
-
 
 
   latest_month <- format(max(df$date), "%B %Y")
@@ -39,10 +40,10 @@ viz_total_bop_bar_chart <- function(data = bop) {
 
 
   title <- dplyr::case_when(
-    vic_rank == 1 ~ paste0("Victoria was Australia's largest exporter in ", format(max(bop$date), "the %B quarter %Y")),
-    vic_rank == 2 ~ paste0("Victoria was Australia's second largest exporter in ", format(max(bop$date), "the %B quarter %Y")),
-    vic_rank == 3 ~ paste0("Victoria was Australia's third largest exporter in ", format(max(bop$date), "the %B quarter %Y")),
-    vic_rank == 4 ~ paste0("Victoria was Australia's fourth largest exporter in ", format(max(bop$date), "the %B quarter %Y")),
+    vic_rank == 1 ~ paste0("Victoria was Australia's largest exporter in ", format(max(df$date), "the %B quarter %Y")),
+    vic_rank == 2 ~ paste0("Victoria was Australia's second largest exporter in ", format(max(df$date), "the %B quarter %Y")),
+    vic_rank == 3 ~ paste0("Victoria was Australia's third largest exporter in ", format(max(df$date), "the %B quarter %Y")),
+    vic_rank == 4 ~ paste0("Victoria was Australia's fourth largest exporter in ", format(max(df$date), "the %B quarter %Y")),
     TRUE ~ "Victoria's exports compared to other states"
   )
 
@@ -605,6 +606,13 @@ viz_goods_export_import_line <- function(data = bop) {
 
 # The table that shows the change in exports and imports of goods and services
 table_export_import <- function(data = bop) {
+
+  if ('tbl_lazy' %in% class(data)) {
+    data <- data %>%
+      collect() %>%
+      mutate(date = as.Date(date))
+  }
+
   df <- data %>%
     dplyr::select(-.data$series_id, -.data$unit) %>%
     dplyr::filter(.data$indicator == "Chain Volume Measures") %>%
