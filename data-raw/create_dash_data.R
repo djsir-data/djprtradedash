@@ -15,8 +15,8 @@ merch_imp <- read_merch(series = "import")
 
 
 # Ensure merch files are data tables and filter for Victoria (to be reoved)
-setDT(merch)
-setDT(merch_imp)
+data.table::setDT(merch)
+data.table::setDT(merch_imp)
 
 merch <- merch[origin == "Victoria"]
 merch_imp <- merch_imp[dest == "Victoria"]
@@ -51,7 +51,7 @@ out <- list(
 
 # Connect to database
 drv <- duckdb::duckdb()
-con <- duckdb::dbConnect(drv, "trade")
+con <- duckdb::dbConnect(drv, "trade_database.duckdb")
 
 
 
