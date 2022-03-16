@@ -80,7 +80,6 @@ page_launchpad <- function(input, output, session, plt_change, table_rowcount = 
                    convert_lazy = FALSE
   )
 
-  print('plot1 done')
 
   djprshiny::djpr_plot_server("good_services_export_line_launchpad",
                               viz_good_services_export_chart,
@@ -91,8 +90,6 @@ page_launchpad <- function(input, output, session, plt_change, table_rowcount = 
                               convert_lazy = FALSE
   )
 
-  print('plot2 done')
-
   djprshiny::djpr_plot_server("top_country_line_chart",
                    viz_launchpad_countries,
                    data = merch,
@@ -102,7 +99,6 @@ page_launchpad <- function(input, output, session, plt_change, table_rowcount = 
                    convert_lazy = FALSE
   )
 
-  print('plot3 done')
 
 
 
@@ -135,6 +131,5 @@ page_launchpad <- function(input, output, session, plt_change, table_rowcount = 
   })
 
 
-  print('all tables rendered')
 
 }

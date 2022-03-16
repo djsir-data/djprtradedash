@@ -3,8 +3,6 @@
 # Latest period exports of goods and services by state
 viz_total_bop_bar_chart <- function(data = bop) {
 
-  print('viz_total_bop_bar_chart')
-
   df <- data %>%
     dplyr::select(-.data$series_id, -.data$unit) %>%
     dplyr::filter(.data$indicator == "Chain Volume Measures",

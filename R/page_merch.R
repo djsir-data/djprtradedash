@@ -152,8 +152,6 @@ page_merch <- function(input, output, session, plt_change){
       input$merch_explorer_sitc
     )
 
-    print('merch plot reactive')
-
     mindate <- input$merch_explorer_dates[1]
     maxdate <- input$merch_explorer_dates[2]
 
