@@ -10,7 +10,6 @@
 #' read_bop()
 #' }
 #' @export
-#' @importFrom dplyr .data
 
 read_bop <- function(path = tempdir()) {
   suppressMessages(
