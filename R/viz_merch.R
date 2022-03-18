@@ -48,14 +48,14 @@ viz_merch_explorer <- function(dataset,
   combs <- df %>% dplyr::select(-date, -value) %>% unique()
 
 
-  df <- bind_rows(
+  df <- dplyr::bind_rows(
     merge(all_dates$date, combs) %>%
     dplyr::rename(date = 1) %>%
     dplyr::mutate(value = 0),
     df
     ) %>%
   dplyr::group_by(group, date) %>%
-  dplyr::slice(n()) %>%
+  dplyr::slice(dplyr::n()) %>%
   dplyr::ungroup() %>%
   dplyr::mutate(value = tidyr::replace_na(value, 0)) # %>%
   # dplyr::filter(nchar(.data$sitc_code) %in% sitc_level)
@@ -87,7 +87,7 @@ viz_merch_explorer <- function(dataset,
     paste(collapse = " ") %>%
     nchar()
 
-  show_legend <- if_else(total_col_chars >= 100,
+  show_legend <- dplyr::if_else(total_col_chars >= 100,
     TRUE, FALSE
   )
 
@@ -98,7 +98,7 @@ viz_merch_explorer <- function(dataset,
   )
 
   p <- df %>%
-    ggplot2::ggplot(aes(
+    ggplot2::ggplot(ggplot2::aes(
       x = .data$date,
       y = .data$value,
       col = .data$col,
@@ -130,15 +130,15 @@ viz_merch_explorer <- function(dataset,
     days_in_data <- as.numeric(data_dates$max - data_dates$min)
     p <- p +
       ggrepel::geom_text_repel(
-        data = ~ filter(
+        data = ~ dplyr::filter(
           .,
           .data$date == max(.data$date)
         ),
         ggplot2::aes(label = stringr::str_wrap(
-          .data$col,
+          col,
           10
         )),
-        size = 11 / .pt,
+        size = 11 / ggplot2::.pt,
         lineheight = 0.9,
         hjust = 0,
         nudge_x = days_in_data * 0.033,
@@ -146,7 +146,7 @@ viz_merch_explorer <- function(dataset,
         direction = "y"
       ) +
       ggplot2::scale_x_date(
-        expand = expansion(mult = c(0, 0.28)),
+        expand = ggplot2::expansion(mult = c(0, 0.28)),
         breaks = x_breaks, date_labels = "%b\n%Y"
       ) +
       djprtheme::theme_djpr()

@@ -7,7 +7,7 @@ page_launchpadUI <- function(id) {
     value = "tab-launchpad",
     shiny::br(),
     shiny::h1(
-      span("DJPR Trade Dashboard",
+      shiny::span("DJPR Trade Dashboard",
            style = "font-size: 40px; color: #1F1547; font-family: 'Roboto Slab'"
       )
     ),
@@ -63,7 +63,7 @@ page_launchpadUI <- function(id) {
     shiny::br(),
     shiny::uiOutput("launchpad_bop_table", height = "600px"),
     shiny::br(),
-    djprshiny::centred_row(htmlOutput("launchpad_footnote")),
+    djprshiny::centred_row(shiny::htmlOutput("launchpad_footnote")),
     shiny::br()
 
   )
@@ -111,7 +111,7 @@ page_launchpad <- function(input, output, session, plt_change, table_rowcount = 
 
 
 
-  output$country_export_table <- renderUI({
+  output$country_export_table <- shiny::renderUI({
     make_table_launchpad(
       data = tab_launchpad_country_imp_exp(
         direction = 'export',
@@ -122,7 +122,7 @@ page_launchpad <- function(input, output, session, plt_change, table_rowcount = 
       flextable::htmltools_value()
   })
 
-  output$country_import_table <- renderUI({
+  output$country_import_table <- shiny::renderUI({
     make_table_launchpad(
       data = tab_launchpad_country_imp_exp(
         direction = 'import',
@@ -133,7 +133,7 @@ page_launchpad <- function(input, output, session, plt_change, table_rowcount = 
       flextable::htmltools_value()
   })
 
-  output$product_export_table <- renderUI({
+  output$product_export_table <- shiny::renderUI({
     make_table_launchpad(
       data = tab_launchpad_product_imp_exp(
         direction  = 'export',
@@ -145,7 +145,7 @@ page_launchpad <- function(input, output, session, plt_change, table_rowcount = 
       flextable::htmltools_value()
   })
 
-  output$product_import_table <- renderUI({
+  output$product_import_table <- shiny::renderUI({
     make_table_launchpad(
       data = tab_launchpad_product_imp_exp(
         direction  = 'import',
@@ -157,7 +157,7 @@ page_launchpad <- function(input, output, session, plt_change, table_rowcount = 
       flextable::htmltools_value()
   })
 
-  output$launchpad_bop_table <- renderUI({
+  output$launchpad_bop_table <- shiny::renderUI({
     make_table_launchpad(
       data = launchpad_table_export_import(),
       header_row = c(

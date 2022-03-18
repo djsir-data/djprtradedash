@@ -68,25 +68,25 @@ viz_total_bop_bar_chart <- function(data = bop) {
     djprtheme::theme_djpr(flipped = TRUE) +
     djprtheme::djpr_fill_manual(3) +
     ggplot2::geom_text(
-      position = position_dodge(width = 1),
+      position = ggplot2::position_dodge(width = 1),
       ggplot2::aes(label = dollar_stat(.data$value)),
       vjust = 0.5,
       colour = "black",
       hjust = -0.1,
-      size = 12 / .pt
+      size = 12 / ggplot2::.pt
     ) +
-    ggplot2::scale_x_discrete(expand = expansion(add = c(0.2, 0.85))) +
-    ggplot2::scale_y_continuous(expand = expansion(mult = c(0, 0.15))) +
+    ggplot2::scale_x_discrete(expand = ggplot2::expansion(add = c(0.2, 0.85))) +
+    ggplot2::scale_y_continuous(expand = ggplot2::expansion(mult = c(0, 0.15))) +
     ggplot2::theme(
-      axis.text.x = element_blank(),
-      axis.title = element_blank(),
-      panel.grid = element_blank(),
-      axis.line = element_blank(),
+      axis.text.x = ggplot2::element_blank(),
+      axis.title = ggplot2::element_blank(),
+      panel.grid = ggplot2::element_blank(),
+      axis.line = ggplot2::element_blank(),
       legend.position = c(0.65, 0.1),
-      legend.key.height = unit(1, "lines"),
-      legend.key.width = unit(1, "lines"),
+      legend.key.height = ggplot2::unit(1, "lines"),
+      legend.key.width = ggplot2::unit(1, "lines"),
       legend.direction = "horizontal",
-      axis.ticks = element_blank()
+      axis.ticks = ggplot2::element_blank()
     ) +
     ggplot2::labs(
       title = title,
@@ -387,17 +387,17 @@ viz_service_bop_bar_chart <- function(data = bop) {
       # vjust = 0.5,
       colour = "black",
       # hjust = 1.1,
-      size = 12 / .pt
+      size = 12 / ggplot2::.pt
     ) +
-    ggplot2::scale_y_continuous(expand = expansion(0.1, 0)) +
+    ggplot2::scale_y_continuous(expand = ggplot2::expansion(0.1, 0)) +
     ggplot2::theme(
       axis.text.x = ggplot2::element_blank(),
       axis.title = ggplot2::element_blank(),
       panel.grid = ggplot2::element_blank(),
       axis.line = ggplot2::element_blank(),
       legend.position = c(0.8, 0.1),
-      legend.key.height = unit(1, "lines"),
-      legend.key.width = unit(1, "lines"),
+      legend.key.height = ggplot2::unit(1, "lines"),
+      legend.key.width = ggplot2::unit(1, "lines"),
       legend.direction = "vertical",
       axis.ticks = ggplot2::element_blank()
     ) +
@@ -498,7 +498,7 @@ viz_goods_bop_bar_chart <- function(data = bop) {
     djprtheme::djpr_fill_manual(2) +
     ggplot2::geom_text(
       position = ggplot2::position_dodge(width = 1),
-      aes(
+      ggplot2::aes(
         # y = .data$value + sign(.data$value),
         label = scales::percent(.data$value, scale = 1),
         hjust = ifelse(.data$value > 0, -0.1, 1.1)
@@ -506,17 +506,17 @@ viz_goods_bop_bar_chart <- function(data = bop) {
       # vjust = 0.5,
       colour = "black",
       # hjust = 1.1,
-      size = 12 / .pt
+      size = 12 / ggplot2::.pt
     ) +
-    ggplot2::scale_y_continuous(expand = expansion(0.1, 0)) +
+    ggplot2::scale_y_continuous(expand = ggplot2::expansion(0.1, 0)) +
     ggplot2::theme(
       axis.text.x = ggplot2::element_blank(),
       axis.title = ggplot2::element_blank(),
       panel.grid = ggplot2::element_blank(),
       axis.line = ggplot2::element_blank(),
       legend.position = c(0.8, 0.1),
-      legend.key.height = unit(1, "lines"),
-      legend.key.width = unit(1, "lines"),
+      legend.key.height = ggplot2::unit(1, "lines"),
+      legend.key.width = ggplot2::unit(1, "lines"),
       legend.direction = "horizontal",
       axis.ticks = ggplot2::element_blank()
     ) +
@@ -1115,18 +1115,18 @@ viz_Vic_total_bop_bar_chart <- function(data = bop) {
       vjust = 0.5,
       colour = "black",
       hjust = 0,
-      size = 12 / .pt
+      size = 12 / ggplot2::.pt
     ) +
-    ggplot2::scale_x_discrete(expand = expansion(add = c(0.25, 0.85))) +
-    ggplot2::scale_y_continuous(expand = expansion(mult = c(0, 0.15))) +
+    ggplot2::scale_x_discrete(expand = ggplot2::expansion(add = c(0.25, 0.85))) +
+    ggplot2::scale_y_continuous(expand = ggplot2::expansion(mult = c(0, 0.15))) +
     ggplot2::theme(
       axis.text.x = ggplot2::element_blank(),
       axis.title = ggplot2::element_blank(),
       panel.grid = ggplot2::element_blank(),
       axis.line = ggplot2::element_blank(),
       legend.position = c(0.65, 1),
-      legend.key.height = unit(1, "lines"),
-      legend.key.width = unit(1, "lines"),
+      legend.key.height = ggplot2::unit(1, "lines"),
+      legend.key.width = ggplot2::unit(1, "lines"),
       legend.direction = "horizontal",
       axis.ticks = ggplot2::element_blank()
     ) +

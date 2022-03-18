@@ -6,8 +6,8 @@ page_merchUI <- function(...) {
   shiny::tabPanel(
     title = "Merchandise exports",
     shiny::tags$head(
-      tags$style(paste0(".multi-wrapper {height: ", selecter_height, "px;}")),
-      tags$style(paste0(
+      shiny::tags$style(paste0(".multi-wrapper {height: ", selecter_height, "px;}")),
+      shiny::tags$style(paste0(
         ".multi-wrapper .non-selected-wrapper, .multi-wrapper .selected-wrapper {height: ",
         inner_height,
         "px;}"
@@ -91,7 +91,7 @@ page_merchUI <- function(...) {
           height = "600px"
         ),
         shiny::fluidRow(
-          column(
+          shiny::column(
             8,
             shiny::sliderInput("merch_explorer_dates",
               label = "",
@@ -108,14 +108,14 @@ page_merchUI <- function(...) {
           ),
           shiny::column(
             4,
-            br(),
+            shiny::br(),
             djprshiny::download_ui("merch_explorer_dl")
           )
         )
       )
     ),
     shiny::br(),
-    djprshiny::centred_row(htmlOutput("merch_footnote")),
+    djprshiny::centred_row(shiny::htmlOutput("merch_footnote")),
     shiny::br()
   )
 }
@@ -133,7 +133,7 @@ page_merch <- function(input, output, session, plt_change){
     }
     lu |>
       dplyr::pull(.data$sitc) |>
-      dplyr::unique()
+      unique()
   })
 
   shiny::observe({

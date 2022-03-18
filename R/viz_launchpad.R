@@ -189,7 +189,7 @@ viz_launchpad_chart <- function(
         "\n",
         format(.data$date, "%b %Y"),
         "\n",
-        format(round2(.data$value, 1), big.mark=",")
+        format(djprshiny::round2(.data$value, 1), big.mark=",")
         )
       )
 
@@ -242,7 +242,7 @@ viz_goods_export_import_launchpad <- function(data = bop) {
     dplyr::mutate(tooltip = paste0(
       .data$goods_services, "\n",
       format(.data$date, "%b %Y"), "\n",
-      round2(.data$value, 1)
+      djprshiny::round2(.data$value, 1)
     ))
 
   latest_change <- df %>%
@@ -280,7 +280,7 @@ viz_goods_export_import_launchpad <- function(data = bop) {
   df %>%
     djprshiny::djpr_ts_linechart(
       col_var = .data$goods_services,
-      label_num = paste0(scales::comma(round2(.data$value, 1))),
+      label_num = paste0(scales::comma(djprshiny::round2(.data$value, 1))),
       y_labels = function(x) format(x, big.mark=",")) +
     ggplot2::labs(
       title = title,
@@ -329,7 +329,7 @@ viz_good_services_export_chart <- function(data = bop) {
     dplyr::mutate(tooltip = paste0(
       .data$goods_services, "\n",
       format(.data$date, "%b %Y"), "\n",
-      round2(.data$value, 1)
+      djprshiny::round2(.data$value, 1)
     ))
 
   latest_change <- df %>%
@@ -369,7 +369,7 @@ viz_good_services_export_chart <- function(data = bop) {
   df %>%
     djprshiny::djpr_ts_linechart(
       col_var = .data$goods_services,
-      label_num = paste0(scales::comma(round2(.data$value, 1))),
+      label_num = paste0(scales::comma(djprshiny::round2(.data$value, 1))),
       y_labels = function(x) format(x, big.mark=",")
     ) +
     ggplot2::labs(
@@ -720,8 +720,8 @@ tab_launchpad_product_imp_exp <- function(direction = c('import', 'export'), dat
     dplyr::filter(
       .data$date %in% !!datelist$date,
       .data$sitc != "Total",
-      !!sql(country_filter) == "Total",
-      !!sql(source_filter) == "Victoria",
+      !!dplyr::sql(country_filter) == "Total",
+      !!dplyr::sql(source_filter) == "Victoria",
       nchar(sitc_code) == !!sitc_level
       ) %>%
     dplyr::collect() %>%

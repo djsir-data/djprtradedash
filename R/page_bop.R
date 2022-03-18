@@ -2,7 +2,7 @@ page_bopUI <- function(...) {
   djprshiny::djpr_tab_panel(
     title = "Balance of Payments",
     shiny::h1(
-      span("Balance of payments",
+      shiny::span("Balance of payments",
            style = "font-size: 40px; color: #1F1547; font-family: 'Roboto Slab'"
       )
     ),
@@ -13,7 +13,7 @@ page_bopUI <- function(...) {
     shiny::br(),
     shiny::br(),
     shiny::h2("Goods and Services", align = "center"),
-    shiny:: br(),
+    shiny::br(),
     djprshiny::djpr_plot_ui("good_services_chart"),
     shiny::br(),
     djprshiny::djpr_plot_ui("total_bop_bar_chart",

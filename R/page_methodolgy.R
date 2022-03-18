@@ -25,7 +25,7 @@ page_methodology <- function(...) {
       style = "font-size: 0.75rem"
     ),
     shiny::br(),
-    djprshiny::centred_row(htmlOutput("methodology_footnote")),
+    djprshiny::centred_row(shiny::htmlOutput("methodology_footnote")),
     shiny::br()
   )
 }

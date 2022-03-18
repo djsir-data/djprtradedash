@@ -67,7 +67,7 @@ page_country_profile <- function(...) {
         )
     ),
     shiny::br(),
-    djprshiny::centred_row(htmlOutput("country_footnote")),
+    djprshiny::centred_row(shiny::htmlOutput("country_footnote")),
     shiny::br()
 
   )
