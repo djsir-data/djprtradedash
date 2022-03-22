@@ -382,7 +382,7 @@ viz_service_bop_bar_chart <- function(data = bop) {
       position = ggplot2::position_dodge(width = 1),
       ggplot2::aes(
         # y = .data$value + sign(.data$value),
-        label = scales::percent(.data$value, scale = 1),
+        label = scales::percent(.data$value, scale = 1, accuracy =0.1),
         hjust = ifelse(.data$value > 0, -0.1, 1.1)
       ),
       # vjust = 0.5,
@@ -502,7 +502,7 @@ viz_goods_bop_bar_chart <- function(data = bop) {
       position = ggplot2::position_dodge(width = 1),
       ggplot2::aes(
         # y = .data$value + sign(.data$value),
-        label = scales::percent(.data$value, scale = 1),
+        label = scales::percent(.data$value, scale = 1,accuracy =0.1),
         hjust = ifelse(.data$value > 0, -0.1, 1.1)
         ),
       # vjust = 0.5,
@@ -764,7 +764,8 @@ viz_trade_balance_line_chart <- function(data = bop) {
   df %>%
     djprshiny::djpr_ts_linechart(
       col_var = .data$goods_services,
-      label_num = paste0(djprshiny::round2(.data$value, 1),"%"),
+      label_num = paste0(round2(.data$value, 1),"%"),
+      y_labels = scales::label_percent(scale = 1),
       hline = 0
     ) +
     ggplot2::labs(
