@@ -24,12 +24,13 @@ Imports:
     lubridate,
     cachem,
     dplyr,
+    dbplyr,
     ggrepel,
     ggplot2,
+    glue,
     rlang,
     shiny,
     shinyWidgets,
-    readsdmx,
     readabs (>= 0.4.10.901),
     tidyr,
     stringr,
@@ -37,11 +38,12 @@ Imports:
     data.table,
     purrr,
     flextable,
+    duckdb,
     markdown,
     DT,
     slider
 Remotes: 
-    djpr-data/djprshiny,
+    djpr-data/djprshiny@accept-lazy-df,
     djpr-data/djprtheme,
     MattCowgill/readabs
 Depends: 

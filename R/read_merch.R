@@ -16,7 +16,6 @@
 #' read_merch()
 #' }
 #' @export
-#' @import data.table
 #' @return A tibble containing merchandise export data
 
 
@@ -28,9 +27,9 @@ read_merch <- function(path = tempdir(),
   if (series == "export") {
     url <- "https://www.abs.gov.au/websitedbs/D3110132.nsf/home/DataExplorer/$File/MERCH_EXP.zip"
     exports_dest_zip <- file.path(path, basename(url))
-    download.file(url, exports_dest_zip, method = "curl", quiet = TRUE)
-    utils::unzip(exports_dest_zip, exdir=path)
-    exp_csv<- list.files(path, pattern="MERCH_EXP.csv",full.names=TRUE)
+    download.file(url, exports_dest_zip, mode="wb")
+    exp_csv <- utils::unzip(exports_dest_zip, exdir=path)
+    exp_csv <- paste0(path, "/", basename(exp_csv))
     merch <- data.table::fread(
       file.path(exp_csv),
       stringsAsFactors = TRUE,
@@ -83,9 +82,9 @@ read_merch <- function(path = tempdir(),
   if (series == "import") {
     url <- "https://www.abs.gov.au/websitedbs/D3110132.nsf/home/DataExplorer/$File/MERCH_IMP.zip"
     imports_dest_zip <- file.path(path, basename(url))
-    download.file(url, imports_dest_zip, method = "curl", quiet = TRUE)
-    utils::unzip(imports_dest_zip, exdir=path)
-    imp_csv<- list.files(path, pattern="MERCH_IMP.csv",full.names=TRUE)
+    download.file(url, imports_dest_zip, mode="wb")
+    imp_csv <- utils::unzip(imports_dest_zip, exdir=path)
+    imp_csv <- paste0(path, "/", basename(imp_csv))
     merch <- data.table::fread(
       file.path(imp_csv),
       stringsAsFactors = TRUE,

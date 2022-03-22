@@ -146,7 +146,7 @@ viz_country_top_exp <- function(data, data_imp, country_select, chart_top_n = 4)
     ) +
     ggiraph::geom_col_interactive(
       colour = "transparent",
-      aes(tooltip = tip)
+      ggplot2::aes(tooltip = tip)
       ) +
     ggplot2::geom_text(
       data = current_top,
@@ -215,8 +215,8 @@ vis_country_top_products <- function(
       sitc = stringr::str_wrap(sitc),
       sitc = factor(sitc, levels = unique(sitc)),
       csum = rev(cumsum(rev(value))),
-      pos = value/2 + lead(csum, 1),
-      pos = if_else(is.na(pos), value/2, pos),
+      pos = value/2 + dplyr::lead(csum, 1),
+      pos = dplyr::if_else(is.na(pos), value/2, pos),
       export_import = dplyr::recode(
         .data$export_import,
         export = "Top exports",

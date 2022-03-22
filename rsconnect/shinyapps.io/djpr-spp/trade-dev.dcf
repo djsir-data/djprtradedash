@@ -1,0 +1,11 @@
+name: trade-dev
+title:
+username:
+account: djpr-spp
+server: shinyapps.io
+hostUrl: https://api.shinyapps.io/v1
+appId: 5754099
+bundleId: 5631318
+url: https://djpr-spp.shinyapps.io/trade-dev/
+when: 1646189410.14219
+lastSyncTime: 1646189410.14219
