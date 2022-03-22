@@ -119,7 +119,7 @@ viz_good_services_export_chart <- function(data = bop) {
 
   latest_change <- df %>%
     dplyr::filter(.data$goods_services == "Total") %>%
-    dplyr::mutate(change = .data$value - lag(.data$value, 1)) %>%
+    dplyr::mutate(change = .data$value - dplyr::lag(.data$value, 1)) %>%
     dplyr::filter(!is.na(.data$change)) %>%
     dplyr::filter(.data$date == max(.data$date))
 
@@ -547,7 +547,7 @@ viz_goods_export_import_line <- function(data = bop) {
   df <- df %>%
     dplyr::group_by(.data$exports_imports) %>%
     dplyr::mutate(
-      value = 100 * ((.data$value / lag(.data$value, 4) - 1))
+      value = 100 * ((.data$value / dplyr::lag(.data$value, 4) - 1))
     ) %>%
     dplyr::filter(!is.na(.data$value)) %>%
     dplyr::ungroup()
@@ -638,7 +638,7 @@ table_export_import <- function(data = bop) {
     ) %>%
     dplyr::group_by(.data$exports_imports, .data$goods_services) %>%
     dplyr::mutate(
-      value = 100 * ((.data$value / lag(.data$value, 4) - 1))
+      value = 100 * ((.data$value / dplyr::lag(.data$value, 4) - 1))
     ) %>%
     dplyr::mutate(value = djprshiny::round2(.data$value, 1)) %>%
     dplyr::filter(.data$date == max(.data$date)) %>%
@@ -655,7 +655,7 @@ table_export_import <- function(data = bop) {
     ) %>%
     dplyr::group_by(.data$exports_imports, .data$goods_services) %>%
     dplyr::mutate(
-      value = 100 * ((.data$value / lag(.data$value, 1) - 1))
+      value = 100 * ((.data$value / dplyr::lag(.data$value, 1) - 1))
     ) %>%
     dplyr::mutate(value = djprshiny::round2(.data$value, 1)) %>%
     dplyr::filter(.data$date == max(.data$date)) %>%
@@ -779,13 +779,14 @@ viz_NSW_Vic_goods_line_chart <- function(data = bop) {
     dplyr::filter(.data$goods_services == "Goods", .data$indicator == "Chain Volume Measures") %>%
     dplyr::filter(.data$state %in% c("New South Wales", "Victoria")) %>%
     dplyr::mutate(value = abs(.data$value)) %>%
+    dplyr::collect() %>%
     dplyr::mutate(state = dplyr::case_when(
       .data$state == "New South Wales" ~ "NSW",
       .data$state == "Victoria" ~ "Vic",
     )) %>%
     dplyr::group_by(.data$exports_imports, .data$goods_services, .data$state) %>%
     dplyr::mutate(
-      value = 100 * ((.data$value / lag(.data$value, 4) - 1))
+      value = 100 * ((.data$value / dplyr::lag(.data$value, 4) - 1))
     ) %>%
     dplyr::mutate(value = djprshiny::round2(.data$value, 1)) %>%
     dplyr::filter(!is.na(.data$value)) %>%
@@ -865,7 +866,7 @@ viz_NSW_Vic_Services_line_chart <- function(data = bop) {
     )) %>%
     dplyr::group_by(.data$exports_imports, .data$goods_services, .data$state) %>%
     dplyr::mutate(
-      value = 100 * ((.data$value / lag(.data$value, 4) - 1))
+      value = 100 * ((.data$value / dplyr::lag(.data$value, 4) - 1))
     ) %>%
     dplyr::mutate(value = djprshiny::round2(.data$value, 1)) %>%
     dplyr::filter(!is.na(.data$value)) %>%
@@ -953,7 +954,7 @@ viz_good_services_import_chart <- function(data = bop) {
 
   latest_change <- df %>%
     dplyr::filter(.data$goods_services == "Total") %>%
-    dplyr::mutate(change = .data$value - lag(.data$value, 1)) %>%
+    dplyr::mutate(change = .data$value - dplyr::lag(.data$value, 1)) %>%
     dplyr::filter(!is.na(.data$change)) %>%
     dplyr::filter(.data$date == max(.data$date))
 
@@ -1015,7 +1016,7 @@ viz_good_services_chart <- function(data = bop) {
     dplyr::group_by(.data$exports_imports) %>%
     dplyr::arrange(.data$date) %>%
     dplyr::filter(.data$goods_services == "Total") %>%
-    dplyr::mutate(change = .data$value - lag(.data$value, 1)) %>%
+    dplyr::mutate(change = .data$value - dplyr::lag(.data$value, 1)) %>%
     dplyr::filter(.data$date == max(.data$date)) %>%
     dplyr::ungroup()
 
@@ -1086,7 +1087,7 @@ viz_Vic_total_bop_bar_chart <- function(data = bop) {
 
   latest_change <- df %>%
     dplyr::filter(.data$goods_services == "Total") %>%
-    dplyr::mutate(change = .data$value - lag(.data$value, 1)) %>%
+    dplyr::mutate(change = .data$value - dplyr::lag(.data$value, 1)) %>%
     dplyr::filter(!is.na(.data$change)) %>%
     dplyr::filter(.data$date == max(.data$date))
 

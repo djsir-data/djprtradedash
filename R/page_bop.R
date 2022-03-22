@@ -138,7 +138,8 @@ page_bop <- function(input, output, session, plt_change, table_rowcount = 5){
     id            = "NSW_Vic_goods_line_chart",
     plot_function = viz_NSW_Vic_goods_line_chart,
     data          = bop,
-    plt_change    = plt_change
+    plt_change    = plt_change,
+    convert_lazy  = FALSE
   )
 
   # Balance of Payments---
