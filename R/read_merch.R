@@ -16,7 +16,6 @@
 #' read_merch()
 #' }
 #' @export
-#' @import data.table
 #' @return A tibble containing merchandise export data
 
 

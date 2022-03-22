@@ -1,13 +1,13 @@
 page_merchUI <- function(...) {
-  # djpr_tab_panel(
+
   selecter_height <- 325
   inner_height <- selecter_height - 44
 
-  tabPanel(
+  shiny::tabPanel(
     title = "Merchandise exports",
-    tags$head(
-      tags$style(paste0(".multi-wrapper {height: ", selecter_height, "px;}")),
-      tags$style(paste0(
+    shiny::tags$head(
+      shiny::tags$style(paste0(".multi-wrapper {height: ", selecter_height, "px;}")),
+      shiny::tags$style(paste0(
         ".multi-wrapper .non-selected-wrapper, .multi-wrapper .selected-wrapper {height: ",
         inner_height,
         "px;}"
@@ -15,13 +15,11 @@ page_merchUI <- function(...) {
     ),
     # ggiraph_js(),
     value = "tab-merchandise-exports",
-    # toc_space = 2,
-    # right_space = 1,
-    br(),
-    br(),
-    h1("Merchandise Exports Data Explorer"),
-    fluidRow(
-      column(
+    shiny::br(),
+    shiny::br(),
+    shiny::h1("Merchandise Exports Data Explorer"),
+    shiny::fluidRow(
+      shiny::column(
         4,
         shinyWidgets::multiInput(
           inputId = "merch_countries",
@@ -46,11 +44,10 @@ page_merchUI <- function(...) {
           )
         )
       ),
-      column(
+      shiny::column(
         8,
-        # djpr_plot_ui("merch_explorer")
-        fluidRow(
-          column(
+        shiny::fluidRow(
+          shiny::column(
             4,
             shinyWidgets::awesomeRadio(
               inputId = "merch_explorer_sitc",
@@ -66,7 +63,7 @@ page_merchUI <- function(...) {
               status = "primary"
             )
           ),
-          column(
+          shiny::column(
             4,
             shinyWidgets::awesomeRadio(
               inputId = "merch_explorer_facets",
@@ -80,7 +77,7 @@ page_merchUI <- function(...) {
               status = "primary"
             )
           ),
-          column(
+          shiny::column(
             4,
             "Smooth using:\n",
             shinyWidgets::materialSwitch("merch_explorer_smooth",
@@ -90,13 +87,13 @@ page_merchUI <- function(...) {
             )
           )
         ),
-        plotOutput("merch_explorer",
+        shiny::plotOutput("merch_explorer",
           height = "600px"
         ),
-        fluidRow(
-          column(
+        shiny::fluidRow(
+          shiny::column(
             8,
-            sliderInput("merch_explorer_dates",
+            shiny::sliderInput("merch_explorer_dates",
               label = "",
               min = merch_dates$min,
               max = merch_dates$max,
@@ -109,17 +106,17 @@ page_merchUI <- function(...) {
               ticks = FALSE
             )
           ),
-          column(
+          shiny::column(
             4,
-            br(),
+            shiny::br(),
             djprshiny::download_ui("merch_explorer_dl")
           )
         )
       )
     ),
-    br(),
-    centred_row(htmlOutput("merch_footnote")),
-    br()
+    shiny::br(),
+    djprshiny::centred_row(shiny::htmlOutput("merch_footnote")),
+    shiny::br()
   )
 }
 
@@ -134,15 +131,17 @@ page_merch <- function(input, output, session, plt_change){
       lu <- merch_sitc_lu %>%
       dplyr::mutate(sitc = paste0(.data$sitc_code, ": ", .data$sitc))
     }
-    lu |> pull(sitc) |> unique()
+    lu |>
+      dplyr::pull(.data$sitc) |>
+      unique()
   })
 
-  observe({
+  shiny::observe({
     shinyWidgets::updateMultiInput(session = session, inputId = "merch_sitc",
                                    choices = sitc_lu())
   })
 
-  observe({
+  shiny::observe({
 
     shiny::req(
       input$merch_explorer_dates,

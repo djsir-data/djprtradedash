@@ -24,24 +24,25 @@
 #' )
 #' }
 #
-make_table_launchpad <- function(data,
-                       destination = Sys.getenv("R_DJPRLABOURDASH_TABLEDEST",
-                                                unset = "dashboard"
-                       ),
-                       notes = NULL,
-                       title = "",
-                       header_row = c("",
-                                      "Current figure & share (%)",
-                                      "Change in latest period",
-                                      "Change in three months",
-                                      "Change in past year")) {
+make_table_launchpad <- function(
+  data,
+  destination = Sys.getenv("R_DJPRLABOURDASH_TABLEDEST", unset = "dashboard"),
+  notes = NULL,
+  title = "",
+  header_row = c(
+    "",
+    "Current figure & share (%)",
+    "Change in latest period",
+    "Change in three months",
+    "Change in past year")
+  ){
 
   stopifnot(destination %in% c("dashboard", "briefing"))
   stopifnot(inherits(data, "data.frame"))
   stopifnot(nrow(data) >= 1)
 
-    # Create a basic flextable using the supplied dataframe
-  latest_date <- names(data)[2] %>% 
+  # Create a basic flextable using the supplied dataframe
+  latest_date <- names(data)[2] %>%
     lubridate::my() %>%
     format("%B %Y")
 

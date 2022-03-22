@@ -15,7 +15,7 @@ validate_query <- function(query){
 `%iferror%` <- function(a, b) tryCatch({a}, error = function(e){b})
 
 data_unavil_ggplot<- function(...){
-  g <- ggplot2::ggplot(NULL, aes(1,1,label = paste0(..., collapse = ""))) +
+  g <- ggplot2::ggplot(NULL, ggplot2::aes(1,1,label = paste0(..., collapse = ""))) +
     ggplot2::theme_void() +
     ggplot2::geom_text(size = 5, colour = djprtheme::djpr_blue) +
     ggplot2::theme(panel.background = element_rect(fill = "#bfbfbf"))

@@ -8,7 +8,9 @@ make_table_launchpad(
   data,
   destination = Sys.getenv("R_DJPRLABOURDASH_TABLEDEST", unset = "dashboard"),
   notes = NULL,
-  title = ""
+  title = "",
+  header_row = c("", "Current figure & share (\%)", "Change in latest period",
+    "Change in three months", "Change in past year")
 )
 }
 \arguments{
