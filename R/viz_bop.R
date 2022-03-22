@@ -1138,18 +1138,19 @@ viz_Vic_total_bop_bar_chart <- function(data = bop) {
 }
 
 # Victoria's exports of goods and services by calendar year
-viz_vic_total_bop_cumul_line <- function(data = bop) {
+viz_vic_total_bop_cumul_line <- function(data = bop, bop_dates = bop_dates) {
+
+  filter_date <- bop_dates$max - lubridate::years(5) + lubridate::days(1)
+
   df <- data %>%
     dplyr::filter(
       .data$state == "Victoria",
       .data$indicator == "Chain Volume Measures",
       .data$exports_imports == "Exports",
       .data$goods_services == "Goods and Services",
-      .data$date >=
-        max(.data$date, na.rm = TRUE) -
-        lubridate::years(5) +
-        lubridate::days(1)
+      .data$date >= !!filter_date
       ) %>%
+    dplyr::collect() %>%
     dplyr::mutate(
       value = abs(.data$value * 1e06),
       year = lubridate::year(.data$date),
@@ -1164,14 +1165,16 @@ viz_vic_total_bop_cumul_line <- function(data = bop) {
   latest_month <- format(max(df$date), "%B %Y")
 
   latest_change <- df %>%
-    dplyr::mutate(change = .data$value - lag(.data$value, 4)) %>%
+    dplyr::mutate(change = .data$value - dplyr::lag(.data$value, 4)) %>%
     dplyr::filter(!is.na(.data$change)) %>%
     dplyr::filter(.data$date == max(.data$date))
+
+
 
   if(latest_change$quarter == 1) {
     title <-
       dplyr::case_when(
-        latest_change$change > 0 ~ paste0("Victoria's exports in Q", latest_change$quarter, " are ", dollar_stat(abs(latest_change$change)), " higher than Q1 ", (latest_change$year-1)),
+        latest_change$change > 0 ~ paste0("Victoria's exports in Q", latest_change$quarter, " are ", dollar_stat(abs(latest_change$change)), " higher than Q1 ", (latest_change$year - 1)),
         latest_change$change < 0 ~ paste0("Victoria's exports in Q", latest_change$quarter, " are ", dollar_stat(abs(latest_change$change)), " lower than Q1 ", (latest_change$year-1)),
         latest_change$change == 0 ~ paste0("Victoria's  exports are the same as Q", latest_change$quarter, " ", (latest_change$year-1)),
         TRUE ~ "Victoria's exports over the past year"
@@ -1204,9 +1207,9 @@ viz_vic_total_bop_cumul_line <- function(data = bop) {
         )
       ) %>%
     djprshiny::djpr_ts_linechart(
-      y_var = .data$value,
+      y_var = value,
       y_labels = scales::label_dollar(accuracy = 1, scale = 1/1e09, suffix = "b"),
-      col_var = factor(.data$year),
+      col_var = factor(year),
       label = FALSE
     ) +
     ggplot2::labs(
@@ -1229,7 +1232,7 @@ viz_vic_total_bop_cumul_line <- function(data = bop) {
         ),
         date = lubridate::ymd(paste0(2021,"-", lubridate::month(.data$date),"-", "01"))) %>%
         dplyr::group_by(year) %>%
-        filter(.data$date == max(.data$date)),
+        dplyr::filter(.data$date == max(.data$date)),
       ggplot2::aes(
         label = paste0(
           "Q",

@@ -107,10 +107,11 @@ page_bop <- function(input, output, session, plt_change, table_rowcount = 5){
     id             = "vic_total_bop_cumul_line",
     plot_function  = viz_vic_total_bop_cumul_line,
     data           = bop,
+    bop_dates      = bop_dates,
     height_percent = 75,
     plt_change     = plt_change,
     date_slider    = FALSE,
-    interactive    = TRUE
+    convert_lazy   = FALSE
   )
   # Balance of Payments---
   # Goods:Goods imports and exports since COVID
