@@ -19,12 +19,11 @@ page_bopUI <- function(...) {
     djprshiny::djpr_plot_ui("total_bop_bar_chart",
       interactive = FALSE
     ),
-    br(),
-    djpr_plot_ui("goods_export_import_line"),
-    # br(),
-    # djpr_plot_ui("vic_total_bop_cumul_line"),
-    h2(br(), "Goods"),
-    djpr_plot_ui("goods_bop_bar_chart",
+    shiny::br(),
+    djprshiny::djpr_plot_ui("goods_export_import_line"),
+    shiny::br(),
+    shiny::h2("Goods", align = "center"),
+    djprshiny::djpr_plot_ui("goods_bop_bar_chart",
       interactive = FALSE
     ),
     shiny::br(),

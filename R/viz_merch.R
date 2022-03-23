@@ -119,7 +119,7 @@ viz_merch_explorer <- function(dataset,
       djprtheme::theme_djpr(legend = "top") +
       ggplot2::theme(
         legend.direction = "vertical",
-        legend.text = element_text(size = 11)
+        legend.text = ggplot2::element_text(size = 11)
       ) +
       ggplot2::scale_x_date(
         breaks = x_breaks,
