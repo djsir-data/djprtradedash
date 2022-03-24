@@ -27,7 +27,7 @@ read_merch <- function(path = tempdir(),
   if (series == "export") {
     url <- "https://www.abs.gov.au/websitedbs/D3110132.nsf/home/DataExplorer/$File/MERCH_EXP.zip"
     exports_dest_zip <- file.path(path, basename(url))
-    download.file(url, exports_dest_zip, mode="wb")
+    utils::download.file(url, exports_dest_zip, mode="wb")
     exp_csv <- utils::unzip(exports_dest_zip, exdir=path)
     exp_csv <- paste0(path, "/", basename(exp_csv))
     merch <- data.table::fread(
@@ -82,7 +82,7 @@ read_merch <- function(path = tempdir(),
   if (series == "import") {
     url <- "https://www.abs.gov.au/websitedbs/D3110132.nsf/home/DataExplorer/$File/MERCH_IMP.zip"
     imports_dest_zip <- file.path(path, basename(url))
-    download.file(url, imports_dest_zip, mode="wb")
+    utils::download.file(url, imports_dest_zip, mode="wb")
     imp_csv <- utils::unzip(imports_dest_zip, exdir=path)
     imp_csv <- paste0(path, "/", basename(imp_csv))
     merch <- data.table::fread(

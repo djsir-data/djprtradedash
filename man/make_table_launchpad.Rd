@@ -24,7 +24,7 @@ automatically based on the data using \code{caption_auto()}.}
 \item{title}{Character vector to use as the table title. Will only be used
 when \code{destination} is "briefing".}
 
-\item{country_or_product}{"Country" or "Product"}
+\item{header_row}{Top row labels}
 }
 \description{
 Create a table for the dashboard or a briefing document

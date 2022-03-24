@@ -1,11 +1,11 @@
 #' Create a table for the dashboard or a briefing document
 #' @param data A data frame containing data to summarise
 #' @param destination "dashboard" or "briefing"
-#' @param country_or_product "Country" or "Product"
 #' @param notes Optional notes to add to caption. Source will be inferred
 #' automatically based on the data using `caption_auto()`.
 #' @param title Character vector to use as the table title. Will only be used
 #' when `destination` is "briefing".
+#' @param header_row Top row labels
 #' @examples
 #' # dash_data <- load_dash_data()
 #' \dontrun{

@@ -7,7 +7,7 @@
 app(...)
 }
 \arguments{
-\item{...}{}
+\item{...}{unused}
 }
 \value{
 

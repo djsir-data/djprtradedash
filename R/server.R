@@ -1,22 +1,22 @@
 
 server <- function(input, output, session) {
 
-  plt_change <- reactive(input$plt_change) %>%
-    debounce(2)
+  plt_change <- shiny::reactive(input$plt_change) %>%
+    shiny::debounce(2)
 
   #Launchpad searchbar
   server <- function(input, output, session) {
-    output$res <- renderPrint({
+    output$res <- shiny::renderPrint({
       input$search
     })
   }
 
   # Page Footnotes
 
-  footnote <- reactive({
+  footnote <- shiny::reactive({
     # req(dash_data)
     # latest <- max(series_latestdates)
-    div(
+    shiny::div(
       shiny::HTML(
         paste0(
           "This dashboard is produced by the <b>Strategy and Priority ",
@@ -31,7 +31,7 @@ server <- function(input, output, session) {
     )
   })
 
-  output$methodology_footnote <- output$launchpad_footnote <- output$bop_footnote <- output$merch_footnote <- output$country_footnote <- renderUI({
+  output$methodology_footnote <- output$launchpad_footnote <- output$bop_footnote <- output$merch_footnote <- output$country_footnote <- shiny::renderUI({
     footnote()
   })
 

@@ -1,5 +1,5 @@
 page_country_profile <- function(...) {
-  tabPanel(
+  shiny::tabPanel(
     title =  "Country profiles",
     djprshiny::ggiraph_js(),
     value = "tab-country-profile",
@@ -7,7 +7,7 @@ page_country_profile <- function(...) {
     djprshiny::centred_row(
       shiny::tagList(
         shiny::br(),
-        shiny::h1(textOutput("country_select"), style = "text-align: center;"),
+        shiny::h1(shiny::textOutput("country_select"), style = "text-align: center;"),
         shiny::h2(
           "Draft note: Data does not yet include services",
           style = "font-size: 130%;font-style: italic;color: #660000;text-align: center;"
@@ -17,7 +17,7 @@ page_country_profile <- function(...) {
           shiny::column(
             4,
             shiny::span(
-              textOutput("country_1y_exp_stat"),
+              shiny::textOutput("country_1y_exp_stat"),
               style = "font-size: 400%;text-align: center;font-weight: bold;"
               ),
             shiny::p(
@@ -28,7 +28,7 @@ page_country_profile <- function(...) {
           shiny::column(
             4,
             shiny::span(
-              textOutput("country_1y_imp_stat"),
+              shiny::textOutput("country_1y_imp_stat"),
               style = "font-size: 400%;text-align: center;font-weight: bold;"
             ),
             shiny::p(
@@ -39,7 +39,7 @@ page_country_profile <- function(...) {
           shiny::column(
             4,
             shiny::span(
-              textOutput("country_1y_exp_change_stat"),
+              shiny::textOutput("country_1y_exp_change_stat"),
               style = "font-size: 400%;text-align: center;font-weight: bold;"
             ),
             shiny::p(
@@ -49,7 +49,7 @@ page_country_profile <- function(...) {
           )
         ),
         shiny::br(),
-        djpr_plot_ui("country_top_exp"),
+        djprshiny::djpr_plot_ui("country_top_exp"),
         shiny::br()
       ),
       left_content =

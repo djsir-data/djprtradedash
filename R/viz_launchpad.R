@@ -23,7 +23,7 @@ viz_launchpad_countries <- function(
     dplyr::select(country_dest) %>%
     dplyr::collect() %>%
     unique() %>%
-    head(top) %>%
+    utils::head(top) %>%
     as.matrix()
 
 
@@ -247,7 +247,7 @@ viz_goods_export_import_launchpad <- function(data = bop) {
 
   latest_change <- df %>%
     dplyr::filter(.data$goods_services == "Total") %>%
-    dplyr::mutate(change = .data$value - lag(.data$value, 1)) %>%
+    dplyr::mutate(change = .data$value - dplyr::lag(.data$value, 1)) %>%
     dplyr::filter(!is.na(.data$change)) %>%
     dplyr::filter(.data$date == max(.data$date))
 
@@ -428,7 +428,7 @@ viz_exportlist <- function(
 	    .data$date >= lubridate::floor_date(ref_date, unit = "months")
 	    )
 
-	left_join(df_2021, df_2020, by = c("sitc", "sitc_code")) %>%
+	dplyr::left_join(df_2021, df_2020, by = c("sitc", "sitc_code")) %>%
 	  dplyr::transmute(
 	    SITC                             = sitc,
 			`SITC Code`                      = sitc_code,
@@ -474,7 +474,7 @@ viz_launchpad_marketlist <- function(data = merch) {
 
 	country_list <- filtered %>%
 	  dplyr::arrange(dplyr::desc(.data$date), dplyr::desc(.data$value)) %>%
-		head(10) %>%
+		utils::head(10) %>%
 	  dplyr::select(.data$country_dest) %>%
 		as.matrix()
 }
@@ -569,7 +569,7 @@ tab_launchpad_country_imp_exp <- function(
         )
   # exports
   } else if (direction == 'export') {
-    country_list <- data |>
+    country_list <- data %>%
       dplyr::filter(
         .data$sitc == "Total",
         .data$country_dest != "Total"
@@ -578,7 +578,7 @@ tab_launchpad_country_imp_exp <- function(
 
 
   country_list <- country_list %>%
-    dplyr::collect() |>
+    dplyr::collect() %>%
     dplyr::mutate(date = lubridate::ymd(.data$date))
 
 
@@ -618,7 +618,7 @@ tab_launchpad_country_imp_exp <- function(
     dplyr::filter(.data$date %in% datelist$date) %>%
     dplyr::group_by(.data[[dir_fields$partner]], date) %>%
     dplyr::summarise(value = sum(.data$value, na.rm = TRUE)) %>%
-    dplyr::select(one_of(dir_fields$partner), .data$date, .data$value) %>%
+    dplyr::select(dplyr::one_of(dir_fields$partner), .data$date, .data$value) %>%
     dplyr::mutate(date = lubridate::ymd(.data$date)) %>%
     dplyr::arrange(.data[[dir_fields$partner]], .data$date)
     #ungroup()%>%
@@ -679,7 +679,7 @@ tab_launchpad_country_imp_exp <- function(
       !!paste0(nice_prev_qtr)    := .data$prev_qtr_change,
       !!paste0(nice_prev_year)   := .data$prev_year_change
     )%>%
-    head(rows)
+    utils::head(rows)
 
   return(country_list)
 }
@@ -810,7 +810,7 @@ tab_launchpad_product_imp_exp <- function(direction = c('import', 'export'), dat
       !!paste0(nice_prev_qtr)    := .data$prev_qtr_change,
       !!paste0(nice_prev_year)   := .data$prev_year_change
     ) %>%
-    head(rows)
+    utils::head(rows)
 
   return(product_list)
 }

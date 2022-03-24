@@ -41,9 +41,11 @@ Imports:
     duckdb,
     markdown,
     DT,
-    slider
+    slider,
+    utils,
+    ggiraph
 Remotes: 
-    djpr-data/djprshiny@accept-lazy-df,
+    djpr-data/djprshiny,
     djpr-data/djprtheme,
     MattCowgill/readabs
 Depends: 

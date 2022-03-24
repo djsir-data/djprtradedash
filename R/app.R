@@ -1,6 +1,6 @@
 #' Shiny App
 #'
-#' @param ...
+#' @param ... unused
 #'
 #' @return
 #' @export

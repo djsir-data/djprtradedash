@@ -1,6 +1,6 @@
 options(rsconnect.max.bundle.size = 5e+9)
 rsconnect::deployApp(
-  appName = "djprtradedash",
+  appName = "trade-henry",
   forceUpdate = TRUE,
   logLevel = "verbose",
   appFiles = c(

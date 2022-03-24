@@ -13,12 +13,12 @@ viz_merch_explorer <- function(dataset,
     dplyr::mutate(date = lubridate::ymd(date))
 
 
-  data_dates <- dataset |>
+  data_dates <- dataset %>%
     dplyr::summarise(
       min = min(date, na.rm = TRUE),
       max = max(date, na.rm = TRUE)
     ) |>
-    dplyr::collect() |>
+    dplyr::collect() %>%
     dplyr::mutate(dplyr::across(dplyr::everything(), as.Date))
 
 

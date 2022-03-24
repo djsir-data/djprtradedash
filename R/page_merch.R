@@ -131,8 +131,8 @@ page_merch <- function(input, output, session, plt_change){
       lu <- merch_sitc_lu %>%
       dplyr::mutate(sitc = paste0(.data$sitc_code, ": ", .data$sitc))
     }
-    lu |>
-      dplyr::pull(.data$sitc) |>
+    lu %>%
+      dplyr::pull(.data$sitc) %>%
       unique()
   })
 
