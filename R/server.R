@@ -40,6 +40,22 @@ server <- function(input, output, session) {
   page_merch(input, output, session, plt_change)
 
 
+  observeEvent(input$action1, {
+    updateTabsetPanel(session,
+                      "navbarpage",
+                      selected = "tab-merchandise-exports")
+  })
+  observeEvent(input$action2, {
+    updateTabsetPanel(session,
+                      "navbarpage",
+                      selected = 'tab-balance-of-payments')
+  })
+  observeEvent(input$action3, {
+    updateTabsetPanel(session,
+                      "navbarpage",
+                      selected = 'tab-notes')
+  })
+
 
 
   # Initialise country selection & URL query
