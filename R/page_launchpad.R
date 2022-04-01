@@ -1,19 +1,86 @@
 page_launchpadUI <- function(id) {
 
-  djprshiny::djpr_tab_panel(
+  shiny::tabPanel(
     title = "Launchpad",
     djprshiny::ggiraph_js(),
+    useShinydashboard(),
     shiny::HTML(""),
     value = "tab-launchpad",
-    shiny::br(),
-    shiny::h1(
-      shiny::span("DJPR Trade Dashboard",
-           style = "font-size: 40px; color: #1F1547; font-family: 'Roboto Slab'"
-      )
-    ),
-    shiny::br(),
-    shiny::h2("Overview", align='center'),
-    djprshiny::djpr_plot_ui("top_export_line_chart"),
+    shiny::fluidRow(shiny::column(4,
+                                  style = 'padding-top:90px;',
+                                  shinyWidgets::panel(
+                                        style = 'height:400px;',
+                                        heading = shiny::h1(style = 'text-align:center;',
+                                          shiny::span("DJPR Trade Dashboard",
+                                                                  style = "font-size: 50px;color:#1F1547;font-family:'vic-semibold' sans-serif;"
+                                                      )),
+                                        'add some text here')
+                                        ),
+                    shiny::column(8,
+                          shiny::h2(#"Overview",
+                                    align='center', style='padding-top:90px;'),
+                          djprshiny::djpr_plot_ui("top_export_line_chart"))),
+    shiny::fluidRow(shiny::column(4,
+                    shinydashboard::box(
+                      width = 12,
+                      height = '200px',
+                      background = 'blue',
+                      solidHeader = TRUE,
+                      title = 'Exports Explorer',
+                      div(class = 'row',
+                          div(class = 'col',
+                              'Description of what to find in merch explorer',
+                              div(style = 'position:absolute;bottom:20px',
+                                  shinyWidgets::actionBttn('action1', "Explore",
+                                                           style = 'material-flat',
+                                                           color = 'default'))),
+                          div(class = 'col-6',
+                              style = "text-align: right;padding-bottom:15px;",
+                              img(style = 'display:inline;height:10vh;width:auto;',
+                                  src = 'https://icongr.am/material/binoculars.svg?size=164&color=fafafa')))
+
+                    )),
+                    shiny::column(4,
+                    shinydashboard::box(
+                      width = 12,
+                      height = '200px',
+                      background = 'blue',
+                      solidHeader = TRUE,
+                      title = "Balance of Payments",
+                      div(class = 'row',
+                          div(class = 'col',
+                              'description of balance of payments',
+                              div(style = 'position:absolute;bottom:20px',
+                                  shinyWidgets::actionBttn('action2', "Balance",
+                                                           style = 'material-flat',
+                                                           color = 'default'))),
+                          div(class = 'col-6',
+                              style = "text-align: right;padding-bottom:15px;",
+                              img(style = 'display:inline;height:10vh;width:auto;',
+                                  src = 'https://icongr.am/clarity/balance.svg?size=164&color=fafafa')))
+
+                    )),
+                    shiny::column(4,
+                    shinydashboard::box(
+                      width = 12,
+                      height = '200px',
+                      background = 'blue',
+                      solidHeader = TRUE,
+                      title = "Help and Methodology",
+                      div(class = 'row',
+                          div(class = 'col',
+                              'some text here',
+                              div(style = 'position:absolute;bottom:20px',
+                                  shinyWidgets::actionBttn('action3', 'Help',
+                                                           style = 'material-flat',
+                                                           color = 'default'))),
+                          div(class="col-6",
+                              style = "text-align: right;padding-bottom:15px;",
+                              img(style = 'display:inline;height:10vh;width:auto;',
+                                  src = 'https://icongr.am/clarity/help-info.svg?color=fafafa')))
+
+                    ))),
+
     shiny::br(),
     shiny::fluidRow(
       shiny::column(
