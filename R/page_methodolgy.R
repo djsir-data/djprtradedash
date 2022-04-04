@@ -25,7 +25,11 @@ page_methodology <- function(...) {
 	    	style = "font-size: 0.75rem"
 	    	),
 		br(),
-	    centred_row(htmlOutput("methodology_footnote")),
-	    br()
+
+		shiny::includeMarkdown("R/glossary.md"),
+
+    br(),
+		centred_row(htmlOutput("methodology_footnote")),
+		br()
 		)
 }
