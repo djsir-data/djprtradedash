@@ -4,10 +4,11 @@ viz_country_top_exp <- function(data, data_imp, country_select, chart_top_n = 4)
   data <- data %>%
     dplyr::filter(
       nchar(.data$sitc_code) == 1,
-      .data$country_dest == country_select,
+      .data$country_dest == !!country_select,
       .data$origin == "Victoria",
       .data$export_import == "export"
-    )
+    ) %>%
+    dplyr::collect()
 
 
   data_imp <- data_imp %>%
@@ -18,7 +19,8 @@ viz_country_top_exp <- function(data, data_imp, country_select, chart_top_n = 4)
       .data$country_origin == country_select,
       .data$dest == "Victoria",
       .data$export_import == "import"
-    )
+    ) %>%
+    dplyr::collect()
 
   if(!(country_select %in% data$country_dest)) return(
     data_unavil_ggplot("No data available for\n", country_select)
@@ -36,12 +38,12 @@ viz_country_top_exp <- function(data, data_imp, country_select, chart_top_n = 4)
   current_top_sitc <- data %>%
     dplyr::filter(.data$date == max(.data$date)) %>%
     dplyr::slice_max(.data$value, n = chart_top_n) %>%
-    dplyr::pull(sitc)
+    dplyr::pull(.data$sitc)
 
   current_top_sitc_imp <- data_imp %>%
     dplyr::filter(.data$date == max(.data$date)) %>%
     dplyr::slice_max(.data$value, n = chart_top_n) %>%
-    dplyr::pull(sitc)
+    dplyr::pull(.data$sitc)
 
   data <- data %>%
     dplyr::mutate(
@@ -146,7 +148,7 @@ viz_country_top_exp <- function(data, data_imp, country_select, chart_top_n = 4)
     ) +
     ggiraph::geom_col_interactive(
       colour = "transparent",
-      aes(tooltip = tip)
+      ggplot2::aes(tooltip = tip)
       ) +
     ggplot2::geom_text(
       data = current_top,
@@ -183,13 +185,14 @@ vis_country_top_products <- function(
   ){
   data <- data %>%
     dplyr::filter(
-      nchar(.data$sitc_code) == sitc_digits,
+      nchar(.data$sitc_code) == !!sitc_digits,
       .data$sitc_code != "TOT",
       .data$country_dest == country_select |
         .data$country_origin == country_select,
       .data$origin == "Victoria" |
         .data$dest == "Victoria"
-    )
+    ) %>%
+    dplyr::collect()
 
   if(!(country_select %in% data$country_dest)) return(
     data_unavil_ggplot("No data available for\n", country_select)
@@ -215,8 +218,8 @@ vis_country_top_products <- function(
       sitc = stringr::str_wrap(sitc),
       sitc = factor(sitc, levels = unique(sitc)),
       csum = rev(cumsum(rev(value))),
-      pos = value/2 + lead(csum, 1),
-      pos = if_else(is.na(pos), value/2, pos),
+      pos = value/2 + dplyr::lead(csum, 1),
+      pos = dplyr::if_else(is.na(pos), value/2, pos),
       export_import = dplyr::recode(
         .data$export_import,
         export = "Top exports",
