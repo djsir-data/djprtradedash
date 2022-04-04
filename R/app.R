@@ -18,7 +18,7 @@ app <- function(...) {
   assign(
     x = "con",
     value = duckdb::dbConnect(
-      drv = duckdb::duckdb(),
+      drv = duckdb::duckdb(read_only = TRUE),
       db = "trade_database.duckdb"
     ),
     envir = .GlobalEnv
