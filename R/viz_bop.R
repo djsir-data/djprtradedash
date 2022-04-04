@@ -4,7 +4,6 @@
 viz_total_bop_bar_chart <- function(data = bop) {
 
   df <- data %>%
-    dplyr::select(-.data$series_id, -.data$unit) %>%
     dplyr::filter(.data$indicator == "Chain Volume Measures",
                   .data$exports_imports == "Exports") %>%
     dplyr::mutate(value = abs(.data$value)) %>%
@@ -12,7 +11,15 @@ viz_total_bop_bar_chart <- function(data = bop) {
     dplyr::filter(
       .data$state != "Australian Capital Territory",
       .data$state != "Northern Territory"
-    ) %>%
+    )
+
+  if ('tbl_lazy' %in% class(df)) {
+    df <- df %>%
+      dplyr::collect()
+  }
+
+  df <- df %>%
+    dplyr::select(-.data$series_id, -.data$unit) %>%
     dplyr::mutate(state = dplyr::case_when(
       .data$state == "New South Wales" ~ "NSW",
       .data$state == "Victoria" ~ "Vic",

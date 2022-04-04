@@ -78,7 +78,8 @@ page_bop <- function(input, output, session, plt_change, table_rowcount = 5){
     height_percent = 75,
     plt_change     = plt_change,
     date_slider    = FALSE,
-    interactive    = FALSE
+    interactive    = FALSE,
+    convert_lazy   = TRUE
   )
 
   # Goods and Services: Goods and Services imports time series
