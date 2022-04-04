@@ -67,7 +67,8 @@ page_bop <- function(input, output, session, plt_change, table_rowcount = 5){
     id            = "good_services_export_chart",
     plot_function = viz_good_services_export_chart,
     data          = bop,
-    plt_change    = plt_change
+    plt_change    = plt_change,
+    convert_lazy   = TRUE
   )
 
   # Totals imports and exports since COVID

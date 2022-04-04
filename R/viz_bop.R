@@ -108,8 +108,15 @@ viz_good_services_export_chart <- function(data = bop) {
     dplyr::filter(
       .data$state == "Victoria",
     ) %>%
+    dplyr::filter(.data$exports_imports == "Exports", .data$indicator == "Chain Volume Measures")
+
+  if ('tbl_lazy' %in% class(df)) {
+    df <- df %>%
+      dplyr::collect()
+  }
+
+    df <- df %>%
     dplyr::select(-.data$series_id, -.data$unit) %>%
-    dplyr::filter(.data$exports_imports == "Exports", .data$indicator == "Chain Volume Measures") %>%
     dplyr::mutate(goods_services = dplyr::if_else(.data$goods_services == "Goods and Services", "Total", .data$goods_services)) %>%
     dplyr::mutate(value = abs(.data$value))
 
