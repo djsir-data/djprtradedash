@@ -93,7 +93,7 @@ viz_launchpad_countries <- function(
     djprshiny::djpr_ts_linechart(
       col_var = .data$country_dest,
       y_labels = function(x) format(x, big.mark=","),
-      #label_wrap_length = 15,
+      label_wrap_length = 15,
       x_expand_mult = c(0, 0.30)
 
     ) +
@@ -197,8 +197,8 @@ viz_launchpad_chart <- function(
     djprshiny::djpr_ts_linechart(
       col_var = .data$sitc_shrink,
       y_labels = function(x) format(x, big.mark=","),
-      #label_wrap_length = 25,
-      x_expand_mult = c(0, 0.25)
+      label_wrap_length = 30,
+      x_expand_mult = c(0, 0.30)
     ) +
     ggplot2::labs(
       title = paste("Top", top, "Exports from", region),
@@ -370,7 +370,9 @@ viz_good_services_export_chart <- function(data = bop) {
     djprshiny::djpr_ts_linechart(
       col_var = .data$goods_services,
       label_num = paste0(scales::comma(djprshiny::round2(.data$value, 1))),
-      y_labels = function(x) format(x, big.mark=",")
+      y_labels = function(x) format(x, big.mark=","),
+      label_wrap_length = 15,
+      x_expand_mult = c(0, 0.30)
     ) +
     ggplot2::labs(
       title = title,

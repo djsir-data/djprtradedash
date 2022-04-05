@@ -6,7 +6,7 @@ page_launchpadUI <- function(id) {
     useShinydashboard(),
     shiny::HTML(""),
     value = "tab-launchpad",
-    shiny::fluidRow(shiny::column(4,
+    shiny::fluidRow(shiny::column(5,
                                   style = 'padding-top:90px;',
                                   shinyWidgets::panel(
                                         style = 'height:400px;',
@@ -16,10 +16,12 @@ page_launchpadUI <- function(id) {
                                                       )),
                                         'add some text here')
                                         ),
-                    shiny::column(8,
+                    shiny::column(7,
                           shiny::h2(#"Overview",
                                     align='center', style='padding-top:90px;'),
-                          djprshiny::djpr_plot_ui("top_export_line_chart"))),
+                          shiny::div(style = 'padding:20px',
+                            djprshiny::djpr_plot_ui("top_export_line_chart")
+                          ))),
     shiny::fluidRow(shiny::column(4,
                     shinydashboard::box(
                       width = 12,
@@ -85,11 +87,15 @@ page_launchpadUI <- function(id) {
     shiny::fluidRow(
       shiny::column(
         width = 6,
-        djprshiny::djpr_plot_ui("good_services_export_line_launchpad")
+        shiny::div(style = 'padding:20px;display: inline-block;',
+          djprshiny::djpr_plot_ui("good_services_export_line_launchpad", width = '40%')
+        )
       ),
       shiny::column(
         width = 6,
-        djprshiny::djpr_plot_ui("top_country_line_chart")
+        shiny::div(style = 'padding:20px;display: inline-block;',
+          djprshiny::djpr_plot_ui("top_country_line_chart", width = '40%')
+        )
       ),
     ),
     shiny::br(),
@@ -162,7 +168,7 @@ page_launchpad <- function(input, output, session, plt_change, table_rowcount = 
     data                  = bop,
     plt_change            = plt_change,
     date_slider_value_min = Sys.Date() - lubridate::years(2),
-    width_percent         = 50,
+    width_percent         = 80,
     convert_lazy          = FALSE
   )
 
@@ -172,7 +178,7 @@ page_launchpad <- function(input, output, session, plt_change, table_rowcount = 
     data                  = merch,
     plt_change            = plt_change,
     date_slider_value_min = Sys.Date() - lubridate::years(2),
-    width_percent         = 50,
+    width_percent         = 80,
     convert_lazy          = FALSE
   )
 
