@@ -16,11 +16,16 @@ page_bopUI <- function(...) {
     shiny::br(),
     djprshiny::djpr_plot_ui("good_services_chart"),
     shiny::br(),
-    djprshiny::djpr_plot_ui("total_bop_bar_chart",
-      interactive = FALSE
+    shiny::fluidRow(
+      shiny::column(
+        width = 6,
+        djprshiny::djpr_plot_ui("total_bop_bar_chart")
+      ),
+      shiny::column(
+        width = 6,
+        djprshiny::djpr_plot_ui("goods_export_import_line")
+      ),
     ),
-    shiny::br(),
-    djprshiny::djpr_plot_ui("goods_export_import_line"),
     shiny::br(),
     shiny::h2("Goods", align = "center"),
     djprshiny::djpr_plot_ui("goods_bop_bar_chart",
