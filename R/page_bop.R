@@ -26,29 +26,48 @@ page_bopUI <- function(...) {
       ),
       shiny::column(
         width = 6,
-        djprshiny::djpr_plot_ui("goods_export_import_line",
-                                width = "10%",
-                                height = "400px")
+        djprshiny::djpr_plot_ui("goods_export_import_line",   # not working yet
+                                width = 6)
       ),
     ),
     shiny::br(),
     shiny::h2("Goods", align = "center"),
-    djprshiny::djpr_plot_ui("goods_bop_bar_chart",
-      interactive = FALSE
-    ),
     shiny::br(),
-    djprshiny::djpr_plot_ui("good_trade_line_chart"),
+    shiny::fluidRow(
+      shiny::column(
+        width = 6,
+        djprshiny::djpr_plot_ui("goods_bop_bar_chart",
+                                width = "100%",
+                                height = "400px",
+                                interactive = FALSE
+                                )
+        ),
+      shiny::column(
+        width = 6,
+        djprshiny::djpr_plot_ui("good_trade_line_chart")
+      ),
+    ),
     shiny::br(),
     djprshiny::djpr_plot_ui("NSW_Vic_goods_line_chart"),
     shiny::br(),
     shiny::br(),
     shiny::h2("Services", align = "center"),
     shiny::br(),
-    djprshiny::djpr_plot_ui("service_bop_bar_chart",
-      interactive = FALSE
+    shiny::fluidRow(
+      shiny::column(
+        width = 6,
+        djprshiny::djpr_plot_ui("service_bop_bar_chart",
+                                width = "100%",
+                                height = "400px",
+                                interactive = FALSE
+                                )
+        ),
+      shiny::column(
+        width = 6,
+        djprshiny::djpr_plot_ui("services_trade_line_chart")
+      ),
     ),
     shiny::br(),
-    djprshiny::djpr_plot_ui("services_trade_line_chart"),
     djprshiny::djpr_plot_ui("NSW_Vic_Services_line_chart"),
     shiny::br(),
     shiny::br(),
