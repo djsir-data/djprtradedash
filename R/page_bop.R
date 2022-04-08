@@ -19,11 +19,16 @@ page_bopUI <- function(...) {
     shiny::fluidRow(
       shiny::column(
         width = 6,
-        djprshiny::djpr_plot_ui("total_bop_bar_chart")
+        djprshiny::djpr_plot_ui("total_bop_bar_chart",
+                                width = "100%",
+                                height = "400px",
+                                interactive = FALSE)
       ),
       shiny::column(
         width = 6,
-        djprshiny::djpr_plot_ui("goods_export_import_line")
+        djprshiny::djpr_plot_ui("goods_export_import_line",
+                                width = "10%",
+                                height = "400px")
       ),
     ),
     shiny::br(),
