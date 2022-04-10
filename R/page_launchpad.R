@@ -1,19 +1,19 @@
 page_launchpadUI <- function(id) {
 
-  djprshiny::djpr_tab_panel(
-    title = "Launchpad",
-    djprshiny::ggiraph_js(),
+  shiny::fluidRow(
+    # title = "Launchpad",
+    # djprshiny::ggiraph_js(),
     shiny::HTML(""),
-    value = "tab-launchpad",
+    # value = "tab-launchpad",
     shiny::br(),
     shiny::h1(
       shiny::span("DJPR Trade Dashboard",
-           style = "font-size: 40px; color: #1F1547; font-family: 'Roboto Slab'"
+           style = "font-size: 40px; color: #1F1547"
       )
     ),
     shiny::br(),
     shiny::h2("Overview", align='center'),
-    djprshiny::djpr_plot_ui("top_export_line_chart"),
+    djprshiny::djpr_plot_box("top_export_line_chart", interactive = TRUE),
     shiny::br(),
     shiny::fluidRow(
       shiny::column(

@@ -1,9 +1,9 @@
 page_bopUI <- function(...) {
-  djprshiny::djpr_tab_panel(
-    title = "Balance of Payments",
+  shiny::fluidRow(
+    # title = "Balance of Payments",
     shiny::h1(
       shiny::span("Balance of payments",
-           style = "font-size: 40px; color: #1F1547; font-family: 'Roboto Slab'"
+           style = "font-size: 40px; color: #1F1547"
       )
     ),
     shiny::p(
