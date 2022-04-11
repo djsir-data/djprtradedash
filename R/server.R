@@ -40,21 +40,7 @@ server <- function(input, output, session) {
   page_merch(input, output, session, plt_change)
 
 
-  observeEvent(input$action1, {
-    shinydashboard::updateTabItems(session,
-                      "tabs",
-                      selected = "merch")
-  })
-  observeEvent(input$action2, {
-    shinydashboard::updateTabItems(session,
-                      "tabs",
-                      selected = "bop")
-  })
-  observeEvent(input$action3, {
-    shinydashboard::updateTabItems(session,
-                      "tabs",
-                      selected = "methodology")
-  })
+
 
 
 
