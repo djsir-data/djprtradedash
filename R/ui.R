@@ -20,7 +20,15 @@ ui <- function() {
         shinydashboard::tabItem("launchpad", page_launchpadUI('lp')),
         shinydashboard::tabItem("merch", page_merchUI()),
         shinydashboard::tabItem("bop", page_bopUI()),
-        shinydashboard::tabItem("methodology", page_methodology())
+        shinydashboard::tabItem("methodology", page_methodology()),
+        shinydashboard::tabItem("accessibility",
+                                shiny::tagList(
+                                  h2(style = 'padding-top:80px',
+                                     'axe.js Output'),
+                                  includeScript('inst/js/axe.min.js'),
+                                  shiny::tags$div(id = 'axe-results'),
+                                  includeScript('inst/js/run_axe.js')
+                                ))
       )
     )
   )

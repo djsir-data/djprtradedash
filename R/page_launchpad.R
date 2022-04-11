@@ -1,5 +1,6 @@
 page_launchpadUI <- function(id) {
 
+
   shiny::tagList(
       shiny::fluidRow(
         djprshiny::djpr_h2_box("DJPR Trade Dashboard")),
@@ -153,7 +154,7 @@ page_launchpad <- function(input, output, session, plt_change, table_rowcount = 
     data                  = bop,
     plt_change            = plt_change,
     date_slider_value_min = Sys.Date() - lubridate::years(2),
-    width_percent         = 50,
+    width_percent         = 80,
     convert_lazy          = FALSE
   )
 
@@ -163,7 +164,7 @@ page_launchpad <- function(input, output, session, plt_change, table_rowcount = 
     data                  = merch,
     plt_change            = plt_change,
     date_slider_value_min = Sys.Date() - lubridate::years(2),
-    width_percent         = 50,
+    width_percent         = 80,
     convert_lazy          = FALSE
   )
 
