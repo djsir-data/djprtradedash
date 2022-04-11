@@ -41,19 +41,19 @@ server <- function(input, output, session) {
 
 
   observeEvent(input$action1, {
-    updateTabsetPanel(session,
-                      "navbarpage",
-                      selected = "tab-merchandise-exports")
+    shinydashboard::updateTabItems(session,
+                      "tabs",
+                      selected = "merch")
   })
   observeEvent(input$action2, {
-    updateTabsetPanel(session,
-                      "navbarpage",
-                      selected = 'tab-balance-of-payments')
+    shinydashboard::updateTabItems(session,
+                      "tabs",
+                      selected = "bop")
   })
   observeEvent(input$action3, {
-    updateTabsetPanel(session,
-                      "navbarpage",
-                      selected = 'tab-notes')
+    shinydashboard::updateTabItems(session,
+                      "tabs",
+                      selected = "methodology")
   })
 
 
