@@ -18,20 +18,20 @@ page_launchpadUI <- function(id) {
     shiny::br(),
     djprshiny::djpr_h2_box("Countries"),
     shinydashboard::box(
-      title = h3("Top 5 Exports ($m)"),
+      title = shiny::h3("Top 5 Exports ($m)"),
       shiny::uiOutput("country_export_table", height = "600px")
     ),
     shinydashboard::box(
-      title = h3("Top 5 Imports ($m)"),
+      title = shiny::h3("Top 5 Imports ($m)"),
       shiny::uiOutput("country_import_table", height = "600px")
     ),
     djprshiny::djpr_h2_box("Products"),
     shinydashboard::box(
-      title = h3("Top 5 Exports ($m)"),
+      title = shiny::h3("Top 5 Exports ($m)"),
       shiny::uiOutput("product_export_table", height = "600px")
     ),
     shinydashboard::box(
-      title = h3("Top 5 Imports ($m)"),
+      title = shiny::h3("Top 5 Imports ($m)"),
       shiny::uiOutput("product_import_table", height = "600px")
     ),
     djprshiny::djpr_h2_box("Balance of payments"),
