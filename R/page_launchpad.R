@@ -1,36 +1,22 @@
 page_launchpadUI <- function(id) {
 
   shiny::fluidRow(
-    # title = "Launchpad",
-    # djprshiny::ggiraph_js(),
-    shiny::HTML(""),
-    # value = "tab-launchpad",
-    shiny::br(),
-    shiny::h1(
-      shiny::span("DJPR Trade Dashboard",
-           style = "font-size: 40px; color: #1F1547"
-      )
+    djprshiny::djpr_h2_box("Overview"),
+    djprshiny::djpr_plot_box(
+      id = "top_export_line_chart",
+      interactive = TRUE,
+      width = 12
+      ),
+    djprshiny::djpr_plot_box(
+      "good_services_export_line_launchpad",
+      interactive = TRUE,
+    ),
+    djprshiny::djpr_plot_box(
+      "top_country_line_chart",
+      interactive = TRUE,
     ),
     shiny::br(),
-    shiny::h2("Overview", align='center'),
-    djprshiny::djpr_plot_box("top_export_line_chart", interactive = TRUE),
-    shiny::br(),
-    shiny::fluidRow(
-      shiny::column(
-        width = 6,
-        djprshiny::djpr_plot_ui("good_services_export_line_launchpad")
-      ),
-      shiny::column(
-        width = 6,
-        djprshiny::djpr_plot_ui("top_country_line_chart")
-      ),
-    ),
-    shiny::br(),
-    shiny::h6("Below is a summary of high-level trade data, at both product (SITC) and country level. For more granular or specific data related to trade please use the other tabs in this app where appropriate." ),
-    shiny::br(),
-    shiny::br(),
-    shiny::h2("Countries", align='center'),
-    shiny::br(),
+    djprshiny::djpr_h2_box("Countries"),
     shiny::fluidRow(
       shiny::column(
         width = 6,
