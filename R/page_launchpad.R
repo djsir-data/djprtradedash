@@ -17,41 +17,28 @@ page_launchpadUI <- function(id) {
     ),
     shiny::br(),
     djprshiny::djpr_h2_box("Countries"),
-    shiny::fluidRow(
-      shiny::column(
-        width = 6,
-        shiny::h4("Top 5 Exports ($m)"),
-        shiny::uiOutput("country_export_table", height = "600px"),
-        style='padding-left:0px; padding-right:20px;'),
-      shiny::column(
-        width = 6,
-        shiny::h4("Top 5 Imports ($m)"),
-        shiny::uiOutput("country_import_table", height = "600px"),
-        style='padding-left:20px; padding-right:0px;')
+    shinydashboard::box(
+      title = h3("Top 5 Exports ($m)"),
+      shiny::uiOutput("country_export_table", height = "600px")
     ),
-    shiny::br(),
-    shiny::h2("Products", align='center'),
-    shiny::br(),
-    shiny::fluidRow(
-      shiny::column(
-        width = 6,
-        shiny::h4("Top 5 Exports ($m)"),
-        shiny::uiOutput("product_export_table", height = "600px"),
-        style='padding-left:0px; padding-right:20px;'),
-      shiny::column(
-        width = 6,
-        shiny::h4("Top 5 Imports ($m)"),
-        shiny::uiOutput("product_import_table", height = "600px"),
-        style='padding-left:20px; padding-right:0px;')
+    shinydashboard::box(
+      title = h3("Top 5 Imports ($m)"),
+      shiny::uiOutput("country_import_table", height = "600px")
     ),
-    shiny::br(),
-    shiny::h2("Balance of Payments", align='center'),
-    shiny::br(),
-    shiny::uiOutput("launchpad_bop_table", height = "600px"),
-    shiny::br(),
-    djprshiny::centred_row(shiny::htmlOutput("launchpad_footnote")),
-    shiny::br()
-
+    djprshiny::djpr_h2_box("Products"),
+    shinydashboard::box(
+      title = h3("Top 5 Exports ($m)"),
+      shiny::uiOutput("product_export_table", height = "600px")
+    ),
+    shinydashboard::box(
+      title = h3("Top 5 Imports ($m)"),
+      shiny::uiOutput("product_import_table", height = "600px")
+    ),
+    djprshiny::djpr_h2_box("Balance of payments"),
+    shinydashboard::box(
+      shiny::uiOutput("launchpad_bop_table", height = "600px"),
+      width = 12
+    )
   )
 
 }
