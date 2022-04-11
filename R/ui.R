@@ -3,19 +3,22 @@ ui <- function() {
   shinydashboard::dashboardPage(
     header = shinydashboard::dashboardHeader(
       title = shiny::HTML("Victorian<br/>International Trade"),
-      titleWidth = "40%"
-      ),
+      titleWidth = "40%"),
     sidebar = shinydashboard::dashboardSidebar(
-      shinydashboard::sidebarMenu(
+      shinydashboard::sidebarMenu(id = 'tabs',
         shinydashboard::menuItem("Home", tabName = "launchpad", selected = TRUE),
         shinydashboard::menuItem("Export explorer", tabName = "merch"),
         shinydashboard::menuItem("Balance of payments", tabName = "bop"),
-        shinydashboard::menuItem("Notes", tabName = "methodology")
+        shinydashboard::menuItem("Notes", tabName = "methodology"),
+        shinydashboard::menuItem("Accessibility", tabName = "accessibility")
       ),
       width = "250px"
     ),
     body = shinydashboard::dashboardBody(
       djprshiny::djpr_dash_theme(),
+      tags$script("$('html').attr(\"lang\", \"en\")"),
+      tags$script("$('aside').attr(\"role\", \"navigation\")"),
+      tags$script("$('section.content').attr(\"role\", \"main\")"),
       shinydashboard::tabItems(
         shinydashboard::tabItem("launchpad", page_launchpadUI('lp')),
         shinydashboard::tabItem("merch", page_merchUI()),
