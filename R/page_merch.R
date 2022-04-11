@@ -3,8 +3,7 @@ page_merchUI <- function(...) {
   selecter_height <- 325
   inner_height <- selecter_height - 44
 
-  shiny::tabPanel(
-    title = "Merchandise exports",
+  shiny::fluidRow(
     shiny::tags$head(
       shiny::tags$style(paste0(".multi-wrapper {height: ", selecter_height, "px;}")),
       shiny::tags$style(paste0(
@@ -13,39 +12,44 @@ page_merchUI <- function(...) {
         "px;}"
       ))
     ),
-    # ggiraph_js(),
-    value = "tab-merchandise-exports",
-    shiny::br(),
-    shiny::br(),
-    shiny::h1("Merchandise Exports Data Explorer"),
+    djprshiny::djpr_h2_box("Merchandise exports"),
     shiny::fluidRow(
       shiny::column(
         4,
-        shinyWidgets::multiInput(
-          inputId = "merch_countries",
-          label = "Export destinations: ",
-          choices = sort(merch_country_dest),
-          selected = c("Thailand", "Malaysia"),
-          width = "100%",
-          options = list(
-            non_selected_header = "All destinations:",
-            selected_header = "Selected destinations:"
+        shinydashboard::box(
+          title = shiny::h3("Export destinations"),
+          width = 12,
+          shinyWidgets::multiInput(
+            inputId = "merch_countries",
+            label = NULL,
+            choices = sort(merch_country_dest),
+            selected = c("Thailand", "Malaysia"),
+            width = "100%",
+            options = list(
+              non_selected_header = "All destinations:",
+              selected_header = "Selected destinations:"
+            )
           )
         ),
-        shinyWidgets::multiInput(
-          inputId = "merch_sitc",
-          label = "Goods",
-          choices = sort(merch_sitc_lu$sitc),
-          selected = "Medicinal and pharmaceutical products (excl. medicaments of group 542)",
-          width = "100%",
-          options = list(
-            non_selected_header = "All goods:",
-            selected_header = "Selected goods:"
+        shinydashboard::box(
+          title = shiny::h3("Goods"),
+          width = 12,
+          shinyWidgets::multiInput(
+            inputId = "merch_sitc",
+            label = NULL,
+            choices = sort(merch_sitc_lu$sitc),
+            selected = "Medicinal and pharmaceutical products (excl. medicaments of group 542)",
+            width = "100%",
+            options = list(
+              non_selected_header = "All goods:",
+              selected_header = "Selected goods:"
+            )
           )
         )
       ),
-      shiny::column(
-        8,
+      shinydashboard::box(
+        width = 8,
+        shiny::br(),
         shiny::fluidRow(
           shiny::column(
             4,
@@ -81,29 +85,29 @@ page_merchUI <- function(...) {
             4,
             "Smooth using:\n",
             shinyWidgets::materialSwitch("merch_explorer_smooth",
-              label = "12 month rolling average",
-              status = "primary",
-              value = TRUE
+                                         label = "12 month rolling average",
+                                         status = "primary",
+                                         value = TRUE
             )
           )
         ),
         shiny::plotOutput("merch_explorer",
-          height = "600px"
+                          height = "600px"
         ),
         shiny::fluidRow(
           shiny::column(
             8,
             shiny::sliderInput("merch_explorer_dates",
-              label = "",
-              min = merch_dates$min,
-              max = merch_dates$max,
-              value = c(
-                merch_dates$min,
-                merch_dates$max
-              ),
-              dragRange = TRUE,
-              timeFormat = "%b %Y",
-              ticks = FALSE
+                               label = "",
+                               min = merch_dates$min,
+                               max = merch_dates$max,
+                               value = c(
+                                 merch_dates$min,
+                                 merch_dates$max
+                               ),
+                               dragRange = TRUE,
+                               timeFormat = "%b %Y",
+                               ticks = FALSE
             )
           ),
           shiny::column(
@@ -113,10 +117,7 @@ page_merchUI <- function(...) {
           )
         )
       )
-    ),
-    shiny::br(),
-    djprshiny::centred_row(shiny::htmlOutput("merch_footnote")),
-    shiny::br()
+    )
   )
 }
 
@@ -129,7 +130,7 @@ page_merch <- function(input, output, session, plt_change){
         dplyr::filter(n == !!input$merch_explorer_sitc)
     } else {
       lu <- merch_sitc_lu %>%
-      dplyr::mutate(sitc = paste0(.data$sitc_code, ": ", .data$sitc))
+        dplyr::mutate(sitc = paste0(.data$sitc_code, ": ", .data$sitc))
     }
     lu %>%
       dplyr::pull(.data$sitc) %>%
@@ -161,13 +162,13 @@ page_merch <- function(input, output, session, plt_change){
       )
 
     merch_plt <- viz_merch_explorer(
-        merch_plt_data,
-        countries = input$merch_countries,
-        goods = sub(".[0-9]*:\\s", "", input$merch_sitc),
-        facet_by = input$merch_explorer_facets,
-        smooth = input$merch_explorer_smooth,
-        merch_explorer_sitc = input$merch_explorer_sitc
-      )
+      merch_plt_data,
+      countries = input$merch_countries,
+      goods = sub(".[0-9]*:\\s", "", input$merch_sitc),
+      facet_by = input$merch_explorer_facets,
+      smooth = input$merch_explorer_smooth,
+      merch_explorer_sitc = input$merch_explorer_sitc
+    )
 
     output$merch_explorer <- shiny::renderPlot({
       merch_plt

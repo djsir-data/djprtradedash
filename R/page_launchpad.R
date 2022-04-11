@@ -16,6 +16,7 @@ page_launchpadUI <- function(id) {
                  width = 12
                ))
       ),
+
       shiny::fluidRow(style = 'padding:20px;',
         shiny::column(4,
 
