@@ -11,15 +11,13 @@ page_launchpadUI <- function(id) {
                                   shinyWidgets::panel(
                                         style = 'height:400px;',
                                         heading = shiny::h1(style = 'text-align:center;',
-                                          shiny::span("DJPR Trade Dashboard",
+                                          shiny::span(h1("DJPR Trade Dashboard"),
                                                                   style = "font-size: 50px;color:#1F1547;font-family:'vic-semibold' sans-serif;"
                                                       )),
                                         'add some text here')
                                         ),
                     shiny::column(7,
-                          shiny::h2(#"Overview",
-                                    align='center', style='padding-top:90px;'),
-                          shiny::div(style = 'padding:20px',
+                          shiny::div(style = 'padding:20px;padding-top:90px;',
                             djprshiny::djpr_plot_ui("top_export_line_chart")
                           ))),
     shiny::fluidRow(shiny::column(4,
@@ -39,7 +37,8 @@ page_launchpadUI <- function(id) {
                           div(class = 'col-6',
                               style = "text-align: right;padding-bottom:15px;",
                               img(style = 'display:inline;height:10vh;width:auto;',
-                                  src = 'https://icongr.am/material/binoculars.svg?size=164&color=fafafa')))
+                                  src = 'https://icongr.am/material/binoculars.svg?size=164&color=fafafa',
+                                  alt = 'small icon of binoculars')))
 
                     )),
                     shiny::column(4,
@@ -59,7 +58,8 @@ page_launchpadUI <- function(id) {
                           div(class = 'col-6',
                               style = "text-align: right;padding-bottom:15px;",
                               img(style = 'display:inline;height:10vh;width:auto;',
-                                  src = 'https://icongr.am/clarity/balance.svg?size=164&color=fafafa')))
+                                  src = 'https://icongr.am/clarity/balance.svg?size=164&color=fafafa',
+                                  alt = 'small icon of weighing balance')))
 
                     )),
                     shiny::column(4,
@@ -79,7 +79,8 @@ page_launchpadUI <- function(id) {
                           div(class="col-6",
                               style = "text-align: right;padding-bottom:15px;",
                               img(style = 'display:inline;height:10vh;width:auto;',
-                                  src = 'https://icongr.am/clarity/help-info.svg?color=fafafa')))
+                                  src = 'https://icongr.am/clarity/help-info.svg?color=fafafa',
+                                  alt = 'small icon of I for information')))
 
                     ))),
 

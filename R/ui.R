@@ -26,7 +26,16 @@ ui <- function() {
     page_merchUI(),
     page_bopUI(),#,
     #page_country_profile()
-    page_methodology()#,
+    page_methodology(),
+    shiny::tabPanel(
+      title = 'Accessibility',
+      shiny::tagList(
+        h2(style = 'padding-top:80px',
+           'axe.js Output'),
+        includeScript('inst/js/axe.min.js'),
+        shiny::tags$div(id = 'axe-results'),
+        includeScript('inst/js/run_axe.js')
+    ))
     # page_country_profile()
   )
 }
