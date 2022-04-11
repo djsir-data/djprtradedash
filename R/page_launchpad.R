@@ -30,7 +30,7 @@ page_launchpadUI <- function(id) {
                                   div(class = 'col',
                                       'Description of what to find in merch explorer',
                                       div(style = 'position:absolute;bottom:20px',
-                                          shinyWidgets::actionBttn('action1', "Explore",
+                                          shinyWidgets::actionBttn('btn_explore', "Explore",
                                                                    style = 'material-flat',
                                                                    color = 'success'))),
                                   div(class = 'col-6',
@@ -52,7 +52,7 @@ page_launchpadUI <- function(id) {
                                 div(class = 'col',
                                     'description of balance of payments',
                                     div(style = 'position:absolute;bottom:20px',
-                                        shinyWidgets::actionBttn('action2', "Balance",
+                                        shinyWidgets::actionBttn('btn_balance', "Balance",
                                                                  style = 'material-flat',
                                                                  color = 'success'))),
                                 div(class = 'col-6',
@@ -74,7 +74,7 @@ page_launchpadUI <- function(id) {
                                 div(class = 'col',
                                     'some text here',
                                     div(style = 'position:absolute;bottom:20px',
-                                        shinyWidgets::actionBttn('action3', 'Help',
+                                        shinyWidgets::actionBttn('btn_help', 'Help',
                                                                  style = 'material-flat',
                                                                  color = 'success'))),
                                 div(class="col-6",
@@ -136,6 +136,25 @@ page_launchpadUI <- function(id) {
 
 
 page_launchpad <- function(input, output, session, plt_change, table_rowcount = 5){
+
+
+  # info nav buttons
+  observeEvent(input$btn_explore, {
+    shinydashboard::updateTabItems(session,
+                                   "tabs",
+                                   selected = "merch")
+  })
+  observeEvent(input$btn_balance, {
+    shinydashboard::updateTabItems(session,
+                                   "tabs",
+                                   selected = "bop")
+  })
+  observeEvent(input$btn_help, {
+    shinydashboard::updateTabItems(session,
+                                   "tabs",
+                                   selected = "methodology")
+  })
+
 
   #Launchpad tables and charts
   djprshiny::djpr_plot_server(
