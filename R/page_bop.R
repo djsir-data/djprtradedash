@@ -90,7 +90,8 @@ page_bop <- function(input, output, session, plt_change, table_rowcount = 5){
     plot_function         = viz_good_services_chart,
     data                  = bop,
     plt_change            = plt_change,
-    date_slider_value_min = bop_dates$max - lubridate::years(5)
+    date_slider_value_min = bop_dates$max - lubridate::years(5),
+    convert_lazy   = TRUE
   )
 
   # Goods and Services: Annual growth in goods and services exports and imports
@@ -98,7 +99,8 @@ page_bop <- function(input, output, session, plt_change, table_rowcount = 5){
     id            = "goods_export_import_line",
     plot_function = viz_goods_export_import_line,
     data          = bop,
-    plt_change    = plt_change
+    plt_change    = plt_change,
+    convert_lazy   = TRUE
   )
   # Goods and Services: Export of goods and services for Victoria by calendar year
   djprshiny::djpr_plot_server(
@@ -109,7 +111,7 @@ page_bop <- function(input, output, session, plt_change, table_rowcount = 5){
     height_percent = 75,
     plt_change     = plt_change,
     date_slider    = FALSE,
-    convert_lazy   = FALSE
+    convert_lazy   = TRUE
   )
   # Balance of Payments---
   # Goods:Goods imports and exports since COVID
@@ -120,14 +122,16 @@ page_bop <- function(input, output, session, plt_change, table_rowcount = 5){
     height_percent = 75,
     plt_change     = plt_change,
     date_slider    = FALSE,
-    interactive    = FALSE
+    interactive    = FALSE,
+    convert_lazy   = TRUE
   )
   # Goods: Goods imports and exports since covid
   djprshiny::djpr_plot_server(
     id            = "good_trade_line_chart",
     plot_function = viz_good_trade_line_chart,
     data          = dplyr::filter(bop, date >= as.Date("2018-12-01")),
-    plt_change    = plt_change
+    plt_change    = plt_change,
+    convert_lazy   = TRUE
   )
 
   # Goods: Annual growth in goods exports and imports in NSW and Vic
@@ -137,7 +141,7 @@ page_bop <- function(input, output, session, plt_change, table_rowcount = 5){
     plot_function = viz_NSW_Vic_goods_line_chart,
     data          = bop,
     plt_change    = plt_change,
-    convert_lazy  = FALSE
+    convert_lazy  = TRUE
   )
 
   # Balance of Payments---
@@ -149,7 +153,8 @@ page_bop <- function(input, output, session, plt_change, table_rowcount = 5){
     height_percent = 75,
     plt_change     = plt_change,
     date_slider    = FALSE,
-    interactive    = FALSE
+    interactive    = FALSE,
+    convert_lazy   = TRUE
   )
 
   # Services: services imports and exports since COVID
@@ -157,7 +162,9 @@ page_bop <- function(input, output, session, plt_change, table_rowcount = 5){
     id            = "services_trade_line_chart",
     plot_function = viz_services_trade_line_chart,
     data          = dplyr::filter(bop, date >= as.Date("2018-12-01")),
-    plt_change    = plt_change
+    plt_change    = plt_change,
+    convert_lazy   = TRUE
+
   )
 
   # Services: Annual growth in services exports and imports in NSW and Vic
@@ -166,7 +173,8 @@ page_bop <- function(input, output, session, plt_change, table_rowcount = 5){
     id            = "NSW_Vic_Services_line_chart",
     plot_function = viz_NSW_Vic_Services_line_chart,
     data          = bop,
-    plt_change    = plt_change
+    plt_change    = plt_change,
+    convert_lazy   = TRUE
   )
 
   # Balance of trade:Cumulative change in total trade balance since December 2019
@@ -174,7 +182,8 @@ page_bop <- function(input, output, session, plt_change, table_rowcount = 5){
     id            = "trade_balance_line_chart",
     plot_function = viz_trade_balance_line_chart,
     data          = dplyr::filter(bop, date >= as.Date("2018-12-01")),
-    plt_change    = plt_change
+    plt_change    = plt_change,
+    convert_lazy   = TRUE
   )
 
 
