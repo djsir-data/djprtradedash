@@ -1,6 +1,9 @@
 
 
-axe
+function run_axe(){
+
+
+  axe
   .run()
   .then(results => {
     if (results.violations.length) {
@@ -65,3 +68,6 @@ axe
 
     }
   })
+
+
+}
