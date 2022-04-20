@@ -11,66 +11,74 @@ page_bopUI <- function(...) {
       shiny::column(7,
              djprshiny::djpr_plot_box(
                id = "good_services_chart",
-               width = 12
-             ))
+               width = 12)
+             )
+      ),
+    shiny::fluidRow(
+      djprshiny::djpr_h2_box("Goods and Services")),
+    shiny::fluidRow(
+      shiny::column(6,
+             djprshiny::djpr_plot_box(
+               id = "total_bop_bar_chart",
+               width = "100%",
+               height = "600px",
+               interactive = FALSE)
+             ),
+      shiny::column(6,
+             djprshiny::djpr_plot_box(
+               id = "goods_export_import_line",
+               width = 12)
+      )
     ),
     shiny::fluidRow(
-      shiny::column(
-        width = 6,
-        djprshiny::djpr_plot_ui("total_bop_bar_chart",
-                                width = "100%",
-                                height = "400px",
-                                interactive = FALSE)
-      ),
-      shiny::column(
-        width = 6,
-        djprshiny::djpr_plot_ui("goods_export_import_line")
-      ),
-    ),
-    shiny::br(),
-    shiny::h2("Goods", align = "center"),
-    shiny::br(),
+      djprshiny::djpr_h2_box("Goods")),
     shiny::fluidRow(
-      shiny::column(
-        width = 6,
-        djprshiny::djpr_plot_ui("goods_bop_bar_chart",
-                                width = "100%",
-                                height = "400px",
-                                interactive = FALSE
-                                )
-        ),
-      shiny::column(
-        width = 6,
-        djprshiny::djpr_plot_ui("good_trade_line_chart")
-      ),
+      shiny::column(6,
+             djprshiny::djpr_plot_box(
+               id = "goods_bop_bar_chart",
+               width = "100%",
+               height = "600px",
+               interactive = FALSE)
+             ),
+      shiny::column(6,
+             djprshiny::djpr_plot_box(
+               id = "good_trade_line_chart",
+               width = 12)
+      )
     ),
-    shiny::br(),
-    djprshiny::djpr_plot_ui("NSW_Vic_goods_line_chart"),
-    shiny::br(),
-    shiny::br(),
-    shiny::h2("Services", align = "center"),
-    shiny::br(),
     shiny::fluidRow(
-      shiny::column(
-        width = 6,
-        djprshiny::djpr_plot_ui("service_bop_bar_chart",
-                                width = "100%",
-                                height = "400px",
-                                interactive = FALSE
-                                )
-        ),
-      shiny::column(
-        width = 6,
-        djprshiny::djpr_plot_ui("services_trade_line_chart")
-      ),
+      djprshiny::djpr_plot_box(
+        id = "NSW_Vic_goods_line_chart",
+        width = 12)
     ),
-    shiny::br(),
-    djprshiny::djpr_plot_ui("NSW_Vic_Services_line_chart"),
-    shiny::br(),
-    shiny::br(),
-    shiny::h2("Balance of Trade", align = "center"),
-    shiny::br(),
-    djprshiny::djpr_plot_ui("trade_balance_line_chart")
+    shiny::fluidRow(
+      djprshiny::djpr_h2_box("Services")),
+    shiny::fluidRow(
+      shiny::column(6,
+             djprshiny::djpr_plot_box(
+               id = "service_bop_bar_chart",
+               width = "100%",
+               height = "600px",
+               interactive = FALSE)
+             ),
+      shiny::column(6,
+             djprshiny::djpr_plot_box(
+               id = "services_trade_line_chart",
+               width = 12)
+             )
+      ),
+    shiny::fluidRow(
+      djprshiny::djpr_plot_box(
+        id = "NSW_Vic_Services_line_chart",
+        width = 12)
+      ),
+    shiny::fluidRow(
+      djprshiny::djpr_h2_box("Balance of Trade")),
+    shiny::fluidRow(
+      djprshiny::djpr_plot_box(
+        id = "trade_balance_line_chart",
+        width = 12)
+      )
   )
 }
 
@@ -111,6 +119,7 @@ page_bop <- function(input, output, session, plt_change, table_rowcount = 5){
 
   djprshiny::djpr_plot_server(
     id                    = "good_services_chart",
+    width_percent = 70,
     plot_function         = viz_good_services_chart,
     data                  = bop,
     plt_change            = plt_change,
