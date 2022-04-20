@@ -26,8 +26,7 @@ page_bopUI <- function(...) {
       ),
       shiny::column(
         width = 6,
-        djprshiny::djpr_plot_ui("goods_export_import_line",   # not working yet
-                                width = 6)
+        djprshiny::djpr_plot_ui("goods_export_import_line")
       ),
     ),
     shiny::br(),
@@ -124,6 +123,7 @@ page_bop <- function(input, output, session, plt_change, table_rowcount = 5){
   djprshiny::djpr_plot_server(
     id            = "goods_export_import_line",
     plot_function = viz_goods_export_import_line,
+    width_percent = 50,
     data          = bop,
     plt_change    = plt_change
   )
@@ -152,6 +152,7 @@ page_bop <- function(input, output, session, plt_change, table_rowcount = 5){
   # Goods: Goods imports and exports since covid
   djprshiny::djpr_plot_server(
     id            = "good_trade_line_chart",
+    width_percent = 50,
     plot_function = viz_good_trade_line_chart,
     data          = dplyr::filter(bop, date >= as.Date("2018-12-01")),
     plt_change    = plt_change
@@ -182,6 +183,7 @@ page_bop <- function(input, output, session, plt_change, table_rowcount = 5){
   # Services: services imports and exports since COVID
   djprshiny::djpr_plot_server(
     id            = "services_trade_line_chart",
+    width_percent = 50,
     plot_function = viz_services_trade_line_chart,
     data          = dplyr::filter(bop, date >= as.Date("2018-12-01")),
     plt_change    = plt_change
