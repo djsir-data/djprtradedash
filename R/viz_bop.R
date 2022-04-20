@@ -35,9 +35,8 @@ viz_total_bop_bar_chart <- function(data = bop) {
 
   latest <- df %>%
     dplyr::filter(
-      .data$date == max(.data$date)
-    ) %>%
-    dplyr::filter(.data$goods_services == "Total") %>%
+      .data$date == max(.data$date),
+      .data$goods_services == "Total") %>%
     dplyr::select(.data$state, .data$value) %>%
     dplyr::mutate(rank = dplyr::min_rank(-.data$value))
 
@@ -108,7 +107,7 @@ viz_good_services_export_chart <- function(data = bop) {
     dplyr::filter(
       .data$state == "Victoria",
       .data$exports_imports == "Exports",
-      .data$indicator == "Chain Volume Measures",
+      .data$indicator == "Chain Volume Measures"
       )
 
   if ('tbl_lazy' %in% class(df)) {
@@ -510,7 +509,7 @@ viz_goods_bop_bar_chart <- function(data = bop) {
     djprshiny::round2(1)
 
   latest_month <- format(max(df$date), "%B %Y")
-  year_prior <- format(max(df$date)%m-%months(12), "%B %Y")
+  year_prior <- format(max(df$date)%m-% months(12), "%B %Y")
 
 
   title <- dplyr::case_when(
@@ -930,6 +929,7 @@ viz_NSW_Vic_goods_line_chart <- function(data = bop) {
 
 # Annual growth of Victoria's and NSW's imports and exports of services
 viz_NSW_Vic_Services_line_chart <- function(data = bop) {
+
   df <- data %>%
     dplyr::filter(.data$goods_services == "Services",
                   .data$indicator == "Chain Volume Measures",
@@ -1077,6 +1077,7 @@ viz_good_services_import_chart <- function(data = bop) {
 
 # Victoria's historical imports and exports of goods and services
 viz_good_services_chart <- function(data = bop) {
+
   df <- data %>%
     dplyr::filter(
       .data$state == "Victoria",
@@ -1118,6 +1119,7 @@ viz_good_services_chart <- function(data = bop) {
     dplyr::mutate(change = .data$value - dplyr::lag(.data$value, 1)) %>%
     dplyr::filter(.data$date == max(.data$date)) %>%
     dplyr::ungroup()
+
 
   title <- purrr::map2_chr(
     latest_change$exports_imports,
@@ -1164,6 +1166,7 @@ viz_good_services_chart <- function(data = bop) {
 
 # Victoria's exports of goods and services by calendar year
 viz_Vic_total_bop_bar_chart <- function(data = bop) {
+
   df <- data %>%
     dplyr::filter(.data$state == "Victoria",
                   .data$indicator == "Chain Volume Measures",
