@@ -1,7 +1,7 @@
 page_methodology <- function(...) {
-	djprshiny::djpr_tab_panel(
-		title = "Notes",
-	    value = "tab-notes",
+  shiny::fluidRow(
+	# 	title = "Notes",
+	#     value = "tab-notes",
 		shiny::br(),
 		shiny::includeMarkdown("R/methodology.md"),
 		djprshiny::centred_row(
