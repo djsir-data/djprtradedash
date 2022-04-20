@@ -173,7 +173,7 @@ viz_good_services_export_chart <- function(data = bop) {
 # Cumulative Change in Victoria's goods exports and imports since COVID
 viz_good_trade_line_chart <- function(data = bop) {
   df <- data %>%
-    dplyr::filter(date >= as.Date("2017-12-01")) %>%
+    dplyr::filter(date >= as.Date("2017-12-01")) %>% # why this date
     dplyr::filter(
       .data$state == "Victoria",
     )
@@ -185,11 +185,11 @@ viz_good_trade_line_chart <- function(data = bop) {
 
   df<- df %>%
     dplyr::select(-.data$series_id, -.data$unit) %>%
-    dplyr::filter(.data$goods_services == "Goods", .data$indicator == "Chain Volume Measures") %>%
+    dplyr::filter(.data$goods_services == "Goods", .data$indicator == "Chain Volume Measures") %>% # move to before collect()
     dplyr::mutate(value = abs(.data$value))
 
   latest_month <- format(max(df$date), "%B %Y")
-  year_prior <- format(max(df$date)-months(12), "%B %Y")
+  year_prior <- format(max(df$date) %m-% months(12), "%B %Y") # https://lubridate.tidyverse.org/reference/mplus.html
 
 
   df <- df %>%
@@ -260,7 +260,7 @@ viz_services_trade_line_chart <- function(data = bop) {
 
   df<- df %>%
     dplyr::select(-.data$series_id, -.data$unit) %>%
-    dplyr::filter(.data$goods_services == "Services", .data$indicator == "Chain Volume Measures") %>%
+    dplyr::filter(.data$goods_services == "Services", .data$indicator == "Chain Volume Measures") %>% # move to before collect()
     dplyr::mutate(value = abs(.data$value))
 
   latest_month <- format(max(df$date), "%B %Y")
@@ -323,13 +323,12 @@ viz_service_bop_bar_chart <- function(data = bop) {
 
 
   df <- data %>%
-    dplyr::filter(.data$goods_services == "Services", .data$indicator == "Chain Volume Measures") %>%
-    dplyr::mutate(value = abs(.data$value)
-                  ) %>%
-    dplyr::filter(
-      .data$state != "Australian Capital Territory",
-      .data$state != "Northern Territory"
-    )
+    dplyr::filter(.data$goods_services == "Services",
+                  .data$indicator == "Chain Volume Measures",
+                  .data$state != "Australian Capital Territory",
+                  .data$state != "Northern Territory") %>%
+    dplyr::mutate(value = abs(.data$value)) %>%
+
 
   if ('tbl_lazy' %in% class(df)) {
     df <- df %>%
@@ -338,18 +337,18 @@ viz_service_bop_bar_chart <- function(data = bop) {
 
     df <- df %>%
     dplyr::select(-.data$series_id, -.data$unit) %>%
-     dplyr::mutate( date = lubridate::ymd(date)) %>%
-    dplyr::mutate(state = dplyr::case_when(
-      .data$state == "Australian Capital Territory" ~
-      "ACT",
-      .data$state == "New South Wales" ~ "NSW",
-      .data$state == "Victoria" ~ "Vic",
-      .data$state == "Queensland" ~ "Qld",
-      .data$state == "Northern Territory" ~ "NT",
-      .data$state == "South Australia" ~ "SA",
-      .data$state == "Western Australia" ~ "WA",
-      .data$state == "Tasmania" ~ "Tas",
-    ))
+    dplyr::mutate( ) %>%
+    dplyr::mutate(date = lubridate::ymd(date),
+                  state = dplyr::case_when(
+                    .data$state == "Australian Capital Territory" ~ "ACT",
+                    .data$state == "New South Wales" ~ "NSW",
+                    .data$state == "Victoria" ~ "Vic",
+                    .data$state == "Queensland" ~ "Qld",
+                    .data$state == "Northern Territory" ~ "NT",
+                    .data$state == "South Australia" ~ "SA",
+                    .data$state == "Western Australia" ~ "WA",
+                    .data$state == "Tasmania" ~ "Tas"
+      ))
 
 
   # % change of export and export since Dec 2029
@@ -399,7 +398,7 @@ viz_service_bop_bar_chart <- function(data = bop) {
 
   df <- df %>%
     dplyr::group_by(.data$state) %>%
-    dplyr::filter(.data$date == max(.data$date)) %>%
+    dplyr::filter(.data$date == max(.data$date)) %>%  ## move to before collect() first need to insure no impact to latest_export and latest_import
     dplyr::mutate(
       plot_order =
         ifelse(.data$exports_imports == "Exports", value, as.numeric(NA))
@@ -454,12 +453,12 @@ viz_service_bop_bar_chart <- function(data = bop) {
 # Change in goods exports and imports by the state since COVID
 viz_goods_bop_bar_chart <- function(data = bop) {
   df <- data %>%
-    dplyr::filter(.data$goods_services == "Goods", .data$indicator == "Chain Volume Measures") %>%
-    dplyr::mutate(value = abs(.data$value)) %>%
-    dplyr::filter(
-      .data$state != "Australian Capital Territory",
-      .data$state != "Northern Territory"
-    )
+    dplyr::filter(.data$goods_services == "Goods",
+                  .data$indicator == "Chain Volume Measures",
+                  .data$state != "Australian Capital Territory",
+                  .data$state != "Northern Territory") %>%
+    dplyr::mutate(value = abs(.data$value))
+
 
   if ('tbl_lazy' %in% class(df)) {
     df <- df %>%
@@ -476,7 +475,7 @@ viz_goods_bop_bar_chart <- function(data = bop) {
       .data$state == "Queensland" ~ "Qld",
       .data$state == "South Australia" ~ "SA",
       .data$state == "Western Australia" ~ "WA",
-      .data$state == "Tasmania" ~ "Tas",
+      .data$state == "Tasmania" ~ "Tas"
     ))
 
 
@@ -528,7 +527,7 @@ viz_goods_bop_bar_chart <- function(data = bop) {
 
   df <- df %>%
     dplyr::group_by(.data$state) %>%
-    dplyr::filter(.data$date == max(.data$date)) %>%
+    dplyr::filter(.data$date == max(.data$date)) %>% ## move to before collect() first need to insure no impact to latest_export and latest_import
     dplyr::mutate(
       plot_order =
         ifelse(.data$exports_imports == "Exports", value, as.numeric(NA))
@@ -595,7 +594,7 @@ viz_goods_export_import_line <- function(data = bop) {
 
     df <- df %>%
     dplyr::select(-.data$series_id, -.data$unit) %>%
-    dplyr::filter(.data$goods_services == "Goods and Services", .data$indicator == "Chain Volume Measures") %>%
+    dplyr::filter(.data$goods_services == "Goods and Services", .data$indicator == "Chain Volume Measures") %>%  ## move to before collect()
     dplyr::mutate(value = abs(.data$value))
 
   # Annual growth
@@ -671,13 +670,13 @@ table_export_import <- function(data = bop) {
 
   df <- data %>%
     dplyr::select(-.data$series_id, -.data$unit) %>%
-    dplyr::filter(.data$indicator == "Chain Volume Measures") %>%
+    dplyr::filter(.data$indicator == "Chain Volume Measures") %>% ## move to before collect()
     dplyr::mutate(value = abs(.data$value))
 
 
   current <- df %>%
     dplyr::filter(
-      .data$state == "Victoria",
+      .data$state == "Victoria", ## move to before collect()
     ) %>%
     dplyr::filter(.data$date == max(.data$date)) %>%
     dplyr::select(.data$exports_imports, .data$goods_services, .data$value) %>%
@@ -690,7 +689,7 @@ table_export_import <- function(data = bop) {
   # per cent change
   df_year <- df %>%
     dplyr::filter(
-      .data$state == "Victoria",
+      .data$state == "Victoria", ## move to before collect()
     ) %>%
     dplyr::group_by(.data$exports_imports, .data$goods_services) %>%
     dplyr::mutate(
@@ -1234,9 +1233,9 @@ viz_Vic_total_bop_bar_chart <- function(data = bop) {
 }
 
 # Victoria's exports of goods and services by calendar year
-viz_vic_total_bop_cumul_line <- function(data = bop, bop_dates = bop_dates) {
+viz_vic_total_bop_cumul_line <- function(data = bop, dates = bop_dates) {
 
-  filter_date <- bop_dates$max - lubridate::years(5) + lubridate::days(1)
+  filter_date <- dates$max - lubridate::years(5) + lubridate::days(1)
 
   df <- data %>%
     dplyr::filter(
