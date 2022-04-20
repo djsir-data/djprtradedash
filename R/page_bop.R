@@ -1,21 +1,19 @@
 page_bopUI <- function(...) {
-  djprshiny::djpr_tab_panel(
-    title = "Balance of Payments",
-    shiny::h1(
-      shiny::span("Balance of payments",
-           style = "font-size: 40px; color: #1F1547; font-family: 'Roboto Slab'"
-      )
+
+  shiny::tagList(
+    shiny::fluidRow(
+      djprshiny::djpr_h2_box("Balance of Payments")),
+    shiny::fluidRow(
+      shiny::column(5,
+             shinyWidgets::panel(
+               style = 'height:530px;',
+               'Summary information on trade in Victoria')),
+      shiny::column(7,
+             djprshiny::djpr_plot_box(
+               id = "good_services_chart",
+               width = 12
+             ))
     ),
-    shiny::p(
-      "Summary information on Victoria's quarterly trade",
-      style = "font-size: 150%;font-style: italic;color: #A9A9A9"
-      ),
-    shiny::br(),
-    shiny::br(),
-    shiny::h2("Goods and Services", align = "center"),
-    shiny::br(),
-    djprshiny::djpr_plot_ui("good_services_chart"),
-    shiny::br(),
     shiny::fluidRow(
       shiny::column(
         width = 6,
