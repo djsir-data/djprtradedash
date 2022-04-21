@@ -78,6 +78,8 @@ viz_total_bop_bar_chart <- function(data = bop) {
     ggplot2::scale_x_discrete(expand = ggplot2::expansion(add = c(0.2, 0.85))) +
     ggplot2::scale_y_continuous(expand = ggplot2::expansion(mult = c(0, 0.15))) +
     ggplot2::theme(
+      panel.background = element_rect(fill = "lightblue",
+                                      colour = "lightblue"),
       axis.text.x = ggplot2::element_blank(),
       axis.title = ggplot2::element_blank(),
       panel.grid = ggplot2::element_blank(),
