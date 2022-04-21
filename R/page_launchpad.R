@@ -20,22 +20,22 @@ page_launchpadUI <- function(id) {
       shiny::fluidRow(style = 'padding:20px;',
         shiny::column(4,
 
-                      div(class = 'card text-white bg-dark mb-3',
+                      shiny::div(class = 'card text-white bg-dark mb-3',
                           style = 'height:200px;',
-                          div(class = 'card-header',
-                              h4('Exports Explorer')
+                          shiny::div(class = 'card-header',
+                                     shiny::h4('Exports Explorer')
                           ),
-                          div(class = 'card-body',
-                              div(class = 'row',
-                                  div(class = 'col',
+                          shiny::div(class = 'card-body',
+                                     shiny::div(class = 'row',
+                                                shiny::div(class = 'col',
                                       'Description of what to find in merch explorer',
-                                      div(style = 'position:absolute;bottom:20px',
+                                      shiny::div(style = 'position:absolute;bottom:20px',
                                           shinyWidgets::actionBttn('btn_explore', "Explore",
                                                                    style = 'material-flat',
                                                                    color = 'success'))),
-                                  div(class = 'col-6',
+                                      shiny::div(class = 'col-6',
                                       style = "text-align: right;padding-bottom:15px;",
-                                      img(style = 'display:inline;height:10vh;width:auto;',
+                                      shiny::img(style = 'display:inline;height:10vh;width:auto;',
                                           src = 'https://icongr.am/material/binoculars.svg?size=164&color=fafafa',
                                           alt = 'small icon of binoculars')))
                           )
@@ -43,21 +43,21 @@ page_launchpadUI <- function(id) {
       ),
       shiny::column(4,
 
-                    div(class = 'card text-white bg-dark mb-3',
+                    shiny::div(class = 'card text-white bg-dark mb-3',
                         style = 'height:200px;',
-                        div(class = 'card-header',
-                            h4("Balance of Payments")),
-                        div(class = 'card-body',
-                            div(class = 'row',
-                                div(class = 'col',
+                        shiny::div(class = 'card-header',
+                                   shiny::h4("Balance of Payments")),
+                        shiny:: div(class = 'card-body',
+                                    shiny::div(class = 'row',
+                                               shiny::div(class = 'col',
                                     'description of balance of payments',
-                                    div(style = 'position:absolute;bottom:20px',
+                                    shiny::div(style = 'position:absolute;bottom:20px',
                                         shinyWidgets::actionBttn('btn_balance', "Balance",
                                                                  style = 'material-flat',
                                                                  color = 'success'))),
-                                div(class = 'col-6',
+                                    shiny::div(class = 'col-6',
                                     style = "text-align: right;padding-bottom:15px;",
-                                    img(style = 'display:inline;height:10vh;width:auto;',
+                                    shiny::img(style = 'display:inline;height:10vh;width:auto;',
                                         src = 'https://icongr.am/clarity/balance.svg?size=164&color=fafafa',
                                         alt = 'small icon of weighing balance')))
                         )
@@ -65,27 +65,27 @@ page_launchpadUI <- function(id) {
       ),
       shiny::column(4,
 
-                    div(class = 'card text-white bg-dark mb-3',
+                    shiny::div(class = 'card text-white bg-dark mb-3',
                         style = 'height:200px;',
-                        div(class = 'card-header',
-                            h4("Help and Methodology")),
-                        div(class = 'card-body',
-                            div(class = 'row',
-                                div(class = 'col',
+                        shiny::div(class = 'card-header',
+                                   shiny::h4("Help and Methodology")),
+                        shiny::div(class = 'card-body',
+                                   shiny::div(class = 'row',
+                                              shiny::div(class = 'col',
                                     'some text here',
-                                    div(style = 'position:absolute;bottom:20px',
+                                    shiny::div(style = 'position:absolute;bottom:20px',
                                         shinyWidgets::actionBttn('btn_help', 'Help',
                                                                  style = 'material-flat',
                                                                  color = 'success'))),
-                                div(class="col-6",
+                                    shiny::div(class="col-6",
                                     style = "text-align: right;padding-bottom:15px;",
-                                    img(style = 'display:inline;height:10vh;width:auto;',
+                                    shiny::img(style = 'display:inline;height:10vh;width:auto;',
                                         src = 'https://icongr.am/clarity/help-info.svg?color=fafafa',
                                         alt = 'small icon of I for')))
                         )
                     )
       )),
-    fluidRow(
+      shiny::fluidRow(
 
       djprshiny::djpr_plot_box(
         "good_services_export_line_launchpad",
@@ -98,20 +98,20 @@ page_launchpadUI <- function(id) {
       shiny::br(),
       djprshiny::djpr_h2_box("Countries"),
       shinydashboard::box(
-        title = h3("Top 5 Exports ($m)"),
+        title = shiny::h3("Top 5 Exports ($m)"),
         shiny::uiOutput("country_export_table", height = "600px")
       ),
       shinydashboard::box(
-        title = h3("Top 5 Imports ($m)"),
+        title = shiny::h3("Top 5 Imports ($m)"),
         shiny::uiOutput("country_import_table", height = "600px")
       ),
       djprshiny::djpr_h2_box("Products"),
       shinydashboard::box(
-        title = h3("Top 5 Exports ($m)"),
+        title = shiny::h3("Top 5 Exports ($m)"),
         shiny::uiOutput("product_export_table", height = "600px")
       ),
       shinydashboard::box(
-        title = h3("Top 5 Imports ($m)"),
+        title = shiny::h3("Top 5 Imports ($m)"),
         shiny::uiOutput("product_import_table", height = "600px")
       ),
       djprshiny::djpr_h2_box("Balance of payments"),
