@@ -5,11 +5,11 @@ page_launchpadUI <- function(id) {
       shiny::fluidRow(
         djprshiny::djpr_h2_box("DJPR Trade Dashboard")),
       shiny::fluidRow(
-        column(5,
+        shiny::column(5,
                shinyWidgets::panel(
                  style = 'height:530px;',
                  'add some text here')),
-        column(7,
+        shiny::column(7,
                djprshiny::djpr_plot_box(
                  id = "top_export_line_chart",
                  interactive = TRUE,
