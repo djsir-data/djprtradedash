@@ -16,9 +16,9 @@ ui <- function() {
     ),
     body = shinydashboard::dashboardBody(
       djprshiny::djpr_dash_theme(),
-      tags$script("$('html').attr(\"lang\", \"en\")"),
+      shiny::tags$script("$('html').attr(\"lang\", \"en\")"),
       #tags$script("$('aside').attr(\"role\", \"navigation\")"),
-      tags$script("$('section.content').attr(\"role\", \"main\")"),
+      shiny::tags$script("$('section.content').attr(\"role\", \"main\")"),
       shinydashboard::tabItems(
         shinydashboard::tabItem("launchpad", page_launchpadUI('lp')),
         shinydashboard::tabItem("merch", page_merchUI()),
@@ -31,7 +31,7 @@ ui <- function() {
                                        'axe.js Output'),
                                     includeScript('inst/js/axe.min.js'),
                                     includeScript('inst/js/run_axe.js'),
-                                    tags$button(hreg = "#", onclick = "run_axe()",
+                                    shiny::tags$button(hreg = "#", onclick = "run_axe()",
                                            "Click to Run axe js"),
                                     shiny::tags$div(id = 'axe-results')
                                   )
