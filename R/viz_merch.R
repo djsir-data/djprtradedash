@@ -96,7 +96,7 @@ viz_merch_explorer <- function(dataset,
     n_breaks = 5
   )
   latest_month <- format(max(df$date), "%B %Y")
-  caption <- paste0("Source: ABS.Stat Merchandise Exports data per commodity (latest data is from ", latest_month, "). Note:12 month rolling average ")
+  caption <- paste0("Source: ABS.Stat Merchandise Exports data per commodity (latest data is from ",     latest_month, "). Note:12 month rolling average ")
 
   p <- df %>%
     ggplot2::ggplot(ggplot2::aes(
