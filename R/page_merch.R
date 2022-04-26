@@ -23,7 +23,7 @@ page_merchUI <- function(...) {
         4,
         shinyWidgets::multiInput(
           inputId = "merch_countries",
-          label = "Export destinations: ",
+          label = "Select Export destinations: ",
           choices = sort(merch_country_dest),
           selected = c("Thailand", "Malaysia"),
           width = "100%",
@@ -34,7 +34,7 @@ page_merchUI <- function(...) {
         ),
         shinyWidgets::multiInput(
           inputId = "merch_sitc",
-          label = "Goods",
+          label = "Select Goods",
           choices = sort(merch_sitc_lu$sitc),
           selected = "Medicinal and pharmaceutical products (excl. medicaments of group 542)",
           width = "100%",
@@ -51,7 +51,7 @@ page_merchUI <- function(...) {
             4,
             shinyWidgets::awesomeRadio(
               inputId = "merch_explorer_sitc",
-              label = "SITC Level: ",
+              label = "Select SITC Level: ",
               choices = c(
                 1,
                 2,
@@ -67,7 +67,7 @@ page_merchUI <- function(...) {
             4,
             shinyWidgets::awesomeRadio(
               inputId = "merch_explorer_facets",
-              label = "Facet on: ",
+              label = "Select Facet on: ",
               choices = c(
                 "Destination country" = "country_dest",
                 "Good type" = "sitc"
@@ -79,9 +79,8 @@ page_merchUI <- function(...) {
           ),
           shiny::column(
             4,
-            "Smooth using:\n",
             shinyWidgets::materialSwitch("merch_explorer_smooth",
-              label = "12 month rolling average",
+              label = "Smooth using 12 month rolling average",
               status = "primary",
               value = TRUE
             )
@@ -94,7 +93,7 @@ page_merchUI <- function(...) {
           shiny::column(
             8,
             shiny::sliderInput("merch_explorer_dates",
-              label = "",
+              label = "Select Dates",
               min = merch_dates$min,
               max = merch_dates$max,
               value = c(
