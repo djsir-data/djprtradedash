@@ -1,50 +1,84 @@
 page_bopUI <- function(...) {
-  djprshiny::djpr_tab_panel(
-    title = "Balance of Payments",
-    shiny::h1(
-      shiny::span("Balance of payments",
-           style = "font-size: 40px; color: #1F1547; font-family: 'Roboto Slab'"
+
+  shiny::tagList(
+    shiny::fluidRow(
+      djprshiny::djpr_h2_box("Balance of Payments")),
+    shiny::fluidRow(
+      shiny::column(5,
+             shinyWidgets::panel(
+               style = 'height:530px;',
+               'Summary information on trade in Victoria')),
+      shiny::column(7,
+             djprshiny::djpr_plot_box(
+               id = "good_services_chart",
+               width = 12)
+             )
+      ),
+    shiny::fluidRow(
+      djprshiny::djpr_h2_box("Goods and Services")),
+    shiny::fluidRow(
+      shiny::column(6,
+             djprshiny::djpr_plot_box(
+               id = "total_bop_bar_chart",
+               width = "100%",
+               height = "600px",
+               interactive = FALSE)
+             ),
+      shiny::column(6,
+             djprshiny::djpr_plot_box(
+               id = "goods_export_import_line",
+               width = 12)
       )
     ),
-    shiny::p(
-      "Summary information on Victoria's quarterly trade",
-      style = "font-size: 150%;font-style: italic;color: #A9A9A9"
+    shiny::fluidRow(
+      djprshiny::djpr_h2_box("Goods")),
+    shiny::fluidRow(
+      shiny::column(6,
+             djprshiny::djpr_plot_box(
+               id = "goods_bop_bar_chart",
+               width = "100%",
+               height = "600px",
+               interactive = FALSE)
+             ),
+      shiny::column(6,
+             djprshiny::djpr_plot_box(
+               id = "good_trade_line_chart",
+               width = 12)
+      )
+    ),
+    shiny::fluidRow(
+      djprshiny::djpr_plot_box(
+        id = "NSW_Vic_goods_line_chart",
+        width = 12)
+    ),
+    shiny::fluidRow(
+      djprshiny::djpr_h2_box("Services")),
+    shiny::fluidRow(
+      shiny::column(6,
+             djprshiny::djpr_plot_box(
+               id = "service_bop_bar_chart",
+               width = "100%",
+               height = "600px",
+               interactive = FALSE)
+             ),
+      shiny::column(6,
+             djprshiny::djpr_plot_box(
+               id = "services_trade_line_chart",
+               width = 12)
+             )
       ),
-    shiny::br(),
-    shiny::br(),
-    shiny::h2("Goods and Services", align = "center"),
-    shiny::br(),
-    djprshiny::djpr_plot_ui("good_services_chart"),
-    shiny::br(),
-    djprshiny::djpr_plot_ui("total_bop_bar_chart",
-      interactive = FALSE
-    ),
-    shiny::br(),
-    djprshiny::djpr_plot_ui("goods_export_import_line"),
-    shiny::br(),
-    shiny::h2("Goods", align = "center"),
-    djprshiny::djpr_plot_ui("goods_bop_bar_chart",
-      interactive = FALSE
-    ),
-    shiny::br(),
-    djprshiny::djpr_plot_ui("good_trade_line_chart"),
-    shiny::br(),
-    djprshiny::djpr_plot_ui("NSW_Vic_goods_line_chart"),
-    shiny::br(),
-    shiny::br(),
-    shiny::h2("Services", align = "center"),
-    shiny::br(),
-    djprshiny::djpr_plot_ui("service_bop_bar_chart",
-      interactive = FALSE
-    ),
-    shiny::br(),
-    djprshiny::djpr_plot_ui("services_trade_line_chart"),
-    djprshiny::djpr_plot_ui("NSW_Vic_Services_line_chart"),
-    shiny::br(),
-    shiny::br(),
-    shiny::h2("Balance of Trade", align = "center"),
-    shiny::br(),
-    djprshiny::djpr_plot_ui("trade_balance_line_chart")
+    shiny::fluidRow(
+      djprshiny::djpr_plot_box(
+        id = "NSW_Vic_Services_line_chart",
+        width = 12)
+      ),
+    shiny::fluidRow(
+      djprshiny::djpr_h2_box("Balance of Trade")),
+    shiny::fluidRow(
+      djprshiny::djpr_plot_box(
+        id = "trade_balance_line_chart",
+        width = 12)
+      )
   )
 }
 
@@ -87,6 +121,7 @@ page_bop <- function(input, output, session, plt_change, table_rowcount = 5){
 
   djprshiny::djpr_plot_server(
     id                    = "good_services_chart",
+    width_percent = 70,
     plot_function         = viz_good_services_chart,
     data                  = bop,
     plt_change            = plt_change,
@@ -98,6 +133,7 @@ page_bop <- function(input, output, session, plt_change, table_rowcount = 5){
   djprshiny::djpr_plot_server(
     id            = "goods_export_import_line",
     plot_function = viz_goods_export_import_line,
+    width_percent = 50,
     data          = bop,
     plt_change    = plt_change,
     convert_lazy   = FALSE
@@ -128,6 +164,7 @@ page_bop <- function(input, output, session, plt_change, table_rowcount = 5){
   # Goods: Goods imports and exports since covid
   djprshiny::djpr_plot_server(
     id            = "good_trade_line_chart",
+    width_percent = 50,
     plot_function = viz_good_trade_line_chart,
     data          = dplyr::filter(bop, date >= as.Date("2018-12-01")),
     plt_change    = plt_change,
@@ -160,6 +197,7 @@ page_bop <- function(input, output, session, plt_change, table_rowcount = 5){
   # Services: services imports and exports since COVID
   djprshiny::djpr_plot_server(
     id            = "services_trade_line_chart",
+    width_percent = 50,
     plot_function = viz_services_trade_line_chart,
     data          = dplyr::filter(bop, date >= as.Date("2018-12-01")),
     plt_change    = plt_change,

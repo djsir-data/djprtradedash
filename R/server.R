@@ -42,6 +42,8 @@ server <- function(input, output, session) {
 
 
 
+
+
   # Initialise country selection & URL query
   # updateSelectInput(
   #   inputId = "country_select",

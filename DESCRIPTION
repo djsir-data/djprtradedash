@@ -43,9 +43,10 @@ Imports:
     DT,
     slider,
     utils,
-    ggiraph
+    ggiraph,
+    shinydashboard
 Remotes: 
-    djpr-data/djprshiny,
+    djpr-data/djprshiny@publication-theme,
     djpr-data/djprtheme,
     MattCowgill/readabs
 Depends: 

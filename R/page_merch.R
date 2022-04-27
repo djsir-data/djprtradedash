@@ -3,8 +3,7 @@ page_merchUI <- function(...) {
   selecter_height <- 325
   inner_height <- selecter_height - 44
 
-  shiny::tabPanel(
-    title = "Merchandise exports",
+  shiny::fluidRow(
     shiny::tags$head(
       shiny::tags$style(paste0(".multi-wrapper {height: ", selecter_height, "px;}")),
       shiny::tags$style(paste0(
@@ -13,11 +12,7 @@ page_merchUI <- function(...) {
         "px;}"
       ))
     ),
-    # ggiraph_js(),
-    value = "tab-merchandise-exports",
-    shiny::br(),
-    shiny::br(),
-    shiny::h1("Merchandise Exports Data Explorer"),
+    djprshiny::djpr_h2_box("Merchandise exports"),
     shiny::fluidRow(
       shiny::column(
         4,
@@ -44,8 +39,9 @@ page_merchUI <- function(...) {
           )
         )
       ),
-      shiny::column(
-        8,
+      shinydashboard::box(
+        width = 8,
+        shiny::br(),
         shiny::fluidRow(
           shiny::column(
             4,
@@ -87,7 +83,7 @@ page_merchUI <- function(...) {
           )
         ),
         shiny::plotOutput("merch_explorer",
-          height = "600px"
+                          height = "600px"
         ),
         shiny::fluidRow(
           shiny::column(
@@ -112,10 +108,7 @@ page_merchUI <- function(...) {
           )
         )
       )
-    ),
-    shiny::br(),
-    djprshiny::centred_row(shiny::htmlOutput("merch_footnote")),
-    shiny::br()
+    )
   )
 }
 
@@ -128,7 +121,7 @@ page_merch <- function(input, output, session, plt_change){
         dplyr::filter(n == !!input$merch_explorer_sitc)
     } else {
       lu <- merch_sitc_lu %>%
-      dplyr::mutate(sitc = paste0(.data$sitc_code, ": ", .data$sitc))
+        dplyr::mutate(sitc = paste0(.data$sitc_code, ": ", .data$sitc))
     }
     lu %>%
       dplyr::pull(.data$sitc) %>%
@@ -160,13 +153,13 @@ page_merch <- function(input, output, session, plt_change){
       )
 
     merch_plt <- viz_merch_explorer(
-        merch_plt_data,
-        countries = input$merch_countries,
-        goods = sub(".[0-9]*:\\s", "", input$merch_sitc),
-        facet_by = input$merch_explorer_facets,
-        smooth = input$merch_explorer_smooth,
-        merch_explorer_sitc = input$merch_explorer_sitc
-      )
+      merch_plt_data,
+      countries = input$merch_countries,
+      goods = sub(".[0-9]*:\\s", "", input$merch_sitc),
+      facet_by = input$merch_explorer_facets,
+      smooth = input$merch_explorer_smooth,
+      merch_explorer_sitc = input$merch_explorer_sitc
+    )
 
     output$merch_explorer <- shiny::renderPlot({
       merch_plt
