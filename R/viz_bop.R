@@ -4,15 +4,21 @@
 viz_total_bop_bar_chart <- function(data = bop) {
 
   df <- data %>%
-    dplyr::select(-.data$series_id, -.data$unit) %>%
     dplyr::filter(.data$indicator == "Chain Volume Measures",
-                  .data$exports_imports == "Exports") %>%
-    dplyr::mutate(value = abs(.data$value)) %>%
-    dplyr::filter(.data$date == max(.data$date)) %>%
-    dplyr::filter(
-      .data$state != "Australian Capital Territory",
-      .data$state != "Northern Territory"
-    ) %>%
+                  .data$exports_imports == "Exports",
+                  .data$state != "Australian Capital Territory",
+                  .data$state != "Northern Territory",
+                  .data$date == max(.data$date)) %>%
+    dplyr::mutate(value = abs(.data$value))
+
+
+  if ('tbl_lazy' %in% class(df)) {
+    df <- df %>%
+      dplyr::collect()
+  }
+
+  df <- df %>%
+    dplyr::select(-.data$series_id, -.data$unit) %>%
     dplyr::mutate(state = dplyr::case_when(
       .data$state == "New South Wales" ~ "NSW",
       .data$state == "Victoria" ~ "Vic",
@@ -29,9 +35,8 @@ viz_total_bop_bar_chart <- function(data = bop) {
 
   latest <- df %>%
     dplyr::filter(
-      .data$date == max(.data$date)
-    ) %>%
-    dplyr::filter(.data$goods_services == "Total") %>%
+      .data$date == max(.data$date),
+      .data$goods_services == "Total") %>%
     dplyr::select(.data$state, .data$value) %>%
     dplyr::mutate(rank = dplyr::min_rank(-.data$value))
 
@@ -97,12 +102,21 @@ viz_total_bop_bar_chart <- function(data = bop) {
 
 # Victoria's historical exports of goods and services
 viz_good_services_export_chart <- function(data = bop) {
+
   df <- data %>%
     dplyr::filter(
       .data$state == "Victoria",
-    ) %>%
+      .data$exports_imports == "Exports",
+      .data$indicator == "Chain Volume Measures"
+      )
+
+  if ('tbl_lazy' %in% class(df)) {
+    df <- df %>%
+      dplyr::collect()
+  }
+
+    df <- df %>%
     dplyr::select(-.data$series_id, -.data$unit) %>%
-    dplyr::filter(.data$exports_imports == "Exports", .data$indicator == "Chain Volume Measures") %>%
     dplyr::mutate(goods_services = dplyr::if_else(.data$goods_services == "Goods and Services", "Total", .data$goods_services)) %>%
     dplyr::mutate(value = abs(.data$value))
 
@@ -120,8 +134,9 @@ viz_good_services_export_chart <- function(data = bop) {
   latest_change <- df %>%
     dplyr::filter(.data$goods_services == "Total") %>%
     dplyr::mutate(change = .data$value - dplyr::lag(.data$value, 1)) %>%
-    dplyr::filter(!is.na(.data$change)) %>%
-    dplyr::filter(.data$date == max(.data$date))
+    dplyr::filter(!is.na(.data$change),
+                  .data$date == max(.data$date))
+
 
 
   title <-
@@ -158,17 +173,25 @@ viz_good_services_export_chart <- function(data = bop) {
 
 # Cumulative Change in Victoria's goods exports and imports since COVID
 viz_good_trade_line_chart <- function(data = bop) {
+
   df <- data %>%
-    dplyr::filter(date >= as.Date("2017-12-01")) %>%
-    dplyr::filter(
-      .data$state == "Victoria",
-    ) %>%
+    dplyr::filter(date >= as.Date("2017-12-01"),
+                  .data$goods_services == "Goods",
+                  .data$indicator == "Chain Volume Measures",
+                  .data$state == "Victoria")
+
+
+  if ('tbl_lazy' %in% class(df)) {
+    df <- df %>%
+      dplyr::collect()
+  }
+
+  df<- df %>%
     dplyr::select(-.data$series_id, -.data$unit) %>%
-    dplyr::filter(.data$goods_services == "Goods", .data$indicator == "Chain Volume Measures") %>%
     dplyr::mutate(value = abs(.data$value))
 
   latest_month <- format(max(df$date), "%B %Y")
-  year_prior <- format(max(df$date)-months(12), "%B %Y")
+  year_prior <- format(max(df$date) %m-% months(12), "%B %Y") # https://lubridate.tidyverse.org/reference/mplus.html
 
 
   df <- df %>%
@@ -204,7 +227,7 @@ viz_good_trade_line_chart <- function(data = bop) {
       latest_export == 0 ~ "the same as ",
       latest_export < 0 ~ paste0(abs(latest_export), " per cent lower than ")
     ),
-    "they were in ",year_prior
+    "they were in ",year_prior #
   )
 
   caption <- paste0("Source: ABS Balance of Payment quarterly (latest data is from ", latest_month, ". Note: Data seasonally Adjusted & Chain Volume Measures")
@@ -226,17 +249,25 @@ viz_good_trade_line_chart <- function(data = bop) {
 
 # Cumulative change in Victoria's Services' exports and imports since COVID
 viz_services_trade_line_chart <- function(data = bop) {
+
   df <- data %>%
-    dplyr::filter(date >= as.Date("2017-12-01")) %>%
-    dplyr::filter(
-      .data$state == "Victoria",
-    ) %>%
+    dplyr::filter(date >= as.Date("2017-12-01"),
+                  .data$goods_services == "Services",
+                  .data$indicator == "Chain Volume Measures",
+                  .data$state == "Victoria"
+    )
+
+  if ('tbl_lazy' %in% class(df)) {
+    df <- df %>%
+      dplyr::collect()
+  }
+
+  df<- df %>%
     dplyr::select(-.data$series_id, -.data$unit) %>%
-    dplyr::filter(.data$goods_services == "Services", .data$indicator == "Chain Volume Measures") %>%
     dplyr::mutate(value = abs(.data$value))
 
   latest_month <- format(max(df$date), "%B %Y")
-  year_prior <- format(max(df$date)-months(12), "%B %Y")
+  year_prior <- format(max(df$date) %m-% months(12), "%B %Y")
 
 
   df <- df %>%
@@ -292,29 +323,37 @@ viz_services_trade_line_chart <- function(data = bop) {
 
 # Change in services exports and imports since COVID by the state
 viz_service_bop_bar_chart <- function(data = bop) {
+
+
   df <- data %>%
+    dplyr::filter(.data$goods_services == "Services",
+                  .data$indicator == "Chain Volume Measures",
+                  .data$state != "Australian Capital Territory",
+                  .data$state != "Northern Territory") %>%
+    dplyr::mutate(value = abs(.data$value))
+
+
+  if ('tbl_lazy' %in% class(df)) {
+    df <- df %>%
+      dplyr::collect()
+  }
+
+    df <- df %>%
     dplyr::select(-.data$series_id, -.data$unit) %>%
-    dplyr::filter(.data$goods_services == "Services", .data$indicator == "Chain Volume Measures") %>%
-    dplyr::mutate(value = abs(.data$value),
-                  date = lubridate::ymd(date)) %>%
-    dplyr::filter(
-      .data$state != "Australian Capital Territory",
-      .data$state != "Northern Territory"
-    ) %>%
-    dplyr::mutate(state = dplyr::case_when(
-      .data$state == "Australian Capital Territory" ~
-      "ACT",
-      .data$state == "New South Wales" ~ "NSW",
-      .data$state == "Victoria" ~ "Vic",
-      .data$state == "Queensland" ~ "Qld",
-      .data$state == "Northern Territory" ~ "NT",
-      .data$state == "South Australia" ~ "SA",
-      .data$state == "Western Australia" ~ "WA",
-      .data$state == "Tasmania" ~ "Tas",
-    ))
+    dplyr::mutate(date = lubridate::ymd(date),
+                  state = dplyr::case_when(
+                    .data$state == "Australian Capital Territory" ~ "ACT",
+                    .data$state == "New South Wales" ~ "NSW",
+                    .data$state == "Victoria" ~ "Vic",
+                    .data$state == "Queensland" ~ "Qld",
+                    .data$state == "Northern Territory" ~ "NT",
+                    .data$state == "South Australia" ~ "SA",
+                    .data$state == "Western Australia" ~ "WA",
+                    .data$state == "Tasmania" ~ "Tas"
+      ))
 
 
-  # % change of export and export since Dec 2029
+  # % change of export and export since Dec 2020
   df <- df %>%
     dplyr::group_by(.data$state, .data$exports_imports) %>%
     dplyr::arrange(.data$date)%>%
@@ -341,7 +380,7 @@ viz_service_bop_bar_chart <- function(data = bop) {
     djprshiny::round2(1)
 
   latest_month <- format(max(df$date), "%B %Y")
-  year_prior <- format(max(df$date)-months(12), "%B %Y")
+  year_prior <- format(max(df$date)%m-%months(12), "%B %Y")
 
 
   title <- dplyr::case_when(
@@ -415,22 +454,31 @@ viz_service_bop_bar_chart <- function(data = bop) {
 
 # Change in goods exports and imports by the state since COVID
 viz_goods_bop_bar_chart <- function(data = bop) {
+
   df <- data %>%
+    dplyr::filter(.data$goods_services == "Goods",
+                  .data$indicator == "Chain Volume Measures",
+                  .data$state != "Australian Capital Territory",
+                  .data$state != "Northern Territory") %>%
+    dplyr::mutate(value = abs(.data$value))
+
+
+  if ('tbl_lazy' %in% class(df)) {
+    df <- df %>%
+      dplyr::collect()
+  }
+
+
+  df<- df %>%
     dplyr::select(-.data$series_id, -.data$unit) %>%
-    dplyr::filter(.data$goods_services == "Goods", .data$indicator == "Chain Volume Measures") %>%
-    dplyr::mutate(value = abs(.data$value),
-                  date = lubridate::ymd(date)) %>%
-    dplyr::filter(
-      .data$state != "Australian Capital Territory",
-      .data$state != "Northern Territory"
-    ) %>%
+    dplyr::mutate(date = lubridate::ymd(date)) %>%
     dplyr::mutate(state = dplyr::case_when(
       .data$state == "New South Wales" ~ "NSW",
       .data$state == "Victoria" ~ "Vic",
       .data$state == "Queensland" ~ "Qld",
       .data$state == "South Australia" ~ "SA",
       .data$state == "Western Australia" ~ "WA",
-      .data$state == "Tasmania" ~ "Tas",
+      .data$state == "Tasmania" ~ "Tas"
     ))
 
 
@@ -461,7 +509,7 @@ viz_goods_bop_bar_chart <- function(data = bop) {
     djprshiny::round2(1)
 
   latest_month <- format(max(df$date), "%B %Y")
-  year_prior <- format(max(df$date)-months(12), "%B %Y")
+  year_prior <- format(max(df$date)%m-% months(12), "%B %Y")
 
 
   title <- dplyr::case_when(
@@ -530,7 +578,6 @@ viz_goods_bop_bar_chart <- function(data = bop) {
       ),
       caption = caption
     )
-  # facet_wrap(~exports_imports, ncol = 2, scales = "free_y")
 }
 
 
@@ -539,9 +586,18 @@ viz_goods_export_import_line <- function(data = bop) {
   df <- data %>%
     dplyr::filter(
       .data$state == "Victoria",
-    ) %>%
+      .data$goods_services == "Goods and Services",
+      .data$indicator == "Chain Volume Measures"
+    )
+
+  if ('tbl_lazy' %in% class(df)) {
+    df <- df %>%
+      dplyr::collect()
+  }
+
+
+    df <- df %>%
     dplyr::select(-.data$series_id, -.data$unit) %>%
-    dplyr::filter(.data$goods_services == "Goods and Services", .data$indicator == "Chain Volume Measures") %>%
     dplyr::mutate(value = abs(.data$value))
 
   # Annual growth
@@ -609,22 +665,23 @@ viz_goods_export_import_line <- function(data = bop) {
 # The table that shows the change in exports and imports of goods and services
 table_export_import <- function(data = bop) {
 
-  if ('tbl_lazy' %in% class(data)) {
-    data <- data %>%
-      dplyr::collect() %>%
+  df <- data %>%
+    dplyr::filter(.data$indicator == "Chain Volume Measures",
+                  .data$state == "Victoria")
+
+
+  if ('tbl_lazy' %in% class(df)) {
+    df <- df %>%
+       dplyr::collect() %>%
       dplyr::mutate(date = as.Date(date))
   }
 
-  df <- data %>%
+  df <- df %>%
     dplyr::select(-.data$series_id, -.data$unit) %>%
-    dplyr::filter(.data$indicator == "Chain Volume Measures") %>%
     dplyr::mutate(value = abs(.data$value))
 
 
   current <- df %>%
-    dplyr::filter(
-      .data$state == "Victoria",
-    ) %>%
     dplyr::filter(.data$date == max(.data$date)) %>%
     dplyr::select(.data$exports_imports, .data$goods_services, .data$value) %>%
     dplyr::mutate(value = djprshiny::round2(.data$value, 1))
@@ -635,9 +692,6 @@ table_export_import <- function(data = bop) {
 
   # per cent change
   df_year <- df %>%
-    dplyr::filter(
-      .data$state == "Victoria",
-    ) %>%
     dplyr::group_by(.data$exports_imports, .data$goods_services) %>%
     dplyr::mutate(
       value = 100 * ((.data$value / dplyr::lag(.data$value, 4) - 1))
@@ -652,9 +706,9 @@ table_export_import <- function(data = bop) {
 
 
   df_quarterly <- df %>%
-    dplyr::filter(
-      .data$state == "Victoria",
-    ) %>%
+    # dplyr::filter(
+    #   .data$state == "Victoria",
+    # ) %>%
     dplyr::group_by(.data$exports_imports, .data$goods_services) %>%
     dplyr::mutate(
       value = 100 * ((.data$value / dplyr::lag(.data$value, 1) - 1))
@@ -669,9 +723,9 @@ table_export_import <- function(data = bop) {
 
   # Since Covid
   df_covid <- df %>%
-    dplyr::filter(
-      .data$state == "Victoria",
-    ) %>%
+    # dplyr::filter(
+    #   .data$state == "Victoria",
+    # ) %>%
     dplyr::group_by(.data$exports_imports, .data$goods_services) %>%
     dplyr::mutate(
       value = 100 * (.data$value
@@ -703,9 +757,17 @@ viz_trade_balance_line_chart <- function(data = bop) {
     dplyr::filter(date >= as.Date("2017-12-01")) %>%
     dplyr::filter(
       .data$state == "Victoria",
-    ) %>%
+      .data$indicator == "Chain Volume Measures"
+    )
+
+    if ('tbl_lazy' %in% class(df)) {
+      df <- df %>%
+        dplyr::collect()
+    }
+
+
+  df <-df %>%
     dplyr::select(-.data$series_id, -.data$unit) %>%
-    dplyr::filter(.data$indicator == "Chain Volume Measures") %>%
     dplyr::mutate(value = abs(.data$value))
 
   # trade balance
@@ -718,7 +780,8 @@ viz_trade_balance_line_chart <- function(data = bop) {
 
 
   latest_month <- format(max(df$date), "%B %Y")
-  year_prior <- format(max(df$date)-months(12), "%B %Y")
+  year_prior <- format(max(df$date)%m-%months(12), "%B %Y")
+
 
   caption <- paste0("Source: ABS Balance of Payment quarterly (latest data is from ", latest_month, ". Note: Data seasonally Adjusted & Chain Volume Measures")
 
@@ -778,30 +841,35 @@ viz_trade_balance_line_chart <- function(data = bop) {
 # Annual growth of Victoria's and NSW's imports and exports of goods
 viz_NSW_Vic_goods_line_chart <- function(data = bop) {
   df <- data %>%
-    dplyr::select(-.data$series_id, -.data$unit) %>%
-    dplyr::filter(.data$goods_services == "Goods", .data$indicator == "Chain Volume Measures") %>%
-    dplyr::filter(.data$state %in% c("New South Wales", "Victoria")) %>%
+    dplyr::filter(.data$goods_services == "Goods",
+                  .data$indicator == "Chain Volume Measures",
+                  .data$state %in% c("New South Wales", "Victoria")) %>%
     dplyr::mutate(value = abs(.data$value)) %>%
-    dplyr::collect() %>%
     dplyr::mutate(state = dplyr::case_when(
       .data$state == "New South Wales" ~ "NSW",
       .data$state == "Victoria" ~ "Vic",
-    )) %>%
+    ))
+
+  if ('tbl_lazy' %in% class(df)) {
+    df <- df %>%
+      dplyr::collect()
+  }
+
+
+  df<-df %>%
+    dplyr::select(-.data$series_id, -.data$unit) %>%
     dplyr::group_by(.data$exports_imports, .data$goods_services, .data$state) %>%
     dplyr::mutate(
       value = 100 * ((.data$value / dplyr::lag(.data$value, 4) - 1))
     ) %>%
     dplyr::mutate(value = djprshiny::round2(.data$value, 1)) %>%
     dplyr::filter(!is.na(.data$value)) %>%
-    dplyr::ungroup()
-
-  df <- df %>%
+    dplyr::ungroup() %>%
     dplyr::mutate(tooltip = paste0(
       .data$exports_imports, "\n",
       format(.data$date, "%b %Y"), "\n",
       djprshiny::round2(.data$value, 1), "%"
     ))
-
 
 
   latest_vic_export <- df %>%
@@ -837,7 +905,6 @@ viz_NSW_Vic_goods_line_chart <- function(data = bop) {
   )
 
 
-
   caption <- paste0("Source: ABS Balance of Payment quarterly (latest data is from ", latest_month, ". Note: Data seasonally Adjusted & Chain Volume Measures")
 
 
@@ -858,24 +925,31 @@ viz_NSW_Vic_goods_line_chart <- function(data = bop) {
 
 # Annual growth of Victoria's and NSW's imports and exports of services
 viz_NSW_Vic_Services_line_chart <- function(data = bop) {
+
   df <- data %>%
-    dplyr::select(-.data$series_id, -.data$unit) %>%
-    dplyr::filter(.data$goods_services == "Services", .data$indicator == "Chain Volume Measures") %>%
-    dplyr::filter(.data$state %in% c("New South Wales", "Victoria")) %>%
+    dplyr::filter(.data$goods_services == "Services",
+                  .data$indicator == "Chain Volume Measures",
+                  .data$state %in% c("New South Wales", "Victoria")) %>%
     dplyr::mutate(value = abs(.data$value)) %>%
     dplyr::mutate(state = dplyr::case_when(
       .data$state == "New South Wales" ~ "NSW",
-      .data$state == "Victoria" ~ "Vic",
-    )) %>%
+      .data$state == "Victoria" ~ "Vic"
+    ))
+
+  if ('tbl_lazy' %in% class(df)) {
+    df <- df %>%
+      dplyr::collect()
+  }
+
+  df<-df %>%
+    dplyr::select(-.data$series_id, -.data$unit) %>%
     dplyr::group_by(.data$exports_imports, .data$goods_services, .data$state) %>%
     dplyr::mutate(
       value = 100 * ((.data$value / dplyr::lag(.data$value, 4) - 1))
     ) %>%
     dplyr::mutate(value = djprshiny::round2(.data$value, 1)) %>%
     dplyr::filter(!is.na(.data$value)) %>%
-    dplyr::ungroup()
-
-  df <- df %>%
+    dplyr::ungroup() %>%
     dplyr::mutate(tooltip = paste0(
       .data$exports_imports, "\n",
       format(.data$date, "%b %Y"), "\n",
@@ -939,21 +1013,27 @@ viz_good_services_import_chart <- function(data = bop) {
   df <- data %>%
     dplyr::filter(
       .data$state == "Victoria",
-    ) %>%
-    dplyr::select(-.data$series_id, -.data$unit) %>%
-    dplyr::filter(.data$exports_imports == "Imports", .data$indicator == "Chain Volume Measures") %>%
-    dplyr::mutate(goods_services = dplyr::if_else(.data$goods_services == "Goods and Services", "Total", .data$goods_services)) %>%
-    dplyr::mutate(value = abs(.data$value))
+      .data$exports_imports == "Imports",
+      .data$indicator == "Chain Volume Measures"
+    )
 
-
-  latest_month <- format(max(df$date), "%B %Y")
+  if ('tbl_lazy' %in% class(df)) {
+    df <- df %>%
+      dplyr::collect()
+  }
 
   df <- df %>%
+    dplyr::select(-.data$series_id, -.data$unit) %>%
+    dplyr::mutate(goods_services = dplyr::if_else(.data$goods_services == "Goods and Services", "Total", .data$goods_services)) %>%
+    dplyr::mutate(value = abs(.data$value)) %>%
     dplyr::mutate(tooltip = paste0(
       .data$state, "\n",
       format(.data$date, "%b %Y"), "\n",
       djprshiny::round2(.data$value, 1)
     ))
+
+
+  latest_month <- format(max(df$date), "%B %Y")
 
   latest_change <- df %>%
     dplyr::filter(.data$goods_services == "Total") %>%
@@ -989,12 +1069,21 @@ viz_good_services_import_chart <- function(data = bop) {
 
 # Victoria's historical imports and exports of goods and services
 viz_good_services_chart <- function(data = bop) {
+
   df <- data %>%
     dplyr::filter(
       .data$state == "Victoria",
-    ) %>%
+      .data$indicator == "Chain Volume Measures"
+    )
+
+
+  if ('tbl_lazy' %in% class(df)) {
+    df <- df %>%
+      dplyr::collect()
+  }
+
+  df <- df %>%
     dplyr::select(-.data$series_id, -.data$unit) %>%
-    dplyr::filter(.data$indicator == "Chain Volume Measures") %>%
     dplyr::mutate(goods_services = dplyr::if_else(.data$goods_services == "Goods and Services", "Total", .data$goods_services)) %>%
     dplyr::mutate(value = abs(.data$value * 1000000))
 
@@ -1022,6 +1111,7 @@ viz_good_services_chart <- function(data = bop) {
     dplyr::mutate(change = .data$value - dplyr::lag(.data$value, 1)) %>%
     dplyr::filter(.data$date == max(.data$date)) %>%
     dplyr::ungroup()
+
 
   title <- purrr::map2_chr(
     latest_change$exports_imports,
@@ -1068,23 +1158,29 @@ viz_good_services_chart <- function(data = bop) {
 
 # Victoria's exports of goods and services by calendar year
 viz_Vic_total_bop_bar_chart <- function(data = bop) {
+
   df <- data %>%
-    dplyr::select(-.data$series_id, -.data$unit) %>%
-    dplyr::filter(.data$state == "Victoria", .data$indicator == "Chain Volume Measures", .data$exports_imports == "Exports") %>%
-    dplyr::mutate(value = abs(.data$value)) %>%
-    dplyr::ungroup()
+    dplyr::filter(.data$state == "Victoria",
+                  .data$indicator == "Chain Volume Measures",
+                  .data$exports_imports == "Exports") %>%
+    dplyr::mutate(value = abs(.data$value))
+
+
+  if ('tbl_lazy' %in% class(df)) {
+    df <- df %>%
+      dplyr::collect()
+  }
+
 
   latest_month <- format(max(df$date), "%B %Y")
 
   df <- df %>%
+    dplyr::select(-.data$series_id, -.data$unit) %>%
     dplyr::mutate(date = format(.data$date, "%Y")) %>%
     dplyr::group_by(.data$goods_services, .data$date) %>%
     dplyr::summarise(value = sum(.data$value)) %>%
     dplyr::arrange(.data$date) %>%
     dplyr::slice_tail(n = 5) %>%
-    dplyr::ungroup()
-
-  df <- df %>%
     dplyr::mutate(goods_services = dplyr::if_else(.data$goods_services == "Goods and Services", "Total", .data$goods_services))
 
 
@@ -1142,9 +1238,9 @@ viz_Vic_total_bop_bar_chart <- function(data = bop) {
 }
 
 # Victoria's exports of goods and services by calendar year
-viz_vic_total_bop_cumul_line <- function(data = bop, bop_dates = bop_dates) {
+viz_vic_total_bop_cumul_line <- function(data = bop, dates = bop_dates) {
 
-  filter_date <- bop_dates$max - lubridate::years(5) + lubridate::days(1)
+  filter_date <- dates$max - lubridate::years(5) + lubridate::days(1)
 
   df <- data %>%
     dplyr::filter(
@@ -1153,8 +1249,14 @@ viz_vic_total_bop_cumul_line <- function(data = bop, bop_dates = bop_dates) {
       .data$exports_imports == "Exports",
       .data$goods_services == "Goods and Services",
       .data$date >= !!filter_date
-      ) %>%
-    dplyr::collect() %>%
+      )
+
+    if ('tbl_lazy' %in% class(df)) {
+      df <- df %>%
+        dplyr::collect()
+    }
+
+  df <-df %>%
     dplyr::mutate(
       value = abs(.data$value * 1e06),
       year = lubridate::year(.data$date),
