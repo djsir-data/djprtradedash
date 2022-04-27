@@ -16,34 +16,26 @@ page_merchUI <- function(...) {
     shiny::fluidRow(
       shiny::column(
         4,
-        shinydashboard::box(
-          title = shiny::h3("Export destinations"),
-          width = 12,
-          shinyWidgets::multiInput(
-            inputId = "merch_countries",
-            label = NULL,
-            choices = sort(merch_country_dest),
-            selected = c("Thailand", "Malaysia"),
-            width = "100%",
-            options = list(
-              non_selected_header = "All destinations:",
-              selected_header = "Selected destinations:"
-            )
+        shinyWidgets::multiInput(
+          inputId = "merch_countries",
+          label = "Select Export destinations: ",
+          choices = sort(merch_country_dest),
+          selected = c("Thailand", "Malaysia"),
+          width = "100%",
+          options = list(
+            non_selected_header = "All destinations:",
+            selected_header = "Selected destinations:"
           )
         ),
-        shinydashboard::box(
-          title = shiny::h3("Goods"),
-          width = 12,
-          shinyWidgets::multiInput(
-            inputId = "merch_sitc",
-            label = NULL,
-            choices = sort(merch_sitc_lu$sitc),
-            selected = "Medicinal and pharmaceutical products (excl. medicaments of group 542)",
-            width = "100%",
-            options = list(
-              non_selected_header = "All goods:",
-              selected_header = "Selected goods:"
-            )
+        shinyWidgets::multiInput(
+          inputId = "merch_sitc",
+          label = "Select Goods",
+          choices = sort(merch_sitc_lu$sitc),
+          selected = "Medicinal and pharmaceutical products (excl. medicaments of group 542)",
+          width = "100%",
+          options = list(
+            non_selected_header = "All goods:",
+            selected_header = "Selected goods:"
           )
         )
       ),
@@ -55,7 +47,7 @@ page_merchUI <- function(...) {
             4,
             shinyWidgets::awesomeRadio(
               inputId = "merch_explorer_sitc",
-              label = "SITC Level: ",
+              label = "Select SITC Level: ",
               choices = c(
                 1,
                 2,
@@ -71,7 +63,7 @@ page_merchUI <- function(...) {
             4,
             shinyWidgets::awesomeRadio(
               inputId = "merch_explorer_facets",
-              label = "Facet on: ",
+              label = "Select Facet on: ",
               choices = c(
                 "Destination country" = "country_dest",
                 "Good type" = "sitc"
@@ -83,11 +75,10 @@ page_merchUI <- function(...) {
           ),
           shiny::column(
             4,
-            "Smooth using:\n",
             shinyWidgets::materialSwitch("merch_explorer_smooth",
-                                         label = "12 month rolling average",
-                                         status = "primary",
-                                         value = TRUE
+              label = "Smooth using 12 month rolling average",
+              status = "primary",
+              value = TRUE
             )
           )
         ),
@@ -98,16 +89,16 @@ page_merchUI <- function(...) {
           shiny::column(
             8,
             shiny::sliderInput("merch_explorer_dates",
-                               label = "",
-                               min = merch_dates$min,
-                               max = merch_dates$max,
-                               value = c(
-                                 merch_dates$min,
-                                 merch_dates$max
-                               ),
-                               dragRange = TRUE,
-                               timeFormat = "%b %Y",
-                               ticks = FALSE
+              label = "Select Dates",
+              min = merch_dates$min,
+              max = merch_dates$max,
+              value = c(
+                merch_dates$min,
+                merch_dates$max
+              ),
+              dragRange = TRUE,
+              timeFormat = "%b %Y",
+              ticks = FALSE
             )
           ),
           shiny::column(
