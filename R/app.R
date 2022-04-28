@@ -17,12 +17,18 @@ app <- function(...) {
 
   assign(
     x = "con",
-    value = duckdb::dbConnect(
-      drv = duckdb::duckdb(read_only = TRUE, dbdir = normalizePath("./trade_database.duckdb")),
-      db = "trade_database.duckdb"
+    value = pool::dbPool(
+      drv = RPostgres::Postgres(),
+      dbname = "opendata",
+      host = '10.210.1.26',
+      user = Sys.getenv()[['PG_READ_OPEN_USER']],
+      password = Sys.getenv()[['PG_READ_OPEN_PW']],
+      port = 443
     ),
     envir = .GlobalEnv
   )
+
+
 
   assign_table_global(
     con = con,
