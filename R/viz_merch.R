@@ -112,7 +112,8 @@ viz_merch_explorer <- function(dataset,
       stroke = 1.5, size = 2.5, shape = 21
     ) +
     ggplot2::scale_colour_manual(values = cols) +
-    ggplot2::facet_wrap(facets = facet_by)
+    ggplot2::facet_grid(space = "free",
+                        facets = facet_by)
 
   if (show_legend) {
     p <- p +
