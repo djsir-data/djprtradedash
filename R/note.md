@@ -1,4 +1,4 @@
-##who are we?
+## Who are we?
 
 **Strategy and Priority Projects (SPP)** supports DJPR with cross-portfolio priorities and policy development. SPP brings together advanced skills in public policy, strategy, program design, economics, modelling, data, evaluation and project management. The team uses these skills to provide a client-focused service offering across DJPR through a collaborative and flexible project-based approach to deliver first-rate public policy analysis and advice.
 
