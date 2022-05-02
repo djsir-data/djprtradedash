@@ -96,6 +96,16 @@ viz_merch_explorer <- function(dataset,
     n_breaks = 5
   )
 
+  # determine the device the dashboard is viewed on (desktop or mobile)
+  viewMode = getCookie("view-mode")
+
+  #set number of rows depending on device
+  if(viewMode == "desktop"){
+    nrow = 2
+  }else if (viewMode == "mobile"){
+    nrow = 1
+  }
+
   p <- df %>%
     ggplot2::ggplot(ggplot2::aes(
       x = .data$date,
@@ -112,7 +122,7 @@ viz_merch_explorer <- function(dataset,
       stroke = 1.5, size = 2.5, shape = 21
     ) +
     ggplot2::scale_colour_manual(values = cols) +
-    ggplot2::facet_grid(space = "free",
+    ggplot2::facet_wrap(nrow = nrow,
                         facets = facet_by)
 
   if (show_legend) {
