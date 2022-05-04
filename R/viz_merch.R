@@ -44,6 +44,8 @@ viz_merch_explorer <- function(dataset,
       value = .data$value * 1000
     )
 
+
+
   combs <- df %>% dplyr::select(-date, -value) %>% unique()
 
 
@@ -96,6 +98,14 @@ viz_merch_explorer <- function(dataset,
     n_breaks = 5
   )
 
+  df <- df %>%
+    dplyr::mutate( tooltip = paste0(
+      .data$col, "\n",
+      format(.data$date, "%b %Y"), "\n",
+      djprshiny::round2(.data$value, 1), "%"))
+
+
+
   p <- df %>%
     ggplot2::ggplot(ggplot2::aes(
       x = .data$date,
@@ -103,14 +113,14 @@ viz_merch_explorer <- function(dataset,
       col = .data$col,
       group = .data$group
     )) +
-    ggplot2::geom_line() +
+    #ggplot2::geom_line() +
     ggplot2::geom_point(
       data = ~ dplyr::group_by(., .data$group) %>%
         dplyr::filter(.data$date == max(.data$date)),
       fill = "white",
       show.legend = FALSE,
-      stroke = 1.5, size = 2.5, shape = 21
-    ) +
+      stroke = 1.5, size = 2.5, shape = 21) +
+    ggiraph::geom_line_interactive(ggplot2::aes(tooltip = tooltip)) +
     ggplot2::scale_colour_manual(values = cols) +
     ggplot2::facet_wrap(facets = facet_by)
 
@@ -158,4 +168,5 @@ viz_merch_explorer <- function(dataset,
         suffix = "m"
       )
       )
+  ggiraph::ggiraph(ggobj = p)
 }
