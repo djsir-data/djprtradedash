@@ -12,6 +12,7 @@
 #' @importFrom data.table :=
 #' @importFrom data.table data.table
 #' @importFrom dplyr .data
+#' @importFrom lubridate %m-%
 #' @importFrom rlang .env
 ## usethis namespace: end
 NULL
