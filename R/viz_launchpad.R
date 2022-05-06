@@ -2,13 +2,19 @@
 
 viz_launchpad_countries <- function(
   data   = merch,
+  dates  = c(merch_dates$min, merch_dates$max),
   region = c("Victoria"),
   top    = 5,
   smooth = TRUE
   ) {
 
   filtered <- data %>%
-    dplyr::filter(.data$origin %in% .env$region, .data$sitc == "Total")
+    dplyr::filter(
+      .data$origin %in% .env$region,
+      .data$sitc == "Total",
+      .data$date >= !!dates[1],
+      .data$date <= !!dates[2]
+      )
 
   # TODO: Need to finalise and improve method for calculating top N. Current does not account for smoothed numbers
   ## could use window functions in DB to calc top N separately https://duckdb.org/docs/sql/window_functions
@@ -112,6 +118,7 @@ viz_launchpad_countries <- function(
 
 viz_launchpad_chart <- function(
   data       = merch,
+  dates      = c(merch_dates$min, merch_dates$max),
 	country    = "Total",
 	region     = "Victoria",
   code_level = 3,
@@ -123,7 +130,9 @@ viz_launchpad_chart <- function(
     dplyr::filter(
       .data$country_dest %in% !!country,
       .data$origin %in% region,
-      nchar(.data$sitc_code) == .env$code_level
+      nchar(.data$sitc_code) == .env$code_level,
+      .data$date >= !!dates[1],
+      .data$date <= !!dates[2]
       )
 
   top_5_code <- filtered %>%
@@ -208,13 +217,18 @@ viz_launchpad_chart <- function(
 }
 
 # Annual growth of Victoria's imports and exports of goods & services
-viz_goods_export_import_launchpad <- function(data = bop) {
+viz_goods_export_import_launchpad <- function(
+  data  = bop,
+  dates = c(merch_dates$min, merch_dates$max)
+  ) {
 
   filtered <- data %>%
     dplyr::filter(
       .data$state == "Victoria",
       .data$exports_imports == "Exports",
-      .data$indicator == "Chain Volume Measures"
+      .data$indicator == "Chain Volume Measures",
+      .data$date >= !!dates[1],
+      .data$date <= !!dates[2]
     )
 
   if (!any(class(filtered) == 'data.frame')) {
@@ -290,14 +304,19 @@ viz_goods_export_import_launchpad <- function(data = bop) {
 }
 
 # Victoria's historical imports of goods and services
-viz_good_services_export_chart <- function(data = bop) {
+viz_good_services_export_chart <- function(
+  data  = bop,
+  dates = c(merch_dates$min, merch_dates$max)
+) {
 
 
   filtered <- data %>%
     dplyr::filter(
       .data$state == "Victoria",
       .data$exports_imports == "Exports",
-      .data$indicator == "Chain Volume Measures"
+      .data$indicator == "Chain Volume Measures",
+      .data$date >= !!dates[1],
+      .data$date <= !!dates[2]
     )
 
 

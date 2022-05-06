@@ -2,21 +2,37 @@ page_launchpadUI <- function(id) {
 
 
   shiny::tagList(
-      shiny::fluidRow(
-        djprshiny::djpr_h2_box("DJPR Trade Dashboard")),
-      shiny::fluidRow(
-        shiny::column(5,
-               shinyWidgets::panel(
-                 style = 'height:530px;',
-                 'add some text here')),
-        shiny::column(7,
-               djprshiny::djpr_plot_box(
-                 id = "top_export_line_chart",
-                 interactive = TRUE,
-                 width = 12
-               ))
+
+      # Launchpad text & export plot
+      djprshiny::djpr_h2_box("DJPR Trade Dashboard"),
+      shiny::column(
+        5,
+        shiny::div(
+          class = "box",
+          style = "height: 450px;",
+          shiny::p(
+            style = "padding: 10px;",
+            "Conthent goes here"
+            )
+          )
+        ),
+      djprshiny::djpr_async_ui(
+        id    = "top_export_line_chart",
+        width = 7,
+        height = "400px",
+        shiny::sliderInput(
+          shiny::NS("top_export_line_chart", "dates"),
+          value = c(merch_dates$min, merch_dates$max),
+          min = merch_dates$min,
+          max = merch_dates$max,
+          label = "Dates",
+          dragRange = TRUE,
+          timeFormat = "%b %Y",
+          ticks = FALSE
+        )
       ),
 
+      # Cards
       shiny::fluidRow(style = 'padding:20px;',
         shiny::column(4,
 
@@ -85,17 +101,40 @@ page_launchpadUI <- function(id) {
                         )
                     )
       )),
-      shiny::fluidRow(
 
-      djprshiny::djpr_plot_box(
+
+      # Line charts
+      djprshiny::djpr_async_ui(
         "good_services_export_line_launchpad",
-        interactive = TRUE,
+        height = "400px",
+        shiny::sliderInput(
+          shiny::NS("good_services_export_line_launchpad", "dates"),
+          value = c(bop_dates$min, bop_dates$max),
+          min = bop_dates$min,
+          max = bop_dates$max,
+          label = "Dates",
+          dragRange = TRUE,
+          timeFormat = "%b %Y",
+          ticks = FALSE
+        )
       ),
-      djprshiny::djpr_plot_box(
+
+      djprshiny::djpr_async_ui(
         "top_country_line_chart",
-        interactive = TRUE,
+        height = "400px",
+        shiny::sliderInput(
+          shiny::NS("top_country_line_chart", "dates"),
+          value = c(merch_dates$min, merch_dates$max),
+          min = merch_dates$min,
+          max = merch_dates$max,
+          label = "Dates",
+          dragRange = TRUE,
+          timeFormat = "%b %Y",
+          ticks = FALSE
+        )
       ),
-      shiny::br(),
+
+      # Country tables
       djprshiny::djpr_h2_box("Countries"),
       shinydashboard::box(
         title = shiny::h3("Top 5 Exports ($m)"),
@@ -105,6 +144,8 @@ page_launchpadUI <- function(id) {
         title = shiny::h3("Top 5 Imports ($m)"),
         shiny::uiOutput("country_import_table", height = "600px")
       ),
+
+      # Product tables
       djprshiny::djpr_h2_box("Products"),
       shinydashboard::box(
         title = shiny::h3("Top 5 Exports ($m)"),
@@ -114,20 +155,15 @@ page_launchpadUI <- function(id) {
         title = shiny::h3("Top 5 Imports ($m)"),
         shiny::uiOutput("product_import_table", height = "600px")
       ),
+
+      # BOP table
       djprshiny::djpr_h2_box("Balance of payments"),
       shinydashboard::box(
         shiny::uiOutput("launchpad_bop_table", height = "600px"),
         width = 12
       )
 
-    )
-
   )
-
-
-
-
-
 }
 
 
@@ -135,7 +171,7 @@ page_launchpadUI <- function(id) {
 
 
 
-page_launchpad <- function(input, output, session, plt_change, table_rowcount = 5){
+page_launchpad <- function(input, output, session, table_rowcount = 5){
 
 
   # info nav buttons
@@ -157,38 +193,26 @@ page_launchpad <- function(input, output, session, plt_change, table_rowcount = 
 
 
   #Launchpad tables and charts
-  djprshiny::djpr_plot_server(
-    id                    = "top_export_line_chart",
-    plot_function         = viz_launchpad_chart,
-    data                  = merch,
-    plt_change            = plt_change,
-    date_slider_value_min = Sys.Date() - lubridate::years(2),
-    width_percent         = 100,
-    convert_lazy          = FALSE
+  djprshiny::djpr_async_server(
+    id       = "top_export_line_chart",
+    plot_fun = viz_launchpad_chart,
+    data     = merch,
+    dates    = input$dates
   )
 
-
-  djprshiny::djpr_plot_server(
-    id                    = "good_services_export_line_launchpad",
-    plot_function         = viz_good_services_export_chart,
-    data                  = bop,
-    plt_change            = plt_change,
-    date_slider_value_min = Sys.Date() - lubridate::years(2),
-    width_percent         = 80,
-    convert_lazy          = FALSE
+  djprshiny::djpr_async_server(
+    id       = "good_services_export_line_launchpad",
+    plot_fun = viz_good_services_export_chart,
+    data     = bop,
+    dates    = input$dates
   )
 
-  djprshiny::djpr_plot_server(
-    id                    = "top_country_line_chart",
-    plot_function         = viz_launchpad_countries,
-    data                  = merch,
-    plt_change            = plt_change,
-    date_slider_value_min = Sys.Date() - lubridate::years(2),
-    width_percent         = 80,
-    convert_lazy          = FALSE
+  djprshiny::djpr_async_server(
+    id       = "top_country_line_chart",
+    plot_fun = viz_launchpad_countries,
+    data     = merch,
+    dates    = input$dates
   )
-
-
 
   output$country_export_table <- shiny::renderUI({
     make_table_launchpad(
