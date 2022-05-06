@@ -20,7 +20,7 @@ page_bopUI <- function(...) {
       shiny::column(6,
              djprshiny::djpr_plot_box(
                id = "total_bop_bar_chart",
-               width = "100%",
+               width = 12,
                height = "600px",
                interactive = FALSE)
              ),
@@ -36,7 +36,7 @@ page_bopUI <- function(...) {
       shiny::column(6,
              djprshiny::djpr_plot_box(
                id = "goods_bop_bar_chart",
-               width = "100%",
+               width = 12,
                height = "600px",
                interactive = FALSE)
              ),
@@ -57,7 +57,7 @@ page_bopUI <- function(...) {
       shiny::column(6,
              djprshiny::djpr_plot_box(
                id = "service_bop_bar_chart",
-               width = "100%",
+               width = 12,
                height = "600px",
                interactive = FALSE)
              ),
