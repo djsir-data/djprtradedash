@@ -4,8 +4,22 @@ page_bopUI <- function(...) {
 
     # Overview
     djprshiny::djpr_h2_box("Balance of Payments"),
-    djprshiny::djpr_plot_box("good_services_chart", width = 12),
-    djprshiny::djpr_plot_box("goods_export_import_line", width = 6),
+    djprshiny::djpr_async_ui(
+      id = "good_services_chart",
+      width = 12,
+      shiny::sliderInput(
+        shiny::NS("good_services_chart", "dates"),
+        label = "Dates",
+        min = bop_dates$min,
+        max = bop_dates$max,
+        value = c(
+          max(bop_dates$min, bop_dates$max - lubridate::years(5)),
+          bop_dates$max
+          ),
+        width = "90%"
+      )
+      ),
+    djprshiny::djpr_plot_box("goods_export_import_line"),
     djprshiny::djpr_plot_box(
       id = "total_bop_bar_chart",
       width = 6,
@@ -71,14 +85,10 @@ page_bop <- function(input, output, session, plt_change, table_rowcount = 5){
 
   # Goods and Services: Goods and Services imports time series
 
-  djprshiny::djpr_plot_server(
-    id                    = "good_services_chart",
-    width_percent = 70,
-    plot_function         = viz_good_services_chart,
-    data                  = bop,
-    plt_change            = plt_change,
-    date_slider_value_min = bop_dates$max - lubridate::years(5),
-    convert_lazy   = FALSE
+  djprshiny::djpr_async_server(
+    id       = "good_services_chart",
+    plot_fun = viz_good_services_chart,
+    dates    = input$dates
   )
 
   # Goods and Services: Annual growth in goods and services exports and imports
