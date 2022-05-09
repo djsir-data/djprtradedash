@@ -880,7 +880,7 @@ viz_NSW_Vic_goods_line_chart <- function(
     dplyr::mutate(value = abs(.data$value)) %>%
     dplyr::mutate(state = dplyr::case_when(
       .data$state == "New South Wales" ~ "NSW",
-      .data$state == "Victoria" ~ "Vic",
+      .data$state == "Victoria" ~ "Vic"
     ))
 
   if ('tbl_lazy' %in% class(df)) {
