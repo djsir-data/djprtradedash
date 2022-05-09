@@ -20,16 +20,7 @@ page_launchpadUI <- function(id) {
         id    = "top_export_line_chart",
         width = 7,
         height = "400px",
-        shiny::sliderInput(
-          shiny::NS("top_export_line_chart", "dates"),
-          value = c(merch_dates$min, merch_dates$max),
-          min = merch_dates$min,
-          max = merch_dates$max,
-          label = "Dates",
-          dragRange = TRUE,
-          timeFormat = "%b %Y",
-          ticks = FALSE
-        )
+        merch_date_slider("top_export_line_chart")
       ),
 
       # Cards
@@ -107,31 +98,13 @@ page_launchpadUI <- function(id) {
       djprshiny::djpr_async_ui(
         "good_services_export_line_launchpad",
         height = "400px",
-        shiny::sliderInput(
-          shiny::NS("good_services_export_line_launchpad", "dates"),
-          value = c(bop_dates$min, bop_dates$max),
-          min = bop_dates$min,
-          max = bop_dates$max,
-          label = "Dates",
-          dragRange = TRUE,
-          timeFormat = "%b %Y",
-          ticks = FALSE
-        )
+        merch_date_slider("good_services_export_line_launchpad")
       ),
 
       djprshiny::djpr_async_ui(
         "top_country_line_chart",
         height = "400px",
-        shiny::sliderInput(
-          shiny::NS("top_country_line_chart", "dates"),
-          value = c(merch_dates$min, merch_dates$max),
-          min = merch_dates$min,
-          max = merch_dates$max,
-          label = "Dates",
-          dragRange = TRUE,
-          timeFormat = "%b %Y",
-          ticks = FALSE
-        )
+        merch_date_slider("top_country_line_chart")
       ),
 
       # Country tables
