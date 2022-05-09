@@ -1,7 +1,6 @@
 #-------------------- Goods & Services -----------------------
 
 # Latest period exports of goods and services by state
-# NOT THIS ONE
 viz_total_bop_bar_chart <- function(data = bop) {
 
   df <- data %>%
@@ -338,7 +337,6 @@ viz_services_trade_line_chart <- function(
 }
 
 # Change in services exports and imports since COVID by the state
-# NOT THIS ONE
 viz_service_bop_bar_chart <- function(data = bop) {
 
 
@@ -470,7 +468,6 @@ viz_service_bop_bar_chart <- function(data = bop) {
 }
 
 # Change in goods exports and imports by the state since COVID
-# NOT THIS ONE
 viz_goods_bop_bar_chart <- function(data = bop) {
 
   df <- data %>%
