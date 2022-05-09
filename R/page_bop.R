@@ -108,9 +108,10 @@ page_bop <- function(input, output, session, plt_change, table_rowcount = 5){
   # Goods and Services: Goods and Services imports time series
 
   djprshiny::djpr_async_server(
-    id       = "good_services_chart",
-    plot_fun = viz_good_services_chart,
-    dates    = input$dates
+    id         = "good_services_chart",
+    plot_fun   = viz_good_services_chart,
+    dates      = input$dates,
+    facet_cols = input$sizing$width > input$sizing$height
   )
 
   # Goods and Services: Annual growth in goods and services exports and imports

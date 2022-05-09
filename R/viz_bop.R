@@ -1110,7 +1110,8 @@ viz_good_services_import_chart <- function(
 # Victoria's historical imports and exports of goods and services
 viz_good_services_chart <- function(
   data = bop,
-  dates = c(bop_dates$min, bop_dates$max)
+  dates = c(bop_dates$min, bop_dates$max),
+  facet_cols = TRUE
 ) {
 
   df <- data %>%
@@ -1186,7 +1187,7 @@ viz_good_services_chart <- function(
       label_num = dollar_stat(value),
       y_labels = scales::label_dollar(accuracy = 1, scale = 1e-09, suffix = "b")
     ) +
-    ggplot2::facet_wrap(~exports_imports) +
+    ggplot2::facet_wrap(~exports_imports, ncol = as.integer(facet_cols) + 1) +
     ggplot2::theme(
       strip.text = ggplot2::element_text(
         family = "sans",
