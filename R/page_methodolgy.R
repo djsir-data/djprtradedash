@@ -29,6 +29,11 @@ page_methodology <- function(...) {
 		shiny::includeMarkdown("R/glossary.md"),
 
 		shiny::br(),
+
+		shiny::includeMarkdown("R/note.md"),
+
+		shiny::br(),
+
 		djprshiny::centred_row(shiny::htmlOutput("methodology_footnote")),
 		shiny::br()
 		)
