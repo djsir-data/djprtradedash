@@ -97,6 +97,8 @@ viz_merch_explorer <- function(dataset,
     limits = date_limits,
     n_breaks = 5
   )
+  latest_month <- format(max(df$date), "%B %Y")
+  caption <- paste0("Source: ABS.Stat Merchandise Exports data per commodity (latest data is from ",     latest_month, "). ")
 
   df <- df %>%
     dplyr::mutate( tooltip = paste0(
@@ -123,6 +125,8 @@ viz_merch_explorer <- function(dataset,
     ggiraph::geom_line_interactive(ggplot2::aes(tooltip = tooltip)) +
     ggplot2::scale_colour_manual(values = cols) +
     ggplot2::facet_wrap(facets = facet_by)
+
+
 
   if (show_legend) {
     p <- p +
@@ -159,14 +163,20 @@ viz_merch_explorer <- function(dataset,
         breaks = x_breaks, date_labels = "%b\n%Y"
       ) +
       djprtheme::theme_djpr()
+
   }
 
-  p +
+
+  p <- p +
     ggplot2::scale_y_continuous(
       label = scales::label_dollar(
         scale = 1/1e06,
-        suffix = "m"
-      )
-      )
+        suffix = "m")
+      ) +
+  ggplot2::labs(
+    caption = caption)
+
+
   ggiraph::ggiraph(ggobj = p)
+
 }
