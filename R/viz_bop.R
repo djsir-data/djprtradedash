@@ -845,7 +845,6 @@ viz_NSW_Vic_goods_line_chart <- function(data = bop) {
                   .data$indicator == "Chain Volume Measures",
                   .data$state %in% c("New South Wales", "Victoria")) %>%
     dplyr::mutate(value = abs(.data$value)) %>%
-    dplyr::collect() %>%
     dplyr::mutate(state = dplyr::case_when(
       .data$state == "New South Wales" ~ "NSW",
       .data$state == "Victoria" ~ "Vic",
@@ -865,15 +864,12 @@ viz_NSW_Vic_goods_line_chart <- function(data = bop) {
     ) %>%
     dplyr::mutate(value = djprshiny::round2(.data$value, 1)) %>%
     dplyr::filter(!is.na(.data$value)) %>%
-    dplyr::ungroup()
-
-  df <- df %>%
+    dplyr::ungroup() %>%
     dplyr::mutate(tooltip = paste0(
       .data$exports_imports, "\n",
       format(.data$date, "%b %Y"), "\n",
       djprshiny::round2(.data$value, 1), "%"
     ))
-
 
 
   latest_vic_export <- df %>%
@@ -953,9 +949,7 @@ viz_NSW_Vic_Services_line_chart <- function(data = bop) {
     ) %>%
     dplyr::mutate(value = djprshiny::round2(.data$value, 1)) %>%
     dplyr::filter(!is.na(.data$value)) %>%
-    dplyr::ungroup()
-
-  df <- df %>%
+    dplyr::ungroup() %>%
     dplyr::mutate(tooltip = paste0(
       .data$exports_imports, "\n",
       format(.data$date, "%b %Y"), "\n",
@@ -1031,17 +1025,15 @@ viz_good_services_import_chart <- function(data = bop) {
   df <- df %>%
     dplyr::select(-.data$series_id, -.data$unit) %>%
     dplyr::mutate(goods_services = dplyr::if_else(.data$goods_services == "Goods and Services", "Total", .data$goods_services)) %>%
-    dplyr::mutate(value = abs(.data$value))
-
-
-  latest_month <- format(max(df$date), "%B %Y")
-
-  df <- df %>%
+    dplyr::mutate(value = abs(.data$value)) %>%
     dplyr::mutate(tooltip = paste0(
       .data$state, "\n",
       format(.data$date, "%b %Y"), "\n",
       djprshiny::round2(.data$value, 1)
     ))
+
+
+  latest_month <- format(max(df$date), "%B %Y")
 
   latest_change <- df %>%
     dplyr::filter(.data$goods_services == "Total") %>%
@@ -1188,10 +1180,7 @@ viz_Vic_total_bop_bar_chart <- function(data = bop) {
     dplyr::group_by(.data$goods_services, .data$date) %>%
     dplyr::summarise(value = sum(.data$value)) %>%
     dplyr::arrange(.data$date) %>%
-    dplyr::slice_tail(n = 5)
-
-
-  df <- df %>%
+    dplyr::slice_tail(n = 5) %>%
     dplyr::mutate(goods_services = dplyr::if_else(.data$goods_services == "Goods and Services", "Total", .data$goods_services))
 
 

@@ -113,7 +113,7 @@ make_table_launchpad <- function(
 
   # Ensure font, font size, and bolding is correct
   if (destination == "dashboard") {
-    font_family <- "Roboto"
+    font_family <- "VIC-Regular"
     font_size_main <- 10.5
     font_size_secondary <- 9
   } else if (destination == "briefing") {
