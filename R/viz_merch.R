@@ -4,7 +4,9 @@ viz_merch_explorer <- function(dataset,
                                origin = "Victoria",
                                facet_by = "country_dest",
                                smooth = FALSE,
-                               merch_explorer_sitc) {
+                               merch_explorer_sitc,
+                               width,
+                               height) {
 
 
   all_dates <- dataset %>%
