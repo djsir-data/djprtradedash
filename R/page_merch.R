@@ -21,7 +21,7 @@ page_merchUI <- function(...) {
           label = "Select Export destinations: ",
           choices = sort(merch_country_dest),
           selected = c("Thailand", "Malaysia"),
-          width = "100%",
+          width = "auto",
           options = list(
             non_selected_header = "All destinations:",
             selected_header = "Selected destinations:"
@@ -32,7 +32,7 @@ page_merchUI <- function(...) {
           label = "Select Goods",
           choices = sort(merch_sitc_lu$sitc),
           selected = "Medicinal and pharmaceutical products (excl. medicaments of group 542)",
-          width = "100%",
+          width = "auto",
           options = list(
             non_selected_header = "All goods:",
             selected_header = "Selected goods:"
@@ -43,6 +43,7 @@ page_merchUI <- function(...) {
         width = 8,
         shiny::br(),
         shiny::fluidRow(
+          htmltools::HTML('<meta name="viewport" content="width=256">'),
           shiny::column(
             4,
             shinyWidgets::awesomeRadio(
@@ -115,6 +116,10 @@ page_merchUI <- function(...) {
 
 page_merch <- function(input, output, session, plt_change){
 
+  pixelratio <- reactive({
+    session$clientData$pixelratio
+  })
+
   sitc_lu <- shiny::reactive({
     if(input$merch_explorer_sitc %in% c(1,2,3)) {
       lu <- merch_sitc_lu %>%
@@ -158,7 +163,9 @@ page_merch <- function(input, output, session, plt_change){
       goods = sub(".[0-9]*:\\s", "", input$merch_sitc),
       facet_by = input$merch_explorer_facets,
       smooth = input$merch_explorer_smooth,
-      merch_explorer_sitc = input$merch_explorer_sitc
+      merch_explorer_sitc = input$merch_explorer_sitc,
+      width = 900 / pixelratio(),
+      height = 900 / pixelratio()
     )
 
     output$merch_explorer <- shiny::renderPlot({
