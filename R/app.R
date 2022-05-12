@@ -21,7 +21,7 @@ app <- function(...) {
     cache = trade_dash_cache
   )
 
-  future::plan(future::multicore)
+  future::plan(future::sequential)
 
 
   assign(
