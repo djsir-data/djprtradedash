@@ -44,6 +44,8 @@ viz_merch_explorer <- function(dataset,
       value = .data$value * 1000
     )
 
+
+
   combs <- df %>% dplyr::select(-date, -value) %>% unique()
 
 
@@ -95,6 +97,16 @@ viz_merch_explorer <- function(dataset,
     limits = date_limits,
     n_breaks = 5
   )
+  latest_month <- format(max(df$date), "%B %Y")
+  caption <- paste0("Source: ABS.Stat Merchandise Exports data per commodity (latest data is from ",     latest_month, "). ")
+
+  df <- df %>%
+    dplyr::mutate( tooltip = paste0(
+      .data$col, "\n",
+      format(.data$date, "%b %Y"), "\n",
+      djprshiny::round2(.data$value, 1), "%"))
+
+
 
   p <- df %>%
     ggplot2::ggplot(ggplot2::aes(
@@ -103,16 +115,18 @@ viz_merch_explorer <- function(dataset,
       col = .data$col,
       group = .data$group
     )) +
-    ggplot2::geom_line() +
+    #ggplot2::geom_line() +
     ggplot2::geom_point(
       data = ~ dplyr::group_by(., .data$group) %>%
         dplyr::filter(.data$date == max(.data$date)),
       fill = "white",
       show.legend = FALSE,
-      stroke = 1.5, size = 2.5, shape = 21
-    ) +
+      stroke = 1.5, size = 2.5, shape = 21) +
+    ggiraph::geom_line_interactive(ggplot2::aes(tooltip = tooltip)) +
     ggplot2::scale_colour_manual(values = cols) +
     ggplot2::facet_wrap(facets = facet_by)
+
+
 
   if (show_legend) {
     p <- p +
@@ -149,13 +163,20 @@ viz_merch_explorer <- function(dataset,
         breaks = x_breaks, date_labels = "%b\n%Y"
       ) +
       djprtheme::theme_djpr()
+
   }
 
-  p +
+
+  p <- p +
     ggplot2::scale_y_continuous(
       label = scales::label_dollar(
         scale = 1/1e06,
-        suffix = "m"
-      )
-      )
+        suffix = "m")
+      ) +
+  ggplot2::labs(
+    caption = caption)
+
+
+  ggiraph::ggiraph(ggobj = p)
+
 }

@@ -82,7 +82,7 @@ page_merchUI <- function(...) {
             )
           )
         ),
-        shiny::plotOutput("merch_explorer",
+        ggiraph::ggiraphOutput("merch_explorer",
                           height = "600px"
         ),
         shiny::fluidRow(
@@ -161,7 +161,7 @@ page_merch <- function(input, output, session, plt_change){
       merch_explorer_sitc = input$merch_explorer_sitc
     )
 
-    output$merch_explorer <- shiny::renderPlot({
+    output$merch_explorer <- ggiraph::renderggiraph({
       merch_plt
     })
 
