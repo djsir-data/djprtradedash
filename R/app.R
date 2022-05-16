@@ -7,6 +7,12 @@
 #'
 #' @examples
 app <- function(...) {
+
+  if(!exists("djpr_async_ui", envir = asNamespace("djprshiny"))) stop(
+    "Please install Henry's latest djprshiny branch:\n",
+    "remotes::install_github(\"djpr-data/djprshiny@publication-theme\")"
+  )
+
   trade_dash_cache <- cachem::cache_disk(
     dir = file.path(".", "app-cache")
   )
@@ -14,6 +20,9 @@ app <- function(...) {
   shiny::shinyOptions(
     cache = trade_dash_cache
   )
+
+  future::plan(future::sequential)
+
 
   assign(
     x = "con",
@@ -27,8 +36,6 @@ app <- function(...) {
     ),
     envir = .GlobalEnv
   )
-
-
 
   assign_table_global(
     con = con,

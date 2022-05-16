@@ -58,7 +58,7 @@ con <- duckdb::dbConnect(drv, "trade_database.duckdb")
 
 # Add csv data to database
 mapply(
-  FUN       = duckdb::dbWriteTable,
+  FUN       = DBI::dbWriteTable,
   conn      = list(con),
   name      = names(out),
   value     = out,

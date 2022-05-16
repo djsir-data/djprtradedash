@@ -24,7 +24,6 @@ Imports:
     lubridate,
     cachem,
     dplyr,
-    dbplyr,
     ggrepel,
     ggplot2,
     glue,
@@ -44,7 +43,9 @@ Imports:
     slider,
     utils,
     ggiraph,
-    shinydashboard
+    shinydashboard,
+    promises,
+    future
 Remotes: 
     djpr-data/djprshiny@publication-theme,
     djpr-data/djprtheme,

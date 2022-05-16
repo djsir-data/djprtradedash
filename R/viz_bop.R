@@ -101,13 +101,18 @@ viz_total_bop_bar_chart <- function(data = bop) {
 }
 
 # Victoria's historical exports of goods and services
-viz_good_services_export_chart <- function(data = bop) {
+viz_good_services_export_chart <- function(
+  data = bop,
+  dates = c(bop_dates$min, bop_dates$max)
+  ) {
 
   df <- data %>%
     dplyr::filter(
       .data$state == "Victoria",
       .data$exports_imports == "Exports",
-      .data$indicator == "Chain Volume Measures"
+      .data$indicator == "Chain Volume Measures",
+      .data$date >= !!dates[1],
+      .data$date <= !!dates[2]
       )
 
   if ('tbl_lazy' %in% class(df)) {
@@ -172,13 +177,18 @@ viz_good_services_export_chart <- function(data = bop) {
 
 
 # Cumulative Change in Victoria's goods exports and imports since COVID
-viz_good_trade_line_chart <- function(data = bop) {
+viz_good_trade_line_chart <- function(
+  data = bop,
+  dates = c(bop_dates$min, bop_dates$max)
+) {
 
   df <- data %>%
     dplyr::filter(date >= as.Date("2017-12-01"),
                   .data$goods_services == "Goods",
                   .data$indicator == "Chain Volume Measures",
-                  .data$state == "Victoria")
+                  .data$state == "Victoria",
+                  .data$date >= !!dates[1],
+                  .data$date <= !!dates[2])
 
 
   if ('tbl_lazy' %in% class(df)) {
@@ -248,13 +258,18 @@ viz_good_trade_line_chart <- function(data = bop) {
 }
 
 # Cumulative change in Victoria's Services' exports and imports since COVID
-viz_services_trade_line_chart <- function(data = bop) {
+viz_services_trade_line_chart <- function(
+  data = bop,
+  dates = c(bop_dates$min, bop_dates$max)
+) {
 
   df <- data %>%
     dplyr::filter(date >= as.Date("2017-12-01"),
                   .data$goods_services == "Services",
                   .data$indicator == "Chain Volume Measures",
-                  .data$state == "Victoria"
+                  .data$state == "Victoria",
+                  .data$date >= !!dates[1],
+                  .data$date <= !!dates[2]
     )
 
   if ('tbl_lazy' %in% class(df)) {
@@ -582,12 +597,17 @@ viz_goods_bop_bar_chart <- function(data = bop) {
 
 
 # Annual growth of Victoria's imports and exports of goods & services
-viz_goods_export_import_line <- function(data = bop) {
+viz_goods_export_import_line <- function(
+  data = bop,
+  dates = c(bop_dates$min, bop_dates$max)
+) {
   df <- data %>%
     dplyr::filter(
       .data$state == "Victoria",
       .data$goods_services == "Goods and Services",
-      .data$indicator == "Chain Volume Measures"
+      .data$indicator == "Chain Volume Measures",
+      .data$date >= !!dates[1],
+      .data$date <= !!dates[2]
     )
 
   if ('tbl_lazy' %in% class(df)) {
@@ -752,12 +772,17 @@ table_export_import <- function(data = bop) {
 }
 
 # Balance of trade in goods and services since COVID
-viz_trade_balance_line_chart <- function(data = bop) {
+viz_trade_balance_line_chart <- function(
+  data = bop,
+  dates = c(bop_dates$min, bop_dates$max)
+) {
   df <- data %>%
     dplyr::filter(date >= as.Date("2017-12-01")) %>%
     dplyr::filter(
       .data$state == "Victoria",
-      .data$indicator == "Chain Volume Measures"
+      .data$indicator == "Chain Volume Measures",
+      .data$date >= !!dates[1],
+      .data$date <= !!dates[2]
     )
 
     if ('tbl_lazy' %in% class(df)) {
@@ -839,15 +864,20 @@ viz_trade_balance_line_chart <- function(data = bop) {
 }
 
 # Annual growth of Victoria's and NSW's imports and exports of goods
-viz_NSW_Vic_goods_line_chart <- function(data = bop) {
+viz_NSW_Vic_goods_line_chart <- function(
+  data = bop,
+  dates = c(bop_dates$min, bop_dates$max)
+) {
   df <- data %>%
     dplyr::filter(.data$goods_services == "Goods",
                   .data$indicator == "Chain Volume Measures",
-                  .data$state %in% c("New South Wales", "Victoria")) %>%
+                  .data$state %in% c("New South Wales", "Victoria"),
+                  .data$date >= !!dates[1],
+                  .data$date <= !!dates[2]) %>%
     dplyr::mutate(value = abs(.data$value)) %>%
     dplyr::mutate(state = dplyr::case_when(
       .data$state == "New South Wales" ~ "NSW",
-      .data$state == "Victoria" ~ "Vic",
+      .data$state == "Victoria" ~ "Vic"
     ))
 
   if ('tbl_lazy' %in% class(df)) {
@@ -924,12 +954,17 @@ viz_NSW_Vic_goods_line_chart <- function(data = bop) {
 }
 
 # Annual growth of Victoria's and NSW's imports and exports of services
-viz_NSW_Vic_Services_line_chart <- function(data = bop) {
+viz_NSW_Vic_Services_line_chart <- function(
+  data = bop,
+  dates = c(bop_dates$min, bop_dates$max)
+) {
 
   df <- data %>%
     dplyr::filter(.data$goods_services == "Services",
                   .data$indicator == "Chain Volume Measures",
-                  .data$state %in% c("New South Wales", "Victoria")) %>%
+                  .data$state %in% c("New South Wales", "Victoria"),
+                  .data$date >= !!dates[1],
+                  .data$date <= !!dates[2]) %>%
     dplyr::mutate(value = abs(.data$value)) %>%
     dplyr::mutate(state = dplyr::case_when(
       .data$state == "New South Wales" ~ "NSW",
@@ -1009,12 +1044,17 @@ viz_NSW_Vic_Services_line_chart <- function(data = bop) {
 
 
 # Victoria's historical imports of goods and services
-viz_good_services_import_chart <- function(data = bop) {
+viz_good_services_import_chart <- function(
+  data = bop,
+  dates = c(bop_dates$min, bop_dates$max)
+) {
   df <- data %>%
     dplyr::filter(
       .data$state == "Victoria",
       .data$exports_imports == "Imports",
-      .data$indicator == "Chain Volume Measures"
+      .data$indicator == "Chain Volume Measures",
+      .data$date >= !!dates[1],
+      .data$date <= !!dates[2]
     )
 
   if ('tbl_lazy' %in% class(df)) {
@@ -1068,12 +1108,18 @@ viz_good_services_import_chart <- function(data = bop) {
 }
 
 # Victoria's historical imports and exports of goods and services
-viz_good_services_chart <- function(data = bop) {
+viz_good_services_chart <- function(
+  data = bop,
+  dates = c(bop_dates$min, bop_dates$max),
+  facet_cols = TRUE
+) {
 
   df <- data %>%
     dplyr::filter(
       .data$state == "Victoria",
-      .data$indicator == "Chain Volume Measures"
+      .data$indicator == "Chain Volume Measures",
+      .data$date >= !!dates[1],
+      .data$date <= !!dates[2]
     )
 
 
@@ -1141,7 +1187,7 @@ viz_good_services_chart <- function(data = bop) {
       label_num = dollar_stat(value),
       y_labels = scales::label_dollar(accuracy = 1, scale = 1e-09, suffix = "b")
     ) +
-    ggplot2::facet_wrap(~exports_imports) +
+    ggplot2::facet_wrap(~exports_imports, ncol = as.integer(facet_cols) + 1) +
     ggplot2::theme(
       strip.text = ggplot2::element_text(
         family = "sans",
@@ -1157,12 +1203,17 @@ viz_good_services_chart <- function(data = bop) {
 }
 
 # Victoria's exports of goods and services by calendar year
-viz_Vic_total_bop_bar_chart <- function(data = bop) {
+viz_Vic_total_bop_bar_chart <- function(
+  data = bop,
+  dates = c(bop_dates$min, bop_dates$max)
+) {
 
   df <- data %>%
     dplyr::filter(.data$state == "Victoria",
                   .data$indicator == "Chain Volume Measures",
-                  .data$exports_imports == "Exports") %>%
+                  .data$exports_imports == "Exports",
+                  .data$date >= !!dates[1],
+                  .data$date <= !!dates[2]) %>%
     dplyr::mutate(value = abs(.data$value))
 
 
@@ -1238,9 +1289,16 @@ viz_Vic_total_bop_bar_chart <- function(data = bop) {
 }
 
 # Victoria's exports of goods and services by calendar year
-viz_vic_total_bop_cumul_line <- function(data = bop, dates = bop_dates) {
+# CHECK
+viz_vic_total_bop_cumul_line <- function(
+  data = bop,
+  dates = c(
+    bop_dates$max - lubridate::years(5) + lubridate::days(1),
+    bop_dates$max
+    )
+  ) {
 
-  filter_date <- dates$max - lubridate::years(5) + lubridate::days(1)
+  # filter_date <- dates$max - lubridate::years(5) + lubridate::days(1)
 
   df <- data %>%
     dplyr::filter(
@@ -1248,7 +1306,8 @@ viz_vic_total_bop_cumul_line <- function(data = bop, dates = bop_dates) {
       .data$indicator == "Chain Volume Measures",
       .data$exports_imports == "Exports",
       .data$goods_services == "Goods and Services",
-      .data$date >= !!filter_date
+      .data$date >= !!dates[1],
+      .data$date <= !!dates[2]
       )
 
     if ('tbl_lazy' %in% class(df)) {

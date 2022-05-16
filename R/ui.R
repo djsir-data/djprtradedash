@@ -9,8 +9,7 @@ ui <- function() {
         shinydashboard::menuItem("Home", tabName = "launchpad", selected = TRUE),
         shinydashboard::menuItem("Export explorer", tabName = "merch"),
         shinydashboard::menuItem("Balance of payments", tabName = "bop"),
-        shinydashboard::menuItem("Notes", tabName = "methodology"),
-        shinydashboard::menuItem("Accessibility", tabName = "accessibility")
+        shinydashboard::menuItem("Notes", tabName = "methodology")
       ),
       width = "250px"
     ),
