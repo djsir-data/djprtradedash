@@ -47,7 +47,7 @@ Imports:
     promises,
     future
 Remotes: 
-    djpr-data/djprshiny@publication-theme,
+    djpr-data/djprshiny,
     djpr-data/djprtheme,
     MattCowgill/readabs
 Depends: 
