@@ -46,7 +46,10 @@ Imports:
     ggiraph,
     shinydashboard,
     promises,
-    future
+    future,
+    RPostgres,
+    httr,
+    pool
 Remotes: 
     djpr-data/djprshiny,
     djpr-data/djprtheme,
