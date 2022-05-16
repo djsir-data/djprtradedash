@@ -21,6 +21,7 @@ Suggests:
 Imports: 
     djprtheme (>= 0.0.2.903),
     djprshiny (>= 0.0.6.905),
+    assertthat,
     lubridate,
     cachem,
     dplyr,
