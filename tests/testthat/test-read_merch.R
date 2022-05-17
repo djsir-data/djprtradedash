@@ -1,5 +1,6 @@
 test_that("read_merch() works", {
   skip_if_offline()
+  skip_on_ci()
 
   m <- read_merch()
 
