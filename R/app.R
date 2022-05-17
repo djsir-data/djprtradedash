@@ -9,8 +9,8 @@
 app <- function(...) {
 
   if(!exists("djpr_async_ui", envir = asNamespace("djprshiny"))) stop(
-    "Please install Henry's latest djprshiny branch:\n",
-    "remotes::install_github(\"djpr-data/djprshiny@publication-theme\")"
+    "Please install latest djprshiny version:\n",
+    "remotes::install_github(\"djpr-data/djprshiny\")"
   )
 
   trade_dash_cache <- cachem::cache_disk(
