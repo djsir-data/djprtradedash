@@ -14,7 +14,7 @@ page_country_profile <- function(...) {
         ),
         shiny::br(),
         shiny::fluidRow(
-          shiny::column(
+          column(
             4,
             shiny::span(
               shiny::textOutput("country_1y_exp_stat"),
@@ -25,7 +25,7 @@ page_country_profile <- function(...) {
               style = "text-align: center;font-style: italic;"
               )
             ),
-          shiny::column(
+          column(
             4,
             shiny::span(
               shiny::textOutput("country_1y_imp_stat"),
@@ -36,7 +36,7 @@ page_country_profile <- function(...) {
               style = "text-align: center;font-style: italic;"
             )
           ),
-          shiny::column(
+          column(
             4,
             shiny::span(
               shiny::textOutput("country_1y_exp_change_stat"),

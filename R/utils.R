@@ -120,3 +120,20 @@ merch_date_slider <- function(
     ...
   )
 }
+
+# djpr_box_ui shim
+djpr_box_ui <- function(...){
+  ui      <- djprshiny::djpr_box_ui(...)
+  colsize <- ui %>%
+    shiny::tagGetAttribute("class") %>%
+    substr(., 8, nchar(.))
+
+  ui$attribs$class <- paste0("col-xl-", colsize)
+  return(ui)
+}
+
+# Column shim
+column <- function(width, ...){
+  colClass <- paste0("col-xl-", width)
+  shiny::div(class = colClass, ...)
+}

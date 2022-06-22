@@ -14,7 +14,7 @@ page_merchUI <- function(...) {
     ),
     djprshiny::djpr_h2_box("Merchandise exports"),
     shiny::fluidRow(
-      shiny::column(
+      column(
         4,
         shinyWidgets::multiInput(
           inputId = "merch_countries",
@@ -43,7 +43,7 @@ page_merchUI <- function(...) {
         width = 8,
         shiny::br(),
         shiny::fluidRow(
-          shiny::column(
+          column(
             4,
             shinyWidgets::awesomeRadio(
               inputId = "merch_explorer_sitc",
@@ -59,7 +59,7 @@ page_merchUI <- function(...) {
               status = "primary"
             )
           ),
-          shiny::column(
+          column(
             4,
             shinyWidgets::awesomeRadio(
               inputId = "merch_explorer_facets",
@@ -73,7 +73,7 @@ page_merchUI <- function(...) {
               status = "primary"
             )
           ),
-          shiny::column(
+          column(
             4,
             shinyWidgets::materialSwitch("merch_explorer_smooth",
               label = "Smooth using 12 month rolling average",
@@ -86,7 +86,7 @@ page_merchUI <- function(...) {
                           height = "600px"
         ),
         shiny::fluidRow(
-          shiny::column(
+          column(
             8,
             shiny::sliderInput("merch_explorer_dates",
               label = "Select Dates",
@@ -101,7 +101,7 @@ page_merchUI <- function(...) {
               ticks = FALSE
             )
           ),
-          shiny::column(
+          column(
             4,
             shiny::br(),
             djprshiny::download_ui("merch_explorer_dl")

@@ -5,13 +5,13 @@ page_bopUI <- function(...) {
     # Overview
     djprshiny::djpr_h2_box("Balance of Payments"),
 
-    djprshiny::djpr_async_ui(
+    djpr_box_ui(
       id = "good_services_chart",
       width = 12,
       bop_date_slider("good_services_chart", width = "50%")
     ),
 
-    djprshiny::djpr_async_ui(
+    djpr_box_ui(
       "goods_export_import_line",
       bop_date_slider(
         "goods_export_import_line",
@@ -22,15 +22,15 @@ page_bopUI <- function(...) {
       )
     ),
 
-    djprshiny::djpr_async_ui("total_bop_bar_chart"),
+    djpr_box_ui("total_bop_bar_chart"),
 
 
     # Goods
     djprshiny::djpr_h2_box("Goods"),
 
-    djprshiny::djpr_async_ui("goods_bop_bar_chart"),
+    djpr_box_ui("goods_bop_bar_chart"),
 
-    djprshiny::djpr_async_ui(
+    djpr_box_ui(
       "good_trade_line_chart",
       bop_date_slider(
         "good_trade_line_chart",
@@ -39,7 +39,7 @@ page_bopUI <- function(...) {
       )
     ),
 
-    djprshiny::djpr_async_ui(
+    djpr_box_ui(
       "NSW_Vic_goods_line_chart",
       width = 12,
       bop_date_slider("NSW_Vic_goods_line_chart")
@@ -48,9 +48,9 @@ page_bopUI <- function(...) {
     # Services
     djprshiny::djpr_h2_box("Services"),
 
-    djprshiny::djpr_async_ui("service_bop_bar_chart"),
+    djpr_box_ui("service_bop_bar_chart"),
 
-    djprshiny::djpr_async_ui(
+    djpr_box_ui(
       "services_trade_line_chart",
       bop_date_slider(
         "services_trade_line_chart",
@@ -59,7 +59,7 @@ page_bopUI <- function(...) {
       )
     ),
 
-    djprshiny::djpr_async_ui(
+    djpr_box_ui(
       "NSW_Vic_Services_line_chart",
       width = 12,
       bop_date_slider("NSW_Vic_Services_line_chart")
@@ -67,7 +67,7 @@ page_bopUI <- function(...) {
 
     # Balance of trade
     djprshiny::djpr_h2_box("Balance of Trade"),
-    djprshiny::djpr_async_ui(
+    djpr_box_ui(
       id = "trade_balance_line_chart",
       width = 12,
       bop_date_slider("trade_balance_line_chart")
@@ -99,7 +99,7 @@ page_bop <- function(input, output, session, plt_change, table_rowcount = 5){
   )
 
   # Totals imports and exports since COVID
-  djprshiny::djpr_async_server(
+  djprshiny::djpr_box_server(
     id       = "total_bop_bar_chart",
     plot_fun = viz_total_bop_bar_chart,
     data     = bop
@@ -107,7 +107,7 @@ page_bop <- function(input, output, session, plt_change, table_rowcount = 5){
 
   # Goods and Services: Goods and Services imports time series
 
-  djprshiny::djpr_async_server(
+  djprshiny::djpr_box_server(
     id         = "good_services_chart",
     plot_fun   = viz_good_services_chart,
     dates      = input$dates,
@@ -115,7 +115,7 @@ page_bop <- function(input, output, session, plt_change, table_rowcount = 5){
   )
 
   # Goods and Services: Annual growth in goods and services exports and imports
-  djprshiny::djpr_async_server(
+  djprshiny::djpr_box_server(
     id       = "goods_export_import_line",
     plot_fun = viz_goods_export_import_line,
     data     = bop,
@@ -134,13 +134,13 @@ page_bop <- function(input, output, session, plt_change, table_rowcount = 5){
   )
   # Balance of Payments---
   # Goods:Goods imports and exports since COVID
-  djprshiny::djpr_async_server(
+  djprshiny::djpr_box_server(
     id       = "goods_bop_bar_chart",
     plot_fun = viz_goods_bop_bar_chart,
     data     = bop
   )
   # Goods: Goods imports and exports since covid
-  djprshiny::djpr_async_server(
+  djprshiny::djpr_box_server(
     id       = "good_trade_line_chart",
     plot_fun = viz_good_trade_line_chart,
     dates    = input$dates
@@ -148,7 +148,7 @@ page_bop <- function(input, output, session, plt_change, table_rowcount = 5){
 
   # Goods: Annual growth in goods exports and imports in NSW and Vic
 
-  djprshiny::djpr_async_server(
+  djprshiny::djpr_box_server(
     id       = "NSW_Vic_goods_line_chart",
     plot_fun = viz_NSW_Vic_goods_line_chart,
     data     = bop
@@ -156,14 +156,14 @@ page_bop <- function(input, output, session, plt_change, table_rowcount = 5){
 
   # Balance of Payments---
   # Services: services imports and exports since COVID
-  djprshiny::djpr_async_server(
+  djprshiny::djpr_box_server(
     id       = "service_bop_bar_chart",
     plot_fun = viz_service_bop_bar_chart,
     data     = bop
   )
 
   # Services: services imports and exports since COVID
-  djprshiny::djpr_async_server(
+  djprshiny::djpr_box_server(
     id       = "services_trade_line_chart",
     plot_fun = viz_services_trade_line_chart,
     data     = bop,
@@ -171,7 +171,7 @@ page_bop <- function(input, output, session, plt_change, table_rowcount = 5){
   )
 
   # Services: Annual growth in services exports and imports in NSW and Vic
-  djprshiny::djpr_async_server(
+  djprshiny::djpr_box_server(
     id       = "NSW_Vic_Services_line_chart",
     plot_fun = viz_NSW_Vic_Services_line_chart,
     data     = bop,
@@ -179,7 +179,7 @@ page_bop <- function(input, output, session, plt_change, table_rowcount = 5){
   )
 
   # Balance of trade:Cumulative change in total trade balance since December 2019
-  djprshiny::djpr_async_server(
+  djprshiny::djpr_box_server(
     id       = "trade_balance_line_chart",
     plot_fun = viz_trade_balance_line_chart,
     data     = bop,

@@ -5,7 +5,7 @@ page_launchpadUI <- function(id) {
 
       # Launchpad text & export plot
       djprshiny::djpr_h2_box("DJPR Trade Dashboard"),
-      shiny::column(
+      column(
         5,
         shiny::div(
           class = "box",
@@ -16,7 +16,7 @@ page_launchpadUI <- function(id) {
             )
           )
         ),
-      djprshiny::djpr_async_ui(
+      djpr_box_ui(
         id    = "top_export_line_chart",
         width = 7,
         height = "400px",
@@ -25,7 +25,7 @@ page_launchpadUI <- function(id) {
 
       # Cards
       shiny::fluidRow(style = 'padding:20px;',
-        shiny::column(4,
+        column(4,
 
                       shiny::div(class = 'card text-white bg-dark mb-3',
                           style = 'height:200px;',
@@ -48,7 +48,7 @@ page_launchpadUI <- function(id) {
                           )
                       )
       ),
-      shiny::column(4,
+      column(4,
 
                     shiny::div(class = 'card text-white bg-dark mb-3',
                         style = 'height:200px;',
@@ -70,7 +70,7 @@ page_launchpadUI <- function(id) {
                         )
                     )
       ),
-      shiny::column(4,
+      column(4,
 
                     shiny::div(class = 'card text-white bg-dark mb-3',
                         style = 'height:200px;',
@@ -95,13 +95,13 @@ page_launchpadUI <- function(id) {
 
 
       # Line charts
-      djprshiny::djpr_async_ui(
+      djpr_box_ui(
         "good_services_export_line_launchpad",
         height = "400px",
         merch_date_slider("good_services_export_line_launchpad")
       ),
 
-      djprshiny::djpr_async_ui(
+      djpr_box_ui(
         "top_country_line_chart",
         height = "400px",
         merch_date_slider("top_country_line_chart")
@@ -166,21 +166,21 @@ page_launchpad <- function(input, output, session, table_rowcount = 5){
 
 
   #Launchpad tables and charts
-  djprshiny::djpr_async_server(
+  djprshiny::djpr_box_server(
     id       = "top_export_line_chart",
     plot_fun = viz_launchpad_chart,
     data     = merch,
     dates    = input$dates
   )
 
-  djprshiny::djpr_async_server(
+  djprshiny::djpr_box_server(
     id       = "good_services_export_line_launchpad",
     plot_fun = viz_good_services_export_chart,
     data     = bop,
     dates    = input$dates
   )
 
-  djprshiny::djpr_async_server(
+  djprshiny::djpr_box_server(
     id       = "top_country_line_chart",
     plot_fun = viz_launchpad_countries,
     data     = merch,
