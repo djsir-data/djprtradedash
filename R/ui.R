@@ -1,6 +1,7 @@
 
 ui <- function() {
   shinydashboard::dashboardPage(
+    title = "Victorian International Trade",
     header = shinydashboard::dashboardHeader(
       title = shiny::HTML("Victorian<br/>International Trade"),
       titleWidth = "40%"),
@@ -23,6 +24,7 @@ ui <- function() {
         shinydashboard::tabItem("bop", page_bopUI()),
         shinydashboard::tabItem("methodology", page_methodology())
       )
-    )
+    ) %>%
+      shiny::tagAppendAttributes(style = "overflow: auto;")
   )
 }
