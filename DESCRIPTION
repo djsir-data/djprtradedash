@@ -49,7 +49,8 @@ Imports:
     future,
     RPostgres,
     httr,
-    pool
+    pool,
+    highcharter
 Remotes: 
     djpr-data/djprshiny,
     djpr-data/djprtheme,

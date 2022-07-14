@@ -1,30 +1,33 @@
 page_launchpadUI <- function(id) {
 
 
-  shiny::tagList(
+  shiny::fluidPage(
 
       # Launchpad text & export plot
-      djprshiny::djpr_h2_box("DJPR Trade Dashboard"),
-      column(
-        5,
-        shiny::div(
-          class = "box",
-          style = "height: 450px;",
-          shiny::p(
-            style = "padding: 10px;",
-            "Conthent goes here"
+      djprshiny::djpr_h2_box("DJPR Trade Dashboard") %>% shiny::fluidRow(),
+      shiny::fluidRow(
+        column(
+          5,
+          shiny::div(
+            class = "box",
+            style = "height: 450px;",
+            shiny::p(
+              style = "padding: 10px;",
+              "Content goes here"
             )
           )
         ),
-      djpr_box_ui(
-        id    = "top_export_line_chart",
-        width = 7,
-        height = "400px",
-        merch_date_slider("top_export_line_chart")
+        djpr_box_ui(
+          id    = "top_export_line_chart",
+          width = 7,
+          height = "400px",
+          merch_date_slider("top_export_line_chart")
+        )
       ),
 
       # Cards
-      shiny::fluidRow(style = 'padding:20px;',
+      shiny::fluidRow(
+        style = 'padding:20px;',
         column(4,
 
                       shiny::div(class = 'card text-white bg-dark mb-3',
@@ -95,46 +98,54 @@ page_launchpadUI <- function(id) {
 
 
       # Line charts
-      djpr_box_ui(
-        "good_services_export_line_launchpad",
-        height = "400px",
-        merch_date_slider("good_services_export_line_launchpad")
-      ),
+      shiny::fluidRow(
+        djpr_box_ui(
+          "good_services_export_line_launchpad",
+          height = "400px",
+          merch_date_slider("good_services_export_line_launchpad")
+        ),
 
-      djpr_box_ui(
-        "top_country_line_chart",
-        height = "400px",
-        merch_date_slider("top_country_line_chart")
+        djpr_box_ui(
+          "top_country_line_chart",
+          height = "400px",
+          merch_date_slider("top_country_line_chart")
+        )
       ),
 
       # Country tables
-      djprshiny::djpr_h2_box("Countries"),
-      shinydashboard::box(
-        title = shiny::h3("Top 5 Exports ($m)"),
-        shiny::uiOutput("country_export_table", height = "600px")
-      ),
-      shinydashboard::box(
-        title = shiny::h3("Top 5 Imports ($m)"),
-        shiny::uiOutput("country_import_table", height = "600px")
+      djprshiny::djpr_h2_box("Countries") %>% shiny::fluidRow(),
+
+      shiny::fluidRow(
+        shinydashboard::box(
+          title = shiny::h3("Top 5 Exports ($m)"),
+          shiny::uiOutput("country_export_table", height = "600px")
+        ),
+        shinydashboard::box(
+          title = shiny::h3("Top 5 Imports ($m)"),
+          shiny::uiOutput("country_import_table", height = "600px")
+        )
       ),
 
       # Product tables
-      djprshiny::djpr_h2_box("Products"),
-      shinydashboard::box(
-        title = shiny::h3("Top 5 Exports ($m)"),
-        shiny::uiOutput("product_export_table", height = "600px")
-      ),
-      shinydashboard::box(
-        title = shiny::h3("Top 5 Imports ($m)"),
-        shiny::uiOutput("product_import_table", height = "600px")
+      djprshiny::djpr_h2_box("Products") %>% shiny::fluidRow(),
+
+      shiny::fluidRow(
+        shinydashboard::box(
+          title = shiny::h3("Top 5 Exports ($m)"),
+          shiny::uiOutput("product_export_table", height = "600px")
+        ),
+        shinydashboard::box(
+          title = shiny::h3("Top 5 Imports ($m)"),
+          shiny::uiOutput("product_import_table", height = "600px")
+        )
       ),
 
       # BOP table
-      djprshiny::djpr_h2_box("Balance of payments"),
+      djprshiny::djpr_h2_box("Balance of payments") %>% shiny::fluidRow(),
       shinydashboard::box(
         shiny::uiOutput("launchpad_bop_table", height = "600px"),
         width = 12
-      )
+      ) %>% shiny::fluidRow()
 
   )
 }
