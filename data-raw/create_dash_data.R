@@ -31,6 +31,12 @@ supp_fy <- read_supp("fy")
 
 
 
+# Service data
+services <- read_services()
+
+
+
+
 # ABS Balance of Payments
 bop <- read_bop()
 
@@ -39,36 +45,31 @@ bop <- read_bop()
 
 # List data with names
 out <- list(
-  'merch'     = merch,
-  'merch_imp' = merch_imp,
-  'supp_cy'   = supp_cy,
-  'supp_fy'   = supp_fy,
-  'bop'       = bop
+  'merch'         = merch,
+  'merch_imp'     = merch_imp,
+  'supp_cy'       = supp_cy,
+  'supp_fy'       = supp_fy,
+  'bop'           = bop,
+  'service_trade' = services
   )
 
 
 
 
 # Connect to database
-drv <- duckdb::duckdb()
-con <- duckdb::dbConnect(drv, "trade_database.duckdb")
+if(!exists("con")) load_tabs()
 
 
 
 
 # Add csv data to database
 mapply(
-  FUN       = DBI::dbWriteTable,
+  FUN       = pool::dbWriteTable,
   conn      = list(con),
   name      = names(out),
   value     = out,
   overwrite = TRUE
 )
 
-
-
-
-# Disconnect from database
-duckdb::dbDisconnect(con)
 
 
