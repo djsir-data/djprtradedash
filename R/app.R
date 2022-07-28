@@ -15,5 +15,7 @@ app <- function(...) {
     cache = trade_dash_cache
   )
 
+  load_tabs()
+
   shiny::shinyApp(ui = ui(), server = server)
 }
