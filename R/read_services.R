@@ -46,7 +46,7 @@ read_services <- function(...){
     dplyr::group_by(file) %>%
     dplyr::summarise(
       sheet = readxl::excel_sheets(file) %>%
-        str_subset("Table")
+        stringr::str_subset("Table")
       ) %>%
     dplyr::ungroup()
 
