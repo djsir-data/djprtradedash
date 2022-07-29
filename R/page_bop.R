@@ -1,15 +1,17 @@
 page_bopUI <- function(...) {
 
-  shiny::tagList(
+  shiny::fluidPage(
 
     # Overview
-    djprshiny::djpr_h2_box("Balance of Payments"),
+    djprshiny::djpr_h2_box("Balance of Payments") %>% fluidRow(),
 
     djpr_box_ui(
       id = "good_services_chart",
       width = 12,
       bop_date_slider("good_services_chart", width = "50%")
-    ),
+    ) %>% fluidRow(),
+
+    fluidRow(
 
     djpr_box_ui(
       "goods_export_import_line",
@@ -22,11 +24,14 @@ page_bopUI <- function(...) {
       )
     ),
 
-    djpr_box_ui("total_bop_bar_chart"),
+    djpr_box_ui("total_bop_bar_chart")
+    ),
 
 
     # Goods
-    djprshiny::djpr_h2_box("Goods"),
+    djprshiny::djpr_h2_box("Goods") %>% fluidRow(),
+
+    fluidRow(
 
     djpr_box_ui("goods_bop_bar_chart"),
 
@@ -37,17 +42,19 @@ page_bopUI <- function(...) {
         min = as.Date("2018-12-01"),
         value = c(as.Date("2018-12-01"), bop_dates$max)
       )
+    )
     ),
 
     djpr_box_ui(
       "NSW_Vic_goods_line_chart",
       width = 12,
       bop_date_slider("NSW_Vic_goods_line_chart")
-    ),
+    ) %>% fluidRow(),
 
     # Services
-    djprshiny::djpr_h2_box("Services"),
+    djprshiny::djpr_h2_box("Services") %>% fluidRow(),
 
+    fluidRow(
     djpr_box_ui("service_bop_bar_chart"),
 
     djpr_box_ui(
@@ -57,21 +64,22 @@ page_bopUI <- function(...) {
         min = as.Date("2018-12-01"),
         value = c(as.Date("2018-12-01"), bop_dates$max)
       )
-    ),
+    ))
+    ,
 
     djpr_box_ui(
       "NSW_Vic_Services_line_chart",
       width = 12,
       bop_date_slider("NSW_Vic_Services_line_chart")
-      ),
+      ) %>% fluidRow(),
 
     # Balance of trade
-    djprshiny::djpr_h2_box("Balance of Trade"),
+    djprshiny::djpr_h2_box("Balance of Trade") %>% fluidRow(),
     djpr_box_ui(
       id = "trade_balance_line_chart",
       width = 12,
       bop_date_slider("trade_balance_line_chart")
-    )
+    ) %>% fluidRow()
   )
 }
 
