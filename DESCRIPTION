@@ -46,7 +46,9 @@ Imports:
     httr,
     pool,
     highcharter,
-    readxl
+    readxl,
+    flextable,
+    ggiraph
 Remotes: 
     djpr-data/djprshiny,
     djpr-data/djprtheme,
