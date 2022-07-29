@@ -28,4 +28,18 @@ server <- function(input, output, session) {
     filter = "top"
   )
 
+
+  # Service page content
+  observeEvent(
+    eventExpr = {
+      input$service_state_comp_inp
+      input$service_state_comp_states
+      },
+    handlerExpr = {
+    update_service_state_comp(
+      product = input$service_state_comp_inp,
+      states = input$service_state_comp_states
+      )
+  })
+
 }

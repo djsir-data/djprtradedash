@@ -201,6 +201,14 @@ load_tabs <- function(){
     dplyr::collect() %>%
     dplyr::pull() %>%
     assign("merch_country_dest", ., envir = .GlobalEnv)
+
+  service_trade %>%
+    arrange(desc(value)) %>%
+    select(service) %>%
+    collect() %>%
+    pull() %>%
+    unique() %>%
+    assign("service_categories", ., envir = .GlobalEnv)
 }
 
 
