@@ -105,11 +105,15 @@ to_eval <- list(
     )
   ),
   "services_composition" = list(
-    what = highcarts_service_compositon,
+    what = highcharts_service_compositon,
     args = list()
   ),
   "service_category_list" = list(
     what = service_category_list,
+    args = list()
+  ),
+  "service_state_comparison" = list(
+    what = highcharts_service_state_comp,
     args = list()
   )
 

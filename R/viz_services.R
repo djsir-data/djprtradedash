@@ -1,4 +1,4 @@
-highcarts_service_compositon <- function(data = service_trade){
+highcharts_service_compositon <- function(data = service_trade){
 
   level_1 <- data %>%
     filter(level == 1, date == max(date), state == "Vic.", flow == "Export") %>%
