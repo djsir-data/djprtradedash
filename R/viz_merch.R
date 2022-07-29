@@ -51,14 +51,14 @@ viz_merch_explorer <- function(dataset,
 
   df <- dplyr::bind_rows(
     merge(all_dates$date, combs) %>%
-    dplyr::rename(date = 1) %>%
-    dplyr::mutate(value = 0),
+      dplyr::rename(date = 1) %>%
+      dplyr::mutate(value = 0),
     df
-    ) %>%
-  dplyr::group_by(group, date) %>%
-  dplyr::slice(dplyr::n()) %>%
-  dplyr::ungroup() %>%
-  dplyr::mutate(value = tidyr::replace_na(value, 0)) # %>%
+  ) %>%
+    dplyr::group_by(group, date) %>%
+    dplyr::slice(dplyr::n()) %>%
+    dplyr::ungroup() %>%
+    dplyr::mutate(value = tidyr::replace_na(value, 0)) # %>%
   # dplyr::filter(nchar(.data$sitc_code) %in% sitc_level)
 
   if (facet_by == "country_dest") {
@@ -89,7 +89,7 @@ viz_merch_explorer <- function(dataset,
     nchar()
 
   show_legend <- dplyr::if_else(total_col_chars >= 100,
-    TRUE, FALSE
+                                TRUE, FALSE
   )
 
   date_limits <- c(data_dates$min, data_dates$max)
@@ -167,16 +167,159 @@ viz_merch_explorer <- function(dataset,
   }
 
 
-  p <- p +
+  p +
     ggplot2::scale_y_continuous(
       label = scales::label_dollar(
         scale = 1/1e06,
         suffix = "m")
-      ) +
-  ggplot2::labs(
-    caption = caption)
+    ) +
+    ggplot2::labs(caption = caption) +
+    ggplot2::theme(panel.background = ggplot2::element_rect(fill = "transparent",colour = NA_character_))
+
+}
 
 
-  ggiraph::ggiraph(ggobj = p)
+highcharts_merch_explorer <- function(
+    dataset = merch,
+    countries = c("Thailand", "Malaysia"),
+    goods = c("Medicinal and pharmaceutical products (excl. medicaments of group 542)", "Aluminium"),
+    origin = "Victoria",
+    facet_by = "country_dest",
+    smooth = TRUE
+    ) {
+
+
+  # Get data and initial variable creation
+  df <- dataset %>%
+    dplyr::filter(
+      .data$sitc %in% .env$goods,
+      .data$country_dest %in% .env$countries,
+      .data$origin == .env$origin
+    ) %>%
+    dplyr::select(sitc, country_dest, date, value) %>%
+    dplyr::collect() %>%
+    dplyr::mutate(
+      group = paste(.data$country_dest, .data$sitc, sep = "-"),
+      sitc = as.character(.data$sitc),
+      country_dest = as.character(.data$country_dest),
+      value = .data$value * 1000
+    )
+
+  # Ensure all combinations of date, product and country
+  df <- df %>%
+    right_join(tidyr::expand(df, sitc, country_dest, date)) %>%
+    mutate(value = ifelse(is.na(value), 0, value))
+
+  # Generate faceting dimention
+  if (facet_by == "country_dest") {
+
+    y_axis_labs <- unique(df$country_dest)
+
+    df <- df %>%
+      dplyr::mutate(
+        col = .data$sitc,
+        y_axis = factor(country_dest) %>% as.integer() %>% `-`(1L),
+        name = country_dest
+      )
+  } else {
+
+    y_axis_labs <- unique(df$sitc)
+
+    df <- df %>%
+      dplyr::mutate(
+        col = .data$country_dest,
+        y_axis = factor(sitc) %>% as.integer() %>% `-`(1L),
+        name = sitc
+        )
+  }
+
+
+  # Create multiple y axis labs list
+  y_axis_labs <- y_axis_labs %>%
+    lapply(function(x) list(text = x))
+
+
+  # Smooth data
+  if (smooth) {
+    df <- df %>%
+      dplyr::group_by(.data$group) %>%
+      dplyr::arrange(.data$date) %>%
+      dplyr::mutate(value = slider::slide_mean(.data$value, before = 11L)) %>%
+      ungroup()
+  }
+
+
+  # Caption
+  caption <- paste0(
+    "Source: ABS.Stat Merchandise Exports data per commodity (latest data is from ",
+    merch_dates$max,
+    "). "
+  )
+
+  # Hacky af I'm so sorry
+  df_ts <- sort(unique(df$date))
+  df_list <- df %>%
+    arrange(y_axis, col, date) %>%
+    transmute(x = datetime_to_timestamp(date), y = value, col = col, yAxis = y_axis, name = name) %>%
+    group_nest(name, yAxis, col) %>%
+    mutate(
+      type = "line",
+      data = purrr::map(data, list_parse)
+      ) %>%
+    list_parse()
+
+
+  # Make highchart
+  highchart(type = "stock") %>%
+    hc_yAxis_multiples(create_axis(length(y_axis_labs), title = y_axis_labs)) %>%
+    hc_add_series_list(df_list) %>%
+    highcharter::hc_plotOptions(series = list(label = list(enabled = TRUE))) %>%
+    highcharter::hc_add_dependency("plugins/series-label.js") %>%
+    highcharter::hc_add_dependency("plugins/accessibility.js") %>%
+    highcharter::hc_exporting(enabled = TRUE) %>%
+    highcharter::hc_caption(
+      text = paste0(
+        "Source: ABS.Stat Merchandise Exports by Commodity (latest data is from ",
+        format(merch_dates$max, "%B %Y"),
+        ")."
+      )
+    ) %>%
+    highcharter::hc_rangeSelector(
+      inputEnabled = F,
+      selected = 1,
+      buttons = list(
+        list(
+          type  = 'all',
+          text  =  'All',
+          title =  'View all'
+        ),
+        list(
+          type  = 'year',
+          count = 5,
+          text  = '5y',
+          title = 'View five years'
+        ),
+        list(
+          type  = 'year',
+          count = 3,
+          text  = '3y',
+          title = 'View three years years'
+        ),
+        list(
+          type  = 'ytd',
+          text  = 'YTD',
+          title = 'View year to date'
+        )
+      )
+    ) %>%
+    highcharter::hc_navigator(series = list(label = list(enabled = FALSE))) %>%
+    hc_tooltip() %>%
+    djpr_highcharts() %>%
+    hc_elementId("merch_explorer")
+
+
+
+
+
 
 }
