@@ -117,7 +117,7 @@ highcharts_launchpad_goods <- function(
       filename = "Victorias good exports"
       ) %>%
     highcharter::hc_title(text = "Goods exports from Victoria") %>%
-    highcharter::hc_subtitle(text = "Year to date goods exports of SITC classifications $AUD") %>%
+    highcharter::hc_subtitle(text = "Year to date goods exports of level 1 SITC classifications $AUD") %>%
     highcharter::hc_caption(
       text = paste0(
         "Source: ABS.Stat Merchandise Exports by Commodity (latest data is from ",
@@ -188,7 +188,7 @@ highcharts_launchpad_services <- function(
       enabled = TRUE,
       filename = "Victorias service exports"
     ) %>%
-    highcharter::hc_title(text = "Service exports from Victoria") %>%
+    highcharter::hc_title(text = "Services exports from Victoria") %>%
     highcharter::hc_subtitle(text = "Annual value of services exported $AUD") %>%
     highcharter::hc_caption(
       text = paste0(
