@@ -5,7 +5,7 @@ server <- function(input, output, session) {
 
   page_launchpad(input, output, session, table_rowcount = 5)
   page_bop(input, output, session, plt_change, table_rowcount = 5)
-  page_merch(input, output, session, plt_change)
+  # page_merch(input, output, session, plt_change)
 
 
   merch_last_12 <- merch_dates$max - months(12)
@@ -41,5 +41,16 @@ server <- function(input, output, session) {
       states = input$service_state_comp_states
       )
   })
+
+  # merch explorer content
+  output$merch_explorer <- renderHighchart({
+      highcharts_merch_explorer(
+        countries = input$merch_countries,
+        goods = input$merch_sitc,
+        origin = "Victoria",
+        facet_by = input$merch_explorer_facets,
+        smooth = input$merch_explorer_smooth
+      )
+    })
 
 }

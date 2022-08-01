@@ -91,101 +91,11 @@ page_merchUI <- function(...) {
           fluidRow(
             column(
               12,
-              plotOutput("merch_explorer", height = "600px")
+              highchartOutput("merch_explorer", height = "auto")
             ),
-          ),
-          br(),
-          shiny::fluidRow(
-            shiny::column(
-              10,
-              shiny::sliderInput(
-                width = "80%",
-                "merch_explorer_dates",
-                label = "Select Dates",
-                min = merch_dates$min,
-                max = merch_dates$max,
-                value = c(
-                  merch_dates$min,
-                  merch_dates$max
-                ),
-                dragRange = TRUE,
-                timeFormat = "%b %Y",
-                ticks = FALSE
-              )
-            ),
-            shiny::column(
-              2,
-              shiny::br(),
-              djprshiny::download_ui("merch_explorer_dl")
-            )
           )
         )
       )
     )
-  )
-}
-
-
-page_merch <- function(input, output, session, plt_change){
-
-  sitc_lu <- shiny::reactive({
-    if(input$merch_explorer_sitc %in% c(1,2,3)) {
-      lu <- merch_sitc_lu %>%
-        dplyr::filter(n == !!input$merch_explorer_sitc)
-    } else {
-      lu <- merch_sitc_lu %>%
-        dplyr::mutate(sitc = paste0(.data$sitc_code, ": ", .data$sitc))
-    }
-    lu %>%
-      dplyr::pull(.data$sitc) %>%
-      unique()
-  })
-
-  shiny::observe({
-    shinyWidgets::updateMultiInput(session = session, inputId = "merch_sitc",
-                                   choices = sitc_lu())
-  })
-
-  shiny::observe({
-
-    shiny::req(
-      input$merch_explorer_dates,
-      input$merch_countries,
-      input$merch_sitc,
-      input$merch_explorer_facets,
-      input$merch_explorer_sitc
-    )
-
-    mindate <- input$merch_explorer_dates[1]
-    maxdate <- input$merch_explorer_dates[2]
-
-    merch_plt_data <- merch %>%
-      dplyr::filter(
-        .data$date >= !!mindate,
-        .data$date <= !!maxdate
-      )
-
-    merch_plt <- viz_merch_explorer(
-      merch_plt_data,
-      countries = input$merch_countries,
-      goods = sub(".[0-9]*:\\s", "", input$merch_sitc),
-      facet_by = input$merch_explorer_facets,
-      smooth = input$merch_explorer_smooth,
-      merch_explorer_sitc = input$merch_explorer_sitc
-    )
-
-    output$merch_explorer <- renderPlot({
-      merch_plt
-    })
-
-  })
-
-
-
-
-  djprshiny::download_server(
-    id = "merch_explorer_dl",
-    plot = merch_explorer_plot(),
-    plot_name = "merch_explorer_plot"
   )
 }
