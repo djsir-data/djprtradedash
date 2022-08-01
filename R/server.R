@@ -5,7 +5,6 @@ server <- function(input, output, session) {
 
   page_launchpad(input, output, session, table_rowcount = 5)
   page_bop(input, output, session, plt_change, table_rowcount = 5)
-  # page_merch(input, output, session, plt_change)
 
 
   merch_last_12 <- merch_dates$max - months(12)
