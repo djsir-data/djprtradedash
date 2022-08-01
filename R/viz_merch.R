@@ -171,6 +171,9 @@ update_merch_explorer <- function(
     dataset = merch
 ){
 
+  # Warning
+  warning("Update merch explorer currently does not work as highcharter does not have a proxy function for axis updating\nIf you could like to develop a new proxy function, please see ./JS/message_handlers.js")
+
   # Start loading icon
   highchartProxy(proxy_id) %>%
     hcpxy_loading(action = "show")
@@ -305,6 +308,9 @@ update_merch_explorer <- function(
 
 
 hcpxy_update_n_y_axis <- function(proxy, n_axis){
+
+  warning("hcpxy_update_n_y_axis is still under development and requires ./JS/message_handlers.js\nThe function will not work without further arguments passed to newAxis")
+
 
   proxy$session$sendCustomMessage(
     type = "updateNumYAxes",
