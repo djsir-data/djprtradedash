@@ -210,6 +210,18 @@ highcharts_merch_explorer <- function(
     right_join(tidyr::expand(df, sitc, country_dest, date)) %>%
     mutate(value = ifelse(is.na(value), 0, value))
 
+
+  # clean sitc + country
+  df <- df %>%
+    mutate(
+      across(
+        c(country_dest, sitc),
+        ~stringr::str_remove_all(., "\\(.+\\)") %>%
+          stringr::str_squish()
+        )
+      )
+
+
   # Generate faceting dimention
   if (facet_by == "country_dest") {
 
@@ -219,7 +231,7 @@ highcharts_merch_explorer <- function(
       dplyr::mutate(
         col = .data$sitc,
         y_axis = factor(country_dest) %>% as.integer() %>% `-`(1L),
-        name = country_dest
+        name = paste0(sitc, " - ", country_dest)
       )
   } else {
 
@@ -229,7 +241,7 @@ highcharts_merch_explorer <- function(
       dplyr::mutate(
         col = .data$country_dest,
         y_axis = factor(sitc) %>% as.integer() %>% `-`(1L),
-        name = sitc
+        name = paste0(country_dest, " - ", sitc)
         )
   }
 
@@ -244,7 +256,9 @@ highcharts_merch_explorer <- function(
     df <- df %>%
       dplyr::group_by(.data$group) %>%
       dplyr::arrange(.data$date) %>%
-      dplyr::mutate(value = slider::slide_mean(.data$value, before = 11L)) %>%
+      dplyr::mutate(
+        value = slider::slide_mean(.data$value, before = 11L) %>% round()
+        ) %>%
       ungroup()
   }
 
@@ -257,8 +271,7 @@ highcharts_merch_explorer <- function(
   )
 
   # Hacky af I'm so sorry
-  df_ts <- sort(unique(df$date))
-  df_list <- df %>%
+  df <- df %>%
     arrange(y_axis, col, date) %>%
     transmute(x = datetime_to_timestamp(date), y = value, col = col, yAxis = y_axis, name = name) %>%
     group_nest(name, yAxis, col) %>%
@@ -271,8 +284,15 @@ highcharts_merch_explorer <- function(
 
   # Make highchart
   highchart(type = "stock") %>%
-    hc_yAxis_multiples(create_axis(length(y_axis_labs), title = y_axis_labs)) %>%
-    hc_add_series_list(df_list) %>%
+    hc_yAxis_multiples(
+      create_axis(
+        length(y_axis_labs),
+        title = y_axis_labs,
+        height = 150,
+        turnopposite  = F
+        )
+      ) %>%
+    hc_add_series_list(df) %>%
     highcharter::hc_plotOptions(series = list(label = list(enabled = TRUE))) %>%
     highcharter::hc_add_dependency("plugins/series-label.js") %>%
     highcharter::hc_add_dependency("plugins/accessibility.js") %>%
@@ -285,8 +305,8 @@ highcharts_merch_explorer <- function(
       )
     ) %>%
     highcharter::hc_rangeSelector(
-      inputEnabled = F,
-      selected = 1,
+      inputEnabled = T,
+      selected = 0,
       buttons = list(
         list(
           type  = 'all',
@@ -313,13 +333,137 @@ highcharts_merch_explorer <- function(
       )
     ) %>%
     highcharter::hc_navigator(series = list(label = list(enabled = FALSE))) %>%
-    hc_tooltip() %>%
+    hc_navigator(enabled = FALSE) %>%
+    hc_scrollbar(enabled = FALSE) %>%
     djpr_highcharts() %>%
     hc_elementId("merch_explorer")
 
+}
 
 
 
+update_merch_explorer <- function(
+    countries,
+    goods,
+    origin,
+    facet_by,
+    smooth,
+    proxy_id = "merch_explorer",
+    dataset = merch
+){
+
+  # Start loading icon
+  highchartProxy(proxy_id) %>%
+    hcpxy_loading(action = "show")
+
+  # Get data and initial variable creation
+  df <- dataset %>%
+    dplyr::filter(
+      .data$sitc %in% .env$goods,
+      .data$country_dest %in% .env$countries,
+      .data$origin == .env$origin
+    ) %>%
+    dplyr::select(sitc, country_dest, date, value) %>%
+    dplyr::collect() %>%
+    dplyr::mutate(
+      sitc = as.character(.data$sitc),
+      country_dest = as.character(.data$country_dest),
+      value = .data$value * 1000
+    )
+
+  # Ensure all combinations of date, product and country
+  df <- df %>%
+    right_join(tidyr::expand(df, sitc, country_dest, date)) %>%
+    mutate(value = ifelse(is.na(value), 0, value))
+
+
+  # clean sitc + country
+  df <- df %>%
+    mutate(
+      across(
+        c(country_dest, sitc),
+        ~stringr::str_remove_all(., "\\(.+\\)") %>%
+          stringr::str_squish()
+      )
+    )
+
+
+  # Generate faceting dimention
+  if (facet_by == "country_dest") {
+
+    y_axis_labs <- unique(df$country_dest)
+
+    df <- df %>%
+      dplyr::mutate(
+        col = .data$sitc,
+        y_axis = factor(country_dest) %>% as.integer() %>% `-`(1L),
+        name = paste0(sitc, " - ", country_dest)
+      )
+  } else {
+
+    y_axis_labs <- unique(df$sitc)
+
+    df <- df %>%
+      dplyr::mutate(
+        col = .data$country_dest,
+        y_axis = factor(sitc) %>% as.integer() %>% `-`(1L),
+        name = paste0(country_dest, " - ", sitc)
+      )
+  }
+
+
+  # Create multiple y axis labs list
+  y_axis_labs <- y_axis_labs %>%
+    lapply(function(x) list(text = x))
+
+
+  # Smooth data
+  if (smooth) {
+    df <- df %>%
+      dplyr::group_by(.data$country_dest, .data$sitc) %>%
+      dplyr::arrange(.data$date) %>%
+      dplyr::mutate(
+        value = slider::slide_mean(.data$value, before = 11L) %>% round()
+      ) %>%
+      ungroup()
+  }
+
+
+  # Super nested list structure bcos js is whack
+  df <- df %>%
+    arrange(y_axis, col, date) %>%
+    transmute(x = datetime_to_timestamp(date), y = value, col = col, yAxis = y_axis, name = name) %>%
+    group_nest(name, yAxis, col) %>%
+    mutate(
+      type = "line",
+      data = purrr::map(data, list_parse)
+    ) %>%
+    list_parse()
+
+
+  # Remove all series and loading icon
+  highchartProxy(proxy_id) %>%
+    hcpxy_loading(action = "hide") %>%
+    hcpxy_remove_series(all = TRUE)
+
+  # Adjust axis
+  highchartProxy(proxy_id) %>%
+    hcpxy_update(
+      yAxis = create_axis(
+        length(y_axis_labs),
+        title = y_axis_labs,
+        height = 150,
+        turnopposite  = F
+        )
+    )
+
+  # Add data
+  lapply(df, function(new_series){
+    do.call(
+      hcpxy_add_series,
+      c(proxy = highchartProxy(proxy_id), new_series)
+    )
+  })
 
 
 }
