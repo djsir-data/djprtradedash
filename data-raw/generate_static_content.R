@@ -115,8 +115,47 @@ to_eval <- list(
   "service_state_comparison" = list(
     what = highcharts_service_state_comp,
     args = list()
+  ),
+  "bop_total_bop_bar_chart" = list(
+    what = highcharts_total_bop_bar_chart,
+    args = list()
+  ),
+  "bop_good_trade_line_chart" = list(
+    what = highcharts_good_trade_line_chart,
+    args = list()
+  ),
+  "bop_services_trade_line_chart" = list(
+    what = highcharts_services_trade_line_chart,
+    args = list()
+  ),
+  "bop_service_bop_bar_chart" = list(
+    what = highcharts_service_bop_bar_chart,
+    args = list()
+  ),
+  "bop_goods_bop_bar_chart" = list(
+    what = highcharts_goods_bop_bar_chart,
+    args = list()
+  ),
+  "bop_goods_export_import_line" = list(
+    what = highcharts_goods_export_import_line,
+    args = list()
+  ),
+  "bop_trade_balance_line_chart" = list(
+    what = highcharts_trade_balance_line_chart,
+    args = list()
+  ),
+  "bop_NSW_Vic_goods_line_chart" = list(
+    what = highcharts_NSW_Vic_goods_line_chart,
+    args = list()
+  ),
+  "bop_NSW_Vic_Services_line_chart" = list(
+    what = highcharts_NSW_Vic_Services_line_chart,
+    args = list()
+  ),
+  "bop_good_services_chart" = list(
+    what = highcharts_good_services_chart,
+    args = list()
   )
-
 )
 
 

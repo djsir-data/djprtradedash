@@ -4,7 +4,6 @@ server <- function(input, output, session) {
   set_hcharts_options()
 
   page_launchpad(input, output, session, table_rowcount = 5)
-  page_bop(input, output, session, plt_change, table_rowcount = 5)
 
 
   merch_last_12 <- merch_dates$max - months(12)
