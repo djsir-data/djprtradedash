@@ -1,7 +1,12 @@
-# if(exists("con")) pool::poolClose(con)
-# djprtradedash:::kill_cache()
-pkgload::load_all(".")
-app()
 
+
+# Load objects from this project
+pkgload::load_all(".")
+
+# Establish database connections
+load_tabs()
+
+# Start shinyapp
+shiny::shinyApp(ui = ui(), server = server)
 
 
