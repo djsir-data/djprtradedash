@@ -43,7 +43,7 @@ highcharts_service_compositon <- function(data = service_trade){
 
   level_1 %>%
     hchart("pie", hcaes(name = level_1, y = value, drilldown = level_1), name = "Total exports") %>%
-    highcharter::hc_title(text = paste(date_text, "service trade compositon")) %>%
+    highcharter::hc_title(text = paste(date_text, "service trade composition")) %>%
     highcharter::hc_subtitle(text = "Annual value of services exported $AUD") %>%
     hc_drilldown(
       allowPointDrilldown = TRUE,
