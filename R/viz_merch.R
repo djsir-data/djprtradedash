@@ -3,7 +3,7 @@ highcharts_merch_explorer <- function(
     dataset = merch,
     countries = c("Thailand", "Malaysia"),
     goods = c("Medicinal and pharmaceutical products (excl. medicaments of group 542)", "Aluminium"),
-    origin = "Victoria",
+    origin_state = "Victoria",
     facet_by = "country_dest",
     smooth = TRUE
     ) {
@@ -12,9 +12,9 @@ highcharts_merch_explorer <- function(
   # Get data and initial variable creation
   df <- dataset %>%
     dplyr::filter(
-      .data$sitc %in% .env$goods,
-      .data$country_dest %in% .env$countries,
-      .data$origin == .env$origin
+      .data$sitc %in% goods,
+      .data$country_dest %in% countries,
+      .data$origin == origin_state
     ) %>%
     dplyr::select(sitc, country_dest, date, value) %>%
     dplyr::collect() %>%
@@ -164,7 +164,7 @@ highcharts_merch_explorer <- function(
 update_merch_explorer <- function(
     countries,
     goods,
-    origin,
+    origin_state,
     facet_by,
     smooth,
     proxy_id = "merch_explorer",
@@ -181,9 +181,9 @@ update_merch_explorer <- function(
   # Get data and initial variable creation
   df <- dataset %>%
     dplyr::filter(
-      .data$sitc %in% .env$goods,
-      .data$country_dest %in% .env$countries,
-      .data$origin == .env$origin
+      .data$sitc %in% goods,
+      .data$country_dest %in% countries,
+      .data$origin == origin_state
     ) %>%
     dplyr::select(sitc, country_dest, date, value) %>%
     dplyr::collect() %>%

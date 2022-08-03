@@ -5,24 +5,24 @@ highcharts_total_bop_bar_chart <- function(data = bop) {
 
   df <- data %>%
     dplyr::filter(
-      .data$indicator == "Chain Volume Measures",
-      .data$exports_imports == "Exports",
-      .data$state != "Australian Capital Territory",
-      .data$state != "Northern Territory",
-      .data$date == max(.data$date)
+      indicator == "Chain Volume Measures",
+      exports_imports == "Exports",
+      state != "Australian Capital Territory",
+      state != "Northern Territory",
+      date == max(date)
       ) %>%
-    dplyr::mutate(value = abs(.data$value)) %>%
+    dplyr::mutate(value = abs(value)) %>%
     dplyr::collect() %>%
-    dplyr::select(-.data$series_id, -.data$unit) %>%
+    dplyr::select(-series_id, -unit) %>%
     dplyr::mutate(state = dplyr::case_when(
-      .data$state == "New South Wales" ~ "NSW",
-      .data$state == "Victoria" ~ "Vic",
-      .data$state == "Queensland" ~ "Qld",
-      .data$state == "South Australia" ~ "SA",
-      .data$state == "Western Australia" ~ "WA",
-      .data$state == "Tasmania" ~ "Tas",
+      state == "New South Wales" ~ "NSW",
+      state == "Victoria" ~ "Vic",
+      state == "Queensland" ~ "Qld",
+      state == "South Australia" ~ "SA",
+      state == "Western Australia" ~ "WA",
+      state == "Tasmania" ~ "Tas",
     )) %>%
-    dplyr::mutate(goods_services = dplyr::if_else(.data$goods_services == "Goods and Services", "Total", .data$goods_services))
+    dplyr::mutate(goods_services = dplyr::if_else(goods_services == "Goods and Services", "Total", goods_services))
 
 
   latest_month <- format(max(df$date), "%B %Y")
@@ -30,10 +30,10 @@ highcharts_total_bop_bar_chart <- function(data = bop) {
 
   latest <- df %>%
     dplyr::filter(
-      .data$date == max(.data$date),
-      .data$goods_services == "Total") %>%
-    dplyr::select(.data$state, .data$value) %>%
-    dplyr::mutate(rank = dplyr::min_rank(-.data$value))
+      date == max(date),
+      goods_services == "Total") %>%
+    dplyr::select(state, value) %>%
+    dplyr::mutate(rank = dplyr::min_rank(-value))
 
 
   vic_rank <- latest$rank[latest$state == "Vic"]
@@ -54,7 +54,7 @@ highcharts_total_bop_bar_chart <- function(data = bop) {
   df %>%
     dplyr::mutate(
       state = factor(
-        .data$state,
+        state,
         levels = latest %>%
           dplyr::arrange(dplyr::desc(rank)) %>%
           dplyr::pull(state)
@@ -63,7 +63,7 @@ highcharts_total_bop_bar_chart <- function(data = bop) {
         goods_services,
         levels = c("Total", "Goods", "Services")
       ),
-      value = .data$value * 1e06
+      value = value * 1e06
       ) %>%
     select(goods_services, state, value) %>%
     arrange(desc(state), goods_services) %>%
@@ -97,9 +97,9 @@ highcharts_good_trade_line_chart <- function(data = bop) {
 
   df <- data %>%
     dplyr::filter(
-      .data$goods_services == "Goods",
-      .data$indicator == "Chain Volume Measures",
-      .data$state == "Victoria"
+      goods_services == "Goods",
+      indicator == "Chain Volume Measures",
+      state == "Victoria"
       )
 
 
@@ -109,29 +109,29 @@ highcharts_good_trade_line_chart <- function(data = bop) {
   }
 
   df<- df %>%
-    dplyr::select(-.data$series_id, -.data$unit) %>%
-    dplyr::mutate(value = abs(.data$value))
+    dplyr::select(-series_id, -unit) %>%
+    dplyr::mutate(value = abs(value))
 
   latest_month <- format(max(df$date), "%B %Y")
   year_prior <- format(max(df$date) %m-% months(12), "%B %Y") # https://lubridate.tidyverse.org/reference/mplus.html
 
 
   df <- df %>%
-    dplyr::group_by(.data$exports_imports) %>%
+    dplyr::group_by(exports_imports) %>%
     dplyr::arrange(date)%>%
     dplyr::mutate(
-      value = 100 * ((.data$value
-                      / dplyr::lag(.data$value,4)) - 1)) %>%
+      value = 100 * ((value
+                      / dplyr::lag(value,4)) - 1)) %>%
 
-    dplyr::filter(!is.na(.data$value)) %>%
+    dplyr::filter(!is.na(value)) %>%
     dplyr::ungroup()
 
   latest_export <- df %>%
     dplyr::filter(
-      .data$exports_imports == "Exports",
-      .data$date == max(.data$date)
+      exports_imports == "Exports",
+      date == max(date)
     ) %>%
-    dplyr::pull(.data$value) %>%
+    dplyr::pull(value) %>%
     djprshiny::round2(1)
 
   title <- paste0(
@@ -213,9 +213,9 @@ highcharts_services_trade_line_chart <- function(data = bop) {
 
   df <- data %>%
     dplyr::filter(
-                  .data$goods_services == "Services",
-                  .data$indicator == "Chain Volume Measures",
-                  .data$state == "Victoria"
+                  goods_services == "Services",
+                  indicator == "Chain Volume Measures",
+                  state == "Victoria"
     )
 
   if ('tbl_lazy' %in% class(df)) {
@@ -224,35 +224,35 @@ highcharts_services_trade_line_chart <- function(data = bop) {
   }
 
   df<- df %>%
-    dplyr::select(-.data$series_id, -.data$unit) %>%
-    dplyr::mutate(value = abs(.data$value))
+    dplyr::select(-series_id, -unit) %>%
+    dplyr::mutate(value = abs(value))
 
   latest_month <- format(max(df$date), "%B %Y")
   year_prior <- format(max(df$date) %m-% months(12), "%B %Y")
 
 
   df <- df %>%
-    dplyr::group_by(.data$exports_imports) %>%
+    dplyr::group_by(exports_imports) %>%
     dplyr::arrange(date)%>%
     dplyr::mutate(
-      value = 100 * ((.data$value
-                              / dplyr::lag(.data$value,4)) - 1)) %>%
+      value = 100 * ((value
+                              / dplyr::lag(value,4)) - 1)) %>%
 
-      dplyr::filter(!is.na(.data$value)) %>%
+      dplyr::filter(!is.na(value)) %>%
       dplyr::ungroup()
 
   df <- df %>%
        dplyr::mutate( tooltip = paste0(
-        .data$exports_imports, "\n",
-        format(.data$date, "%b %Y"), "\n",
-        djprshiny::round2(.data$value, 1), "%"))
+        exports_imports, "\n",
+        format(date, "%b %Y"), "\n",
+        djprshiny::round2(value, 1), "%"))
 
   latest_export <- df %>%
     dplyr::filter(
-      .data$exports_imports == "Exports",
-      .data$date == max(.data$date)
+      exports_imports == "Exports",
+      date == max(date)
     ) %>%
-    dplyr::pull(.data$value) %>%
+    dplyr::pull(value) %>%
     djprshiny::round2(1)
 
   caption <- paste0("Source: ABS Balance of Payment quarterly (latest data is from ", latest_month, ". Note: Data seasonally Adjusted & Chain Volume Measures")
@@ -338,13 +338,13 @@ highcharts_service_bop_bar_chart <- function(data = bop) {
 
   df <- data %>%
     dplyr::filter(
-      .data$goods_services == "Services",
-      .data$indicator == "Chain Volume Measures",
-      .data$state != "Australian Capital Territory",
-      .data$state != "Northern Territory",
+      goods_services == "Services",
+      indicator == "Chain Volume Measures",
+      state != "Australian Capital Territory",
+      state != "Northern Territory",
       date >= !!last_year
       ) %>%
-    dplyr::mutate(value = abs(.data$value))
+    dplyr::mutate(value = abs(value))
 
 
   if ('tbl_lazy' %in% class(df)) {
@@ -353,44 +353,44 @@ highcharts_service_bop_bar_chart <- function(data = bop) {
   }
 
     df <- df %>%
-    dplyr::select(-.data$series_id, -.data$unit) %>%
+    dplyr::select(-series_id, -unit) %>%
     dplyr::mutate(
                   state = dplyr::case_when(
-                    .data$state == "Australian Capital Territory" ~ "ACT",
-                    .data$state == "New South Wales" ~ "NSW",
-                    .data$state == "Victoria" ~ "Vic",
-                    .data$state == "Queensland" ~ "Qld",
-                    .data$state == "Northern Territory" ~ "NT",
-                    .data$state == "South Australia" ~ "SA",
-                    .data$state == "Western Australia" ~ "WA",
-                    .data$state == "Tasmania" ~ "Tas"
+                    state == "Australian Capital Territory" ~ "ACT",
+                    state == "New South Wales" ~ "NSW",
+                    state == "Victoria" ~ "Vic",
+                    state == "Queensland" ~ "Qld",
+                    state == "Northern Territory" ~ "NT",
+                    state == "South Australia" ~ "SA",
+                    state == "Western Australia" ~ "WA",
+                    state == "Tasmania" ~ "Tas"
       ))
 
 
   # % change of export and export since Dec 2020
   df <- df %>%
-    dplyr::group_by(.data$state, .data$exports_imports) %>%
-    dplyr::arrange(.data$date)%>%
-    dplyr::mutate(value = 100 * ((.data$value
-                                  / dplyr::lag(.data$value,4)) - 1)) %>%
+    dplyr::group_by(state, exports_imports) %>%
+    dplyr::arrange(date)%>%
+    dplyr::mutate(value = 100 * ((value
+                                  / dplyr::lag(value,4)) - 1)) %>%
     dplyr::ungroup()
 
   latest_export <- df %>%
     dplyr::filter(
-      .data$state == "Vic",
-      .data$exports_imports == "Exports",
-      .data$date == max(.data$date)
+      state == "Vic",
+      exports_imports == "Exports",
+      date == max(date)
     ) %>%
-    dplyr::pull(.data$value) %>%
+    dplyr::pull(value) %>%
     djprshiny::round2(1)
 
   latest_import <- df %>%
     dplyr::filter(
-      .data$state == "Vic",
-      .data$exports_imports == "Imports",
-      .data$date == max(.data$date)
+      state == "Vic",
+      exports_imports == "Imports",
+      date == max(date)
     ) %>%
-    dplyr::pull(.data$value) %>%
+    dplyr::pull(value) %>%
     djprshiny::round2(1)
 
   latest_month <- format(max(df$date), "%B %Y")
@@ -413,15 +413,15 @@ highcharts_service_bop_bar_chart <- function(data = bop) {
 
 
   df <- df %>%
-    dplyr::group_by(.data$state) %>%
-    dplyr::filter(.data$date == max(.data$date)) %>%
+    dplyr::group_by(state) %>%
+    dplyr::filter(date == max(date)) %>%
     dplyr::mutate(
       plot_order =
-        ifelse(.data$exports_imports == "Exports", value, as.numeric(NA))
+        ifelse(exports_imports == "Exports", value, as.numeric(NA))
     ) %>%
     dplyr::ungroup() %>%
     dplyr::arrange(desc(plot_order)) %>%
-    dplyr::mutate(state = factor(.data$state, levels = unique(.data$state)))
+    dplyr::mutate(state = factor(state, levels = unique(state)))
 
   df %>%
     select(exports_imports, state, value) %>%
@@ -463,12 +463,12 @@ highcharts_goods_bop_bar_chart <- function(data = bop) {
   last_year <- bop_dates$max - months(12)
 
   df <- data %>%
-    dplyr::filter(.data$goods_services == "Goods",
-                  .data$indicator == "Chain Volume Measures",
-                  .data$state != "Australian Capital Territory",
-                  .data$state != "Northern Territory",
+    dplyr::filter(goods_services == "Goods",
+                  indicator == "Chain Volume Measures",
+                  state != "Australian Capital Territory",
+                  state != "Northern Territory",
                   date >= !!last_year) %>%
-    dplyr::mutate(value = abs(.data$value))
+    dplyr::mutate(value = abs(value))
 
 
   if ('tbl_lazy' %in% class(df)) {
@@ -478,42 +478,42 @@ highcharts_goods_bop_bar_chart <- function(data = bop) {
 
 
   df<- df %>%
-    dplyr::select(-.data$series_id, -.data$unit) %>%
+    dplyr::select(-series_id, -unit) %>%
     dplyr::mutate(date = lubridate::ymd(date)) %>%
     dplyr::mutate(state = dplyr::case_when(
-      .data$state == "New South Wales" ~ "NSW",
-      .data$state == "Victoria" ~ "Vic",
-      .data$state == "Queensland" ~ "Qld",
-      .data$state == "South Australia" ~ "SA",
-      .data$state == "Western Australia" ~ "WA",
-      .data$state == "Tasmania" ~ "Tas"
+      state == "New South Wales" ~ "NSW",
+      state == "Victoria" ~ "Vic",
+      state == "Queensland" ~ "Qld",
+      state == "South Australia" ~ "SA",
+      state == "Western Australia" ~ "WA",
+      state == "Tasmania" ~ "Tas"
     ))
 
 
   # % change of export and export since Dec 2019
   df <- df %>%
-    dplyr::group_by(.data$state, .data$exports_imports) %>%
-    dplyr::arrange(.data$date)%>%
-    dplyr::mutate(value = 100 * ((.data$value
-                                  / dplyr::lag(.data$value,4)) - 1)) %>%
+    dplyr::group_by(state, exports_imports) %>%
+    dplyr::arrange(date)%>%
+    dplyr::mutate(value = 100 * ((value
+                                  / dplyr::lag(value,4)) - 1)) %>%
     dplyr::ungroup()
 
   latest_export <- df %>%
     dplyr::filter(
-      .data$state == "Vic",
-      .data$exports_imports == "Exports",
-      .data$date == max(.data$date)
+      state == "Vic",
+      exports_imports == "Exports",
+      date == max(date)
     ) %>%
-    dplyr::pull(.data$value) %>%
+    dplyr::pull(value) %>%
     djprshiny::round2(1)
 
   latest_import <- df %>%
     dplyr::filter(
-      .data$state == "Vic",
-      .data$exports_imports == "Imports",
-      .data$date == max(.data$date)
+      state == "Vic",
+      exports_imports == "Imports",
+      date == max(date)
     ) %>%
-    dplyr::pull(.data$value) %>%
+    dplyr::pull(value) %>%
     djprshiny::round2(1)
 
   latest_month <- format(max(df$date), "%B %Y")
@@ -537,15 +537,15 @@ highcharts_goods_bop_bar_chart <- function(data = bop) {
 
 
   df <- df %>%
-    dplyr::group_by(.data$state) %>%
-    dplyr::filter(.data$date == max(.data$date)) %>%
+    dplyr::group_by(state) %>%
+    dplyr::filter(date == max(date)) %>%
     dplyr::mutate(
       plot_order =
-        ifelse(.data$exports_imports == "Exports", value, as.numeric(NA))
+        ifelse(exports_imports == "Exports", value, as.numeric(NA))
       ) %>%
     dplyr::ungroup() %>%
     dplyr::arrange(desc(plot_order)) %>%
-    dplyr::mutate(state = factor(.data$state, levels = unique(.data$state)))
+    dplyr::mutate(state = factor(state, levels = unique(state)))
 
   df %>%
     select(exports_imports, state, value) %>%
@@ -585,9 +585,9 @@ highcharts_goods_bop_bar_chart <- function(data = bop) {
 highcharts_goods_export_import_line <- function(data = bop) {
   df <- data %>%
     dplyr::filter(
-      .data$state == "Victoria",
-      .data$goods_services == "Goods and Services",
-      .data$indicator == "Chain Volume Measures"
+      state == "Victoria",
+      goods_services == "Goods and Services",
+      indicator == "Chain Volume Measures"
     )
 
   if ('tbl_lazy' %in% class(df)) {
@@ -597,32 +597,32 @@ highcharts_goods_export_import_line <- function(data = bop) {
 
 
     df <- df %>%
-    dplyr::select(-.data$series_id, -.data$unit) %>%
-    dplyr::mutate(value = abs(.data$value))
+    dplyr::select(-series_id, -unit) %>%
+    dplyr::mutate(value = abs(value))
 
   # Annual growth
 
   df <- df %>%
-    dplyr::group_by(.data$exports_imports) %>%
+    dplyr::group_by(exports_imports) %>%
     dplyr::mutate(
-      value = 100 * ((.data$value / dplyr::lag(.data$value, 4) - 1))
+      value = 100 * ((value / dplyr::lag(value, 4) - 1))
     ) %>%
-    dplyr::filter(!is.na(.data$value)) %>%
+    dplyr::filter(!is.na(value)) %>%
     dplyr::ungroup()
 
   latest_month <- format(max(df$date), "%B %Y")
 
   export_latest <- df %>%
-    dplyr::filter(.data$exports_imports == "Exports" &
-      .data$date == max(.data$date)) %>%
-    dplyr::mutate(value = djprshiny::round2(.data$value, 1)) %>%
-    dplyr::pull(.data$value)
+    dplyr::filter(exports_imports == "Exports" &
+      date == max(date)) %>%
+    dplyr::mutate(value = djprshiny::round2(value, 1)) %>%
+    dplyr::pull(value)
 
   import_latest <- df %>%
-    dplyr::filter(.data$exports_imports == "Imports" &
-      .data$date == max(.data$date)) %>%
-    dplyr::mutate(value = djprshiny::round2(.data$value, 1)) %>%
-    dplyr::pull(.data$value)
+    dplyr::filter(exports_imports == "Imports" &
+      date == max(date)) %>%
+    dplyr::mutate(value = djprshiny::round2(value, 1)) %>%
+    dplyr::pull(value)
 
 
 
@@ -720,8 +720,8 @@ highcharts_goods_export_import_line <- function(data = bop) {
 highcharts_trade_balance_line_chart <- function(data = bop) {
   df <- data %>%
     dplyr::filter(
-      .data$state == "Victoria",
-      .data$indicator == "Chain Volume Measures"
+      state == "Victoria",
+      indicator == "Chain Volume Measures"
     )
 
     if ('tbl_lazy' %in% class(df)) {
@@ -731,16 +731,16 @@ highcharts_trade_balance_line_chart <- function(data = bop) {
 
 
   df <-df %>%
-    dplyr::select(-.data$series_id, -.data$unit) %>%
-    dplyr::mutate(value = abs(.data$value))
+    dplyr::select(-series_id, -unit) %>%
+    dplyr::mutate(value = abs(value))
 
   # trade balance
   df <- df %>%
     tidyr::pivot_wider(
-      names_from = .data$exports_imports,
-      values_from = .data$value
+      names_from = exports_imports,
+      values_from = value
     ) %>%
-    dplyr::mutate(value = .data$Exports - .data$Imports)
+    dplyr::mutate(value = Exports - Imports)
 
 
   latest_month <- format(max(df$date), "%B %Y")
@@ -751,19 +751,19 @@ highcharts_trade_balance_line_chart <- function(data = bop) {
 
 
   df <- df %>%
-    dplyr::group_by(.data$goods_services) %>%
+    dplyr::group_by(goods_services) %>%
     dplyr::mutate(
-      value = 100 * ((.data$value
-                      / dplyr::lag(.data$value,4)) - 1)) %>%
-        dplyr::filter(!is.na(.data$value)) %>%
+      value = 100 * ((value
+                      / dplyr::lag(value,4)) - 1)) %>%
+        dplyr::filter(!is.na(value)) %>%
         dplyr::ungroup()
 
 
   total_latest <- df %>%
-    dplyr::filter(.data$goods_services == "Goods and Services" &
-      .data$date == max(.data$date)) %>%
-    dplyr::mutate(value = djprshiny::round2(.data$value, 1)) %>%
-    dplyr::pull(.data$value)
+    dplyr::filter(goods_services == "Goods and Services" &
+      date == max(date)) %>%
+    dplyr::mutate(value = djprshiny::round2(value, 1)) %>%
+    dplyr::pull(value)
 
 
   title <- paste0(
@@ -840,14 +840,14 @@ highcharts_trade_balance_line_chart <- function(data = bop) {
 highcharts_NSW_Vic_goods_line_chart <- function(data = bop) {
   df <- data %>%
     dplyr::filter(
-      .data$goods_services == "Goods",
-      .data$indicator == "Chain Volume Measures",
-      .data$state %in% c("New South Wales", "Victoria")
+      goods_services == "Goods",
+      indicator == "Chain Volume Measures",
+      state %in% c("New South Wales", "Victoria")
       ) %>%
-    dplyr::mutate(value = abs(.data$value)) %>%
+    dplyr::mutate(value = abs(value)) %>%
     dplyr::mutate(state = dplyr::case_when(
-      .data$state == "New South Wales" ~ "NSW",
-      .data$state == "Victoria" ~ "Vic"
+      state == "New South Wales" ~ "NSW",
+      state == "Victoria" ~ "Vic"
     ))
 
   if ('tbl_lazy' %in% class(df)) {
@@ -857,37 +857,37 @@ highcharts_NSW_Vic_goods_line_chart <- function(data = bop) {
 
 
   df<-df %>%
-    dplyr::select(-.data$series_id, -.data$unit) %>%
-    dplyr::group_by(.data$exports_imports, .data$goods_services, .data$state) %>%
+    dplyr::select(-series_id, -unit) %>%
+    dplyr::group_by(exports_imports, goods_services, state) %>%
     dplyr::mutate(
-      value = 100 * ((.data$value / dplyr::lag(.data$value, 4) - 1))
+      value = 100 * ((value / dplyr::lag(value, 4) - 1))
     ) %>%
-    dplyr::mutate(value = djprshiny::round2(.data$value, 1)) %>%
-    dplyr::filter(!is.na(.data$value)) %>%
+    dplyr::mutate(value = djprshiny::round2(value, 1)) %>%
+    dplyr::filter(!is.na(value)) %>%
     dplyr::ungroup() %>%
     dplyr::mutate(tooltip = paste0(
-      .data$exports_imports, "\n",
-      format(.data$date, "%b %Y"), "\n",
-      djprshiny::round2(.data$value, 1), "%"
+      exports_imports, "\n",
+      format(date, "%b %Y"), "\n",
+      djprshiny::round2(value, 1), "%"
     ))
 
 
   latest_vic_export <- df %>%
     dplyr::filter(
-      .data$state == "Vic",
-      .data$exports_imports == "Exports",
-      .data$date == max(.data$date)
+      state == "Vic",
+      exports_imports == "Exports",
+      date == max(date)
     ) %>%
-    dplyr::pull(.data$value) %>%
+    dplyr::pull(value) %>%
     djprshiny::round2(1)
 
   latest_NSW_export <- df %>%
     dplyr::filter(
-      .data$state == "NSW",
-      .data$exports_imports == "Exports",
-      .data$date == max(.data$date)
+      state == "NSW",
+      exports_imports == "Exports",
+      date == max(date)
     ) %>%
-    dplyr::pull(.data$value) %>%
+    dplyr::pull(value) %>%
     djprshiny::round2(1)
 
   latest_month <- format(max(df$date), "%B %Y")
@@ -990,13 +990,13 @@ highcharts_NSW_Vic_goods_line_chart <- function(data = bop) {
 highcharts_NSW_Vic_Services_line_chart <- function(data = bop) {
 
   df <- data %>%
-    dplyr::filter(.data$goods_services == "Services",
-                  .data$indicator == "Chain Volume Measures",
-                  .data$state %in% c("New South Wales", "Victoria")) %>%
-    dplyr::mutate(value = abs(.data$value)) %>%
+    dplyr::filter(goods_services == "Services",
+                  indicator == "Chain Volume Measures",
+                  state %in% c("New South Wales", "Victoria")) %>%
+    dplyr::mutate(value = abs(value)) %>%
     dplyr::mutate(state = dplyr::case_when(
-      .data$state == "New South Wales" ~ "NSW",
-      .data$state == "Victoria" ~ "Vic"
+      state == "New South Wales" ~ "NSW",
+      state == "Victoria" ~ "Vic"
     ))
 
   if ('tbl_lazy' %in% class(df)) {
@@ -1005,32 +1005,32 @@ highcharts_NSW_Vic_Services_line_chart <- function(data = bop) {
   }
 
   df<-df %>%
-    dplyr::select(-.data$series_id, -.data$unit) %>%
-    dplyr::group_by(.data$exports_imports, .data$goods_services, .data$state) %>%
+    dplyr::select(-series_id, -unit) %>%
+    dplyr::group_by(exports_imports, goods_services, state) %>%
     dplyr::mutate(
-      value = 100 * ((.data$value / dplyr::lag(.data$value, 4) - 1))
+      value = 100 * ((value / dplyr::lag(value, 4) - 1))
     ) %>%
-    dplyr::mutate(value = djprshiny::round2(.data$value, 1)) %>%
-    dplyr::filter(!is.na(.data$value)) %>%
+    dplyr::mutate(value = djprshiny::round2(value, 1)) %>%
+    dplyr::filter(!is.na(value)) %>%
     dplyr::ungroup()
 
 
   latest_vic_export <- df %>%
     dplyr::filter(
-      .data$state == "Vic",
-      .data$exports_imports == "Exports",
-      .data$date == max(.data$date)
+      state == "Vic",
+      exports_imports == "Exports",
+      date == max(date)
     ) %>%
-    dplyr::pull(.data$value) %>%
+    dplyr::pull(value) %>%
     djprshiny::round2(1)
 
   latest_NSW_export <- df %>%
     dplyr::filter(
-      .data$state == "NSW",
-      .data$exports_imports == "Exports",
-      .data$date == max(.data$date)
+      state == "NSW",
+      exports_imports == "Exports",
+      date == max(date)
     ) %>%
-    dplyr::pull(.data$value) %>%
+    dplyr::pull(value) %>%
     djprshiny::round2(1)
 
   latest_month <- format(max(df$date), "%B %Y")
@@ -1129,8 +1129,8 @@ highcharts_good_services_chart <- function(data = bop) {
 
   df <- data %>%
     dplyr::filter(
-      .data$state == "Victoria",
-      .data$indicator == "Chain Volume Measures"
+      state == "Victoria",
+      indicator == "Chain Volume Measures"
     )
 
 
@@ -1140,19 +1140,19 @@ highcharts_good_services_chart <- function(data = bop) {
   }
 
   df <- df %>%
-    dplyr::select(-.data$series_id, -.data$unit) %>%
-    dplyr::mutate(goods_services = dplyr::if_else(.data$goods_services == "Goods and Services", "Total", .data$goods_services)) %>%
-    dplyr::mutate(value = abs(.data$value * 1000000))
+    dplyr::select(-series_id, -unit) %>%
+    dplyr::mutate(goods_services = dplyr::if_else(goods_services == "Goods and Services", "Total", goods_services)) %>%
+    dplyr::mutate(value = abs(value * 1000000))
 
 
   latest_month <- format(max(df$date), "%B %Y")
 
   latest_change <- df %>%
-    dplyr::group_by(.data$exports_imports) %>%
-    dplyr::arrange(.data$date) %>%
-    dplyr::filter(.data$goods_services == "Total") %>%
-    dplyr::mutate(change = .data$value - dplyr::lag(.data$value, 1)) %>%
-    dplyr::filter(.data$date == max(.data$date)) %>%
+    dplyr::group_by(exports_imports) %>%
+    dplyr::arrange(date) %>%
+    dplyr::filter(goods_services == "Total") %>%
+    dplyr::mutate(change = value - dplyr::lag(value, 1)) %>%
+    dplyr::filter(date == max(date)) %>%
     dplyr::ungroup()
 
 

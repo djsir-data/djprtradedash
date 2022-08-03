@@ -45,26 +45,26 @@ highcharts_launchpad_goods <- function(
 
   top_5_code <- data %>%
     dplyr::filter(
-      .data$country_dest == "Total",
-      .data$origin == "Victoria",
-      nchar(.data$sitc_code) == !!sitc_level,
-      .data$date >= past_12_months,
-      .data$sitc != "Total",
-      substr(.data$sitc_code, 1, 1) != "9" #confidential items and misc
+      country_dest == "Total",
+      origin == "Victoria",
+      nchar(sitc_code) == !!sitc_level,
+      date >= past_12_months,
+      sitc != "Total",
+      substr(sitc_code, 1, 1) != "9" #confidential items and misc
     ) %>%
     dplyr::group_by(sitc_code) %>%
-    dplyr::summarise(value = sum(.data$value, na.rm = TRUE)) %>%
+    dplyr::summarise(value = sum(value, na.rm = TRUE)) %>%
     dplyr::ungroup() %>%
-    dplyr::slice_max(.data$value, n = top) %>%
-    dplyr::select(.data$sitc_code) %>%
+    dplyr::slice_max(value, n = top) %>%
+    dplyr::select(sitc_code) %>%
     dplyr::collect() %>%
     dplyr::pull()
 
   level_3_data <- data %>%
     dplyr::filter(
-      .data$country_dest == "Total",
-      .data$origin == "Victoria",
-      .data$sitc_code %in% !!top_5_code,
+      country_dest == "Total",
+      origin == "Victoria",
+      sitc_code %in% !!top_5_code,
     ) %>%
     dplyr::collect() %>%
     dplyr::group_by(sitc) %>%
@@ -84,8 +84,8 @@ highcharts_launchpad_goods <- function(
 
   level_3_data %>%
     dplyr::filter(
-      .data$date >= dates[1],
-      .data$date <= dates[2]
+      date >= dates[1],
+      date <= dates[2]
     ) %>%
     highcharter::hchart(
       chart_type,
@@ -210,42 +210,42 @@ table_countries <- function(exports = merch, imports = merch_imp){
   # Get the top export countries by sum of 12 month value
   top_exp <- exports %>%
     dplyr::filter(
-      .data$country_dest != "Total",
-      .data$origin == "Victoria",
-      .data$date >= past_12_months,
-      .data$sitc == "Total"
+      country_dest != "Total",
+      origin == "Victoria",
+      date >= past_12_months,
+      sitc == "Total"
     ) %>%
     dplyr::group_by(country_dest) %>%
     dplyr::summarise(value = sum(value, na.rm = TRUE)) %>%
     dplyr::ungroup() %>%
-    dplyr::slice_max(.data$value, n = 5) %>%
-    dplyr::select(.data$country_dest) %>%
+    dplyr::slice_max(value, n = 5) %>%
+    dplyr::select(country_dest) %>%
     dplyr::collect() %>%
     dplyr::pull()
 
   # Get the top import countries by sum of 12 month value
   top_imp <- imports %>%
     dplyr::filter(
-      .data$country_origin != "Total",
-      .data$dest == "Victoria",
-      .data$date >= past_12_months,
-      .data$sitc == "Total"
+      country_origin != "Total",
+      dest == "Victoria",
+      date >= past_12_months,
+      sitc == "Total"
     ) %>%
     dplyr::group_by(country_origin) %>%
     dplyr::summarise(value = sum(value, na.rm = TRUE)) %>%
     dplyr::ungroup() %>%
-    dplyr::slice_max(.data$value, n = 5) %>%
-    dplyr::select(.data$country_origin) %>%
+    dplyr::slice_max(value, n = 5) %>%
+    dplyr::select(country_origin) %>%
     dplyr::collect() %>%
     dplyr::pull()
 
   exp <- exports %>%
     dplyr::filter(
-      .data$country_dest != "Total",
-      .data$origin == "Victoria",
-      .data$date >= past_12_months,
-      .data$sitc == "Total",
-      .data$country_dest %in% top_exp
+      country_dest != "Total",
+      origin == "Victoria",
+      date >= past_12_months,
+      sitc == "Total",
+      country_dest %in% top_exp
     ) %>%
     dplyr::arrange(country_dest, date) %>%
     dplyr::collect() %>%
@@ -269,11 +269,11 @@ table_countries <- function(exports = merch, imports = merch_imp){
 
   imp <- imports %>%
     dplyr::filter(
-      .data$country_origin != "Total",
-      .data$dest == "Victoria",
-      .data$date >= past_12_months,
-      .data$sitc == "Total",
-      .data$country_origin %in% top_imp
+      country_origin != "Total",
+      dest == "Victoria",
+      date >= past_12_months,
+      sitc == "Total",
+      country_origin %in% top_imp
     ) %>%
     dplyr::arrange(country_origin, date) %>%
     dplyr::collect() %>%
@@ -313,9 +313,9 @@ highcharts_bop_export_chart <- function(
 
   df <- data %>%
     dplyr::filter(
-      .data$state == "Victoria",
-      .data$exports_imports == "Exports",
-      .data$indicator == "Chain Volume Measures"
+      state == "Victoria",
+      exports_imports == "Exports",
+      indicator == "Chain Volume Measures"
     )
 
   if ('tbl_lazy' %in% class(df)) {
@@ -324,17 +324,17 @@ highcharts_bop_export_chart <- function(
   }
 
   df <- df %>%
-    dplyr::select(-.data$series_id, -.data$unit) %>%
-    dplyr::mutate(goods_services = dplyr::if_else(.data$goods_services == "Goods and Services", "Total", .data$goods_services)) %>%
-    dplyr::mutate(value = abs(.data$value) * 1000000)
+    dplyr::select(-series_id, -unit) %>%
+    dplyr::mutate(goods_services = dplyr::if_else(goods_services == "Goods and Services", "Total", goods_services)) %>%
+    dplyr::mutate(value = abs(value) * 1000000)
 
 
   latest_month <- format(max(df$date), "%B %Y")
 
   latest_change <- df %>%
-    dplyr::filter(.data$goods_services == "Total") %>%
-    dplyr::mutate(change = .data$value - dplyr::lag(.data$value, 1)) %>%
-    dplyr::filter(!is.na(.data$change), .data$date == max(.data$date))
+    dplyr::filter(goods_services == "Total") %>%
+    dplyr::mutate(change = value - dplyr::lag(value, 1)) %>%
+    dplyr::filter(!is.na(change), date == max(date))
 
 
 
@@ -412,11 +412,11 @@ highcharts_rising_goods <- function(
 
   top_5_code <- data %>%
     dplyr::filter(
-      .data$country_dest == "Total",
-      .data$origin == "Victoria",
-      nchar(.data$sitc_code) == !!sitc_level,
-      .data$sitc != "Total",
-      substr(.data$sitc_code, 1, 1) != "9" #confidential items and misc
+      country_dest == "Total",
+      origin == "Victoria",
+      nchar(sitc_code) == !!sitc_level,
+      sitc != "Total",
+      substr(sitc_code, 1, 1) != "9" #confidential items and misc
     ) %>%
     dplyr::arrange(sitc_code, date) %>%
     dplyr::collect() %>%
@@ -426,15 +426,15 @@ highcharts_rising_goods <- function(
     dplyr::summarise(mean_growth = mean(year_on_year_growth), value = sum(value)) %>%
     dplyr::filter(value >= !!min_annual_value) %>%
     dplyr::ungroup() %>%
-    dplyr::slice_max(.data$mean_growth, n = top) %>%
-    dplyr::select(.data$sitc_code) %>%
+    dplyr::slice_max(mean_growth, n = top) %>%
+    dplyr::select(sitc_code) %>%
     dplyr::pull()
 
   level_3_data <- data %>%
     dplyr::filter(
-      .data$country_dest == "Total",
-      .data$origin == "Victoria",
-      .data$sitc_code %in% !!top_5_code,
+      country_dest == "Total",
+      origin == "Victoria",
+      sitc_code %in% !!top_5_code,
     ) %>%
     dplyr::collect() %>%
     dplyr::group_by(sitc) %>%

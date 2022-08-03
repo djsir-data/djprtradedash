@@ -183,8 +183,8 @@ load_tabs <- function(){
 
   bop %>%
     dplyr::summarise(
-      min = min(.data$date, na.rm = TRUE),
-      max = max(.data$date, na.rm = TRUE)
+      min = min(date, na.rm = TRUE),
+      max = max(date, na.rm = TRUE)
     ) %>%
     dplyr::collect()  %>%
     dplyr::mutate(dplyr::across(dplyr::everything(), as.Date)) %>%

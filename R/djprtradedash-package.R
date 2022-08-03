@@ -11,8 +11,11 @@
 #' @importFrom data.table .SD
 #' @importFrom data.table :=
 #' @importFrom data.table data.table
-#' @importFrom dplyr .data
+#' @importFrom dplyr %>%
 #' @importFrom lubridate %m-%
-#' @importFrom rlang .env
 ## usethis namespace: end
+
+#' @import dplyr
+#' @import highcharter
+#' @import shiny
 NULL

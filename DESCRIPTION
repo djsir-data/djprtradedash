@@ -16,19 +16,13 @@ RoxygenNote: 7.1.2
 Suggests: 
     covr,
     rmarkdown,
-    memoise,
     testthat (>= 3.0.0),
     assertthat
-Imports: 
-    djprtheme (>= 0.0.2.903),
+Imports:
     djprshiny (>= 0.0.6.905),
     lubridate,
-    cachem,
     dplyr,
-    ggrepel,
-    ggplot2,
     glue,
-    rlang,
     shiny,
     shinyWidgets,
     readabs (>= 0.4.10.901),
@@ -41,17 +35,14 @@ Imports:
     DT,
     slider,
     utils,
-    shinydashboard,
+    shinydashboardPlus,
     RPostgres,
     httr,
     pool,
     highcharter,
     readxl,
-    flextable,
-    ggiraph
+    flextable
 Remotes: 
-    djpr-data/djprshiny,
-    djpr-data/djprtheme,
     MattCowgill/readabs
 Depends: 
     R (>= 3.5.0)
