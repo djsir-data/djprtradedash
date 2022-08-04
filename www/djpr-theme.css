@@ -1,0 +1,48 @@
+.skin-blue .main-header .navbar {
+  background: transparent; height: 50px;
+}
+.skin-blue .main-header .logo {
+  display: none;
+
+}
+.skin-blue .main-header .navbar .sidebar-toggle {
+  height: auto;
+
+}
+
+#sidebarCollapsed {
+  padding-top: 50px;
+
+}
+
+.content{
+  margin-top: -50px;
+
+}
+
+
+.box .highchart{
+  padding:15px;
+}
+
+/*
+.small-box h2 {
+  padding = 15px;
+}
+*/
+.main-header .sidebar-toggle {
+  color:#1e282c;
+  background-color: #53565a;
+}
+
+/*
+.small-box:hover{
+
+}
+*/
+
+
+.small-box{
+  pointer-events: none;
+  color:#FFFFFF;
+}

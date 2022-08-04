@@ -1,10 +1,24 @@
 
 ui <- function() {
+
+  custom_header <- tags$header(
+    class = "main-header fixed",
+    tags$a(
+      class = "sidebar-toggle",
+      href = "#",
+      `data-toggle` = "offcanvas",
+      role = "button",
+      span(
+        class = "sr-only",
+        "Toggle navigation"
+      )
+    )
+  )
+
+
   shinydashboard::dashboardPage(
     title = "Victorian International Trade",
-    header = shinydashboard::dashboardHeader(
-      title = shiny::HTML("Victorian<br/>International Trade"),
-      titleWidth = "40%"),
+    header = custom_header,
     sidebar = shinydashboard::dashboardSidebar(
       shinydashboard::sidebarMenu(id = 'tabs',
         shinydashboard::menuItem("Home", tabName = "launchpad", selected = TRUE),
@@ -16,10 +30,14 @@ ui <- function() {
       width = "250px"
     ),
     body = shinydashboard::dashboardBody(
-      djprshiny::djpr_dash_theme(),
+      tags$head(
+        # includeCSS("www/tradedash.css")
+        shiny::tags$link(rel = "stylesheet", type = "text/css", href = "djprshiny/dashboard.css"),
+        shiny::tags$link(rel = "stylesheet", type = "text/css", href = "djprshiny/bs5-card2.css"),
+        includeCSS("www/djpr-theme.css")
+        ),
       shiny::tags$script("$('html').attr(\"lang\", \"en\")"),
       shiny::tags$script("$('section.content').attr(\"role\", \"main\")"),
-      shiny::tags$style(".highchart{padding-left:10px;padding-top:10px;padding-right:15px;padding-bottom:10px;}"),
       shinydashboard::tabItems(
         shinydashboard::tabItem("launchpad", page_launchpadUI('lp')),
         shinydashboard::tabItem("merch", page_merchUI()),
