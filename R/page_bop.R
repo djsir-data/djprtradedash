@@ -3,7 +3,10 @@ page_bopUI <- function(...) {
   shiny::fluidPage(
 
     # Overview
-    djprshiny::djpr_h2_box("Balance of Payments") %>% fluidRow(),
+    "Balance of Payments" %>%
+      h2() %>% div(class = "inner", style = "background-color: #1F1547;") %>%
+      div(class = "small-box") %>% column(12, .) %>%
+      fluidRow(),
 
     fluidRow(
       column(
@@ -34,7 +37,10 @@ page_bopUI <- function(...) {
 
 
     # Goods
-    djprshiny::djpr_h2_box("Goods") %>% fluidRow(),
+    "Goods" %>%
+      h2() %>% div(class = "inner", style = "background-color: #1F1547;") %>%
+      div(class = "small-box") %>% column(12, .) %>%
+      fluidRow(),
 
     fluidRow(
       column(
@@ -64,7 +70,10 @@ page_bopUI <- function(...) {
     ),
 
     # Services
-    djprshiny::djpr_h2_box("Services") %>% fluidRow(),
+    "Services" %>%
+      h2() %>% div(class = "inner", style = "background-color: #1F1547;") %>%
+      div(class = "small-box") %>% column(12, .) %>%
+      fluidRow(),
 
     fluidRow(
       column(
@@ -95,7 +104,10 @@ page_bopUI <- function(...) {
     ),
 
     # Balance of trade
-    djprshiny::djpr_h2_box("Balance of Trade") %>% fluidRow(),
+    "Balance of Trade" %>%
+      h2() %>% div(class = "inner", style = "background-color: #1F1547;") %>%
+      div(class = "small-box") %>% column(12, .) %>%
+      fluidRow(),
 
     fluidRow(
       column(

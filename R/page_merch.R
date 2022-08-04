@@ -2,7 +2,10 @@ page_merchUI <- function(...) {
 
   shiny::fluidPage(
 
-    djprshiny::djpr_h2_box("Merchandise exports") %>% fluidRow(),
+    "Merchandise exports" %>%
+      h2() %>% div(class = "inner", style = "background-color: #1F1547;") %>%
+      div(class = "small-box") %>% column(12, .) %>% 
+      fluidRow(),
     shiny::fluidRow(
 
       # Chart option selectors

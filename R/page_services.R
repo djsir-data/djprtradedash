@@ -2,7 +2,11 @@ page_servicesUI <- function(...){
   shiny::fluidPage(
 
     # Top pie chart
-    djprshiny::djpr_h2_box("What services is victoria trading?") %>% fluidRow(),
+    "What services is Victoria trading?" %>%
+      h2() %>% div(class = "inner", style = "background-color: #1F1547;") %>%
+      div(class = "small-box") %>% column(12, .) %>% 
+      fluidRow(),
+
     shiny::fluidRow(
         column(
           8,
@@ -24,8 +28,11 @@ page_servicesUI <- function(...){
     ),
 
 
-    djprshiny::djpr_h2_box("Comparing service exports to other states") %>% fluidRow(),
-    fluidRow(
+    "Comparing service exports to other states" %>%
+      h2() %>% div(class = "inner", style = "background-color: #1F1547;") %>%
+      div(class = "small-box") %>% column(12, .) %>% 
+      fluidRow(),
+
       column(
         3,
         div(
@@ -76,6 +83,5 @@ page_servicesUI <- function(...){
     )
 
 
-    #
-  )
+
 }
