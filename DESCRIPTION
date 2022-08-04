@@ -35,7 +35,7 @@ Imports:
     DT,
     slider,
     utils,
-    shinydashboardPlus,
+    shinydashboard,
     RPostgres,
     httr,
     pool,
