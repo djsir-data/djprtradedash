@@ -110,8 +110,8 @@ highcharts_launchpad_goods <- function(
       tickAmount = 6,
       accessibility = list(description = "Exports in Australian dollars")
       ) %>%
-    highcharter::hc_add_dependency("plugins/series-label.js") %>%
-    highcharter::hc_add_dependency("plugins/accessibility.js") %>%
+    #highcharter::hc_add_dependency("plugins/series-label.js") %>%
+    #highcharter::hc_add_dependency("plugins/accessibility.js") %>%
     highcharter::hc_exporting(
       enabled = TRUE,
       filename = "Victorias good exports"
@@ -182,8 +182,8 @@ highcharts_launchpad_services <- function(
       labels = list(format = "${text}"),
       tickAmount = 6
     ) %>%
-    highcharter::hc_add_dependency("plugins/series-label.js") %>%
-    highcharter::hc_add_dependency("plugins/accessibility.js") %>%
+    #highcharter::hc_add_dependency("plugins/series-label.js") %>%
+    #highcharter::hc_add_dependency("plugins/accessibility.js") %>%
     highcharter::hc_exporting(
       enabled = TRUE,
       filename = "Victorias service exports"
@@ -359,8 +359,8 @@ highcharts_bop_export_chart <- function(
       title = list(text = "Exports"),
       labels = list(format = "${text}")
     ) %>%
-    highcharter::hc_add_dependency("plugins/series-label.js") %>%
-    highcharter::hc_add_dependency("plugins/accessibility.js") %>%
+    #highcharter::hc_add_dependency("plugins/series-label.js") %>%
+    #highcharter::hc_add_dependency("plugins/accessibility.js") %>%
     highcharter::hc_title(text = title) %>%
     highcharter::hc_subtitle(text = "Victoria's exports of goods and services") %>%
     highcharter::hc_caption(text = caption) %>%
@@ -476,8 +476,8 @@ highcharts_rising_goods <- function(
       tickAmount = 6,
       accessibility = list(description = "Exports in Australian dollars")
     ) %>%
-    highcharter::hc_add_dependency("plugins/series-label.js") %>%
-    highcharter::hc_add_dependency("plugins/accessibility.js") %>%
+    #highcharter::hc_add_dependency("plugins/series-label.js") %>%
+    #highcharter::hc_add_dependency("plugins/accessibility.js") %>%
     highcharter::hc_exporting(
       enabled = TRUE,
       filename = "Victorias good exports"
