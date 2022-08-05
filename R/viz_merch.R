@@ -114,8 +114,8 @@ highcharts_merch_explorer <- function(
     hc_add_series_list(df) %>%
     hc_chart(height = 250 * length(y_axis_labs)) %>%
     highcharter::hc_plotOptions(series = list(label = list(enabled = TRUE))) %>%
-    highcharter::hc_add_dependency("plugins/series-label.js") %>%
-    highcharter::hc_add_dependency("plugins/accessibility.js") %>%
+    #highcharter::hc_add_dependency("plugins/series-label.js") %>%
+    #highcharter::hc_add_dependency("plugins/accessibility.js") %>%
     highcharter::hc_exporting(enabled = TRUE) %>%
     highcharter::hc_caption(
       text = paste0(
