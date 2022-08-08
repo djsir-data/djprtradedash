@@ -147,8 +147,8 @@ highchart(type = "stock") %>%
     tickAmount = 6,
     accessibility = list(description = "Exports in Australian dollars")
   ) %>%
-  highcharter::hc_add_dependency("plugins/series-label.js") %>%
-  highcharter::hc_add_dependency("plugins/accessibility.js") %>%
+  #highcharter::hc_add_dependency("plugins/series-label.js") %>%
+  #highcharter::hc_add_dependency("plugins/accessibility.js") %>%
   highcharter::hc_exporting(
     enabled = TRUE,
     filename = paste(product, "exports")

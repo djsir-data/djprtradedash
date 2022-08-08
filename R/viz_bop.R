@@ -83,7 +83,7 @@ highcharts_total_bop_bar_chart <- function(data = bop) {
       accessibility = list(description = "Exports in Australian dollars")
     ) %>%
     highcharter::hc_xAxis(title = list(text = NULL)) %>%
-    highcharter::hc_add_dependency("plugins/accessibility.js") %>%
+    #highcharter::hc_add_dependency("plugins/accessibility.js") %>%
     highcharter::hc_exporting(enabled = TRUE) %>%
     highcharter::hc_title(text = title) %>%
     highcharter::hc_subtitle(text = "Export of goods and services by Australian state") %>%
@@ -164,8 +164,8 @@ highcharts_good_trade_line_chart <- function(data = bop) {
         dashStyle = "LongDash"
       ))
     ) %>%
-    highcharter::hc_add_dependency("plugins/series-label.js") %>%
-    highcharter::hc_add_dependency("plugins/accessibility.js") %>%
+    #highcharter::hc_add_dependency("plugins/series-label.js") %>%
+    #highcharter::hc_add_dependency("plugins/accessibility.js") %>%
     highcharter::hc_exporting(enabled = TRUE) %>%
     highcharter::hc_title(text = title) %>%
     highcharter::hc_subtitle(
@@ -285,8 +285,8 @@ highcharts_services_trade_line_chart <- function(data = bop) {
         dashStyle = "LongDash"
       ))
     ) %>%
-    highcharter::hc_add_dependency("plugins/series-label.js") %>%
-    highcharter::hc_add_dependency("plugins/accessibility.js") %>%
+    #highcharter::hc_add_dependency("plugins/series-label.js") %>%
+    #highcharter::hc_add_dependency("plugins/accessibility.js") %>%
     highcharter::hc_exporting(enabled = TRUE) %>%
     highcharter::hc_title(text = title) %>%
     highcharter::hc_subtitle(
@@ -444,7 +444,7 @@ highcharts_service_bop_bar_chart <- function(data = bop) {
       ))
     ) %>%
     highcharter::hc_xAxis(title = list(text = NULL)) %>%
-    highcharter::hc_add_dependency("plugins/accessibility.js") %>%
+    #highcharter::hc_add_dependency("plugins/accessibility.js") %>%
     highcharter::hc_exporting(enabled = TRUE) %>%
     highcharter::hc_title(text = title) %>%
     highcharter::hc_subtitle(text = paste0(
@@ -559,7 +559,7 @@ highcharts_goods_bop_bar_chart <- function(data = bop) {
       )
     ) %>%
     highcharter::hc_xAxis(title = list(text = NULL)) %>%
-    highcharter::hc_add_dependency("plugins/accessibility.js") %>%
+    #highcharter::hc_add_dependency("plugins/accessibility.js") %>%
     highcharter::hc_exporting(enabled = TRUE) %>%
     highcharter::hc_title(text = title) %>%
     highcharter::hc_subtitle(text = paste0(
@@ -676,7 +676,7 @@ highcharts_goods_export_import_line <- function(data = bop) {
       yAxis = 1,
       name = "Imports"
     ) %>%
-    highcharter::hc_add_dependency("plugins/accessibility.js") %>%
+    #highcharter::hc_add_dependency("plugins/accessibility.js") %>%
     highcharter::hc_exporting(enabled = TRUE) %>%
     highcharter::hc_title(text = title) %>%
     highcharter::hc_subtitle(
@@ -792,8 +792,8 @@ highcharts_trade_balance_line_chart <- function(data = bop) {
         dashStyle = "LongDash"
       ))
     ) %>%
-    highcharter::hc_add_dependency("plugins/series-label.js") %>%
-    highcharter::hc_add_dependency("plugins/accessibility.js") %>%
+    #highcharter::hc_add_dependency("plugins/series-label.js") %>%
+    #highcharter::hc_add_dependency("plugins/accessibility.js") %>%
     highcharter::hc_exporting(enabled = TRUE) %>%
     highcharter::hc_title(text = title) %>%
     highcharter::hc_subtitle(
@@ -946,8 +946,8 @@ highcharts_NSW_Vic_goods_line_chart <- function(data = bop) {
       yAxis = 1
     ) %>%
     highcharter::hc_plotOptions(series = list(label = list(enabled = TRUE))) %>%
-    highcharter::hc_add_dependency("plugins/series-label.js") %>%
-    highcharter::hc_add_dependency("plugins/accessibility.js") %>%
+    #highcharter::hc_add_dependency("plugins/series-label.js") %>%
+    #highcharter::hc_add_dependency("plugins/accessibility.js") %>%
     highcharter::hc_exporting(enabled = TRUE) %>%
     highcharter::hc_title(text = title) %>%
     highcharter::hc_subtitle(
@@ -1084,8 +1084,8 @@ highcharts_NSW_Vic_Services_line_chart <- function(data = bop) {
       yAxis = 1
     ) %>%
     highcharter::hc_plotOptions(series = list(label = list(enabled = TRUE))) %>%
-    highcharter::hc_add_dependency("plugins/series-label.js") %>%
-    highcharter::hc_add_dependency("plugins/accessibility.js") %>%
+    #highcharter::hc_add_dependency("plugins/series-label.js") %>%
+    #highcharter::hc_add_dependency("plugins/accessibility.js") %>%
     highcharter::hc_exporting(enabled = TRUE) %>%
     highcharter::hc_title(text = title) %>%
     highcharter::hc_subtitle(
@@ -1202,8 +1202,8 @@ highcharts_good_services_chart <- function(data = bop) {
       yAxis = 1
     ) %>%
     highcharter::hc_plotOptions(series = list(label = list(enabled = TRUE))) %>%
-    highcharter::hc_add_dependency("plugins/series-label.js") %>%
-    highcharter::hc_add_dependency("plugins/accessibility.js") %>%
+    #highcharter::hc_add_dependency("plugins/series-label.js") %>%
+    #highcharter::hc_add_dependency("plugins/accessibility.js") %>%
     highcharter::hc_exporting(enabled = TRUE) %>%
     highcharter::hc_title(text = title) %>%
     highcharter::hc_subtitle(text = "Total Victorian trade volumes") %>%
