@@ -41,7 +41,9 @@ Imports:
     pool,
     highcharter,
     readxl,
-    flextable
+    flextable,
+    dbplyr,
+    config
 Remotes: 
     MattCowgill/readabs
 Depends: 

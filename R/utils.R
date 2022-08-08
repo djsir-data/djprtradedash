@@ -149,15 +149,18 @@ set_hcharts_options <- function(...){
 
 # load lazy tables for testing
 load_tabs <- function(){
+
+  creds <- config::get("dataconnection")
+
   assign(
     x = "con",
     value = pool::dbPool(
       drv = RPostgres::Postgres(),
-      dbname = "opendata",
-      host = '10.210.1.26',
-      user = Sys.getenv()[['PG_READ_OPEN_USER']],
-      password = Sys.getenv()[['PG_READ_OPEN_PW']],
-      port = 443
+      dbname = creds$dbname,
+      host = creds$host,
+      user = creds$user,
+      password = creds$password,
+      port = creds$port
     ),
     envir = .GlobalEnv
   )
