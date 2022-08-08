@@ -11,6 +11,13 @@ load_tabs()
 set_hcharts_options()
 
 
+# Function to strip flextable dependancy
+strip_flextable_dependancy <- function(flex){
+  is_dependancy <- sapply(flex, inherits, what = "html_dependency")
+  flex[!is_dependancy]
+}
+
+
 # List funs to eval and save content
 # Follows do.call syntax (what = fun, args = args)
 to_eval <- list(
@@ -39,7 +46,7 @@ to_eval <- list(
     args = list()
   ),
   "launchpad_imp_country_table" = list(
-    what = flextable::htmltools_value,
+    what = strip_flextable_dependancy,
     args = list(
       tab_launchpad_country_imp_exp(
       direction = 'import',
@@ -47,11 +54,12 @@ to_eval <- list(
       rows      = 5
       ) %>%
         make_table_launchpad() %>%
-        flextable::autofit()
+        flextable::autofit() %>%
+        flextable::htmltools_value()
     )
   ),
   "launchpad_exp_country_table" = list(
-    what = flextable::htmltools_value,
+    what = strip_flextable_dependancy,
     args = list(
       tab_launchpad_country_imp_exp(
         direction = 'export',
@@ -59,11 +67,12 @@ to_eval <- list(
         rows      = 5
       ) %>%
         make_table_launchpad() %>%
-        flextable::autofit()
+        flextable::autofit() %>%
+        flextable::htmltools_value()
     )
   ),
   "launchpad_product_exp_table" = list(
-    what = flextable::htmltools_value,
+    what = strip_flextable_dependancy,
     args = list(
       tab_launchpad_product_imp_exp(
         direction  = 'export',
@@ -72,11 +81,12 @@ to_eval <- list(
         sitc_level = 3
       ) %>%
         make_table_launchpad() %>%
-        flextable::autofit()
+        flextable::autofit() %>%
+        flextable::htmltools_value()
     )
   ),
   "launchpad_product_imp_table" = list(
-    what = flextable::htmltools_value,
+    what = strip_flextable_dependancy,
     args = list(
       tab_launchpad_product_imp_exp(
         direction  = 'import',
@@ -85,11 +95,12 @@ to_eval <- list(
         sitc_level = 3
       ) %>%
         make_table_launchpad() %>%
-        flextable::autofit()
+        flextable::autofit() %>%
+        flextable::htmltools_value()
     )
   ),
   "launchpad_bop_table" = list(
-    what = flextable::htmltools_value,
+    what = strip_flextable_dependancy,
     args = list(
       make_table_launchpad(
         data = launchpad_table_export_import(),
@@ -101,7 +112,8 @@ to_eval <- list(
           "Change since COVID"
         )
       ) %>%
-        flextable::autofit()
+        flextable::autofit() %>%
+        flextable::htmltools_value()
     )
   ),
   "services_composition" = list(
