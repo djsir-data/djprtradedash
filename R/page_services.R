@@ -3,7 +3,7 @@ page_servicesUI <- function(...){
 
     # Top pie chart
     "What services is Victoria trading?" %>%
-      h2() %>% div(class = "inner", style = "background-color: #1F1547;") %>%
+      h2() %>% div(class = "inner") %>%
       div(class = "small-box") %>% column(12, .) %>% 
       fluidRow(),
 
@@ -29,7 +29,7 @@ page_servicesUI <- function(...){
 
 
     "Comparing service exports to other states" %>%
-      h2() %>% div(class = "inner", style = "background-color: #1F1547;") %>%
+      h2() %>% div(class = "inner") %>%
       div(class = "small-box") %>% column(12, .) %>% 
       fluidRow(),
 

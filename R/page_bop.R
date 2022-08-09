@@ -4,7 +4,7 @@ page_bopUI <- function(...) {
 
     # Overview
     "Balance of Payments" %>%
-      h2() %>% div(class = "inner", style = "background-color: #1F1547;") %>%
+      h2() %>% div(class = "inner") %>%
       div(class = "small-box") %>% column(12, .) %>%
       fluidRow(),
 
@@ -38,7 +38,7 @@ page_bopUI <- function(...) {
 
     # Goods
     "Goods" %>%
-      h2() %>% div(class = "inner", style = "background-color: #1F1547;") %>%
+      h2() %>% div(class = "inner") %>%
       div(class = "small-box") %>% column(12, .) %>%
       fluidRow(),
 
@@ -71,7 +71,7 @@ page_bopUI <- function(...) {
 
     # Services
     "Services" %>%
-      h2() %>% div(class = "inner", style = "background-color: #1F1547;") %>%
+      h2() %>% div(class = "inner") %>%
       div(class = "small-box") %>% column(12, .) %>%
       fluidRow(),
 
@@ -105,7 +105,7 @@ page_bopUI <- function(...) {
 
     # Balance of trade
     "Balance of Trade" %>%
-      h2() %>% div(class = "inner", style = "background-color: #1F1547;") %>%
+      h2() %>% div(class = "inner") %>%
       div(class = "small-box") %>% column(12, .) %>%
       fluidRow(),
 

@@ -5,7 +5,7 @@ page_launchpadUI <- function(id) {
 
       # Launchpad text & export plot
       "Victorian trade at a glance" %>%
-        h2() %>% div(class = "inner", style = "background-color: #1F1547;") %>%
+        h2() %>% div(class = "inner") %>%
         div(class = "small-box") %>% column(12, .) %>%
         fluidRow(),
 
@@ -30,7 +30,7 @@ page_launchpadUI <- function(id) {
 
       # Latest changes
       "Latest changes in Victorian trade" %>%
-        h2() %>% div(class = "inner", style = "background-color: #1F1547;") %>%
+        h2() %>% div(class = "inner") %>%
         div(class = "small-box") %>% column(12, .) %>%
         fluidRow(),
 
@@ -47,7 +47,7 @@ page_launchpadUI <- function(id) {
 
       # Top traders - countries
       "Top merchandise trading partners" %>%
-        h2() %>% div(class = "inner", style = "background-color: #1F1547;") %>%
+        h2() %>% div(class = "inner") %>%
         div(class = "small-box") %>% column(12, .) %>%
         fluidRow(),
 
@@ -64,7 +64,7 @@ page_launchpadUI <- function(id) {
 
       # Product tables
       "Top trading merchandise" %>%
-        h2() %>% div(class = "inner", style = "background-color: #1F1547;") %>%
+        h2() %>% div(class = "inner") %>%
         div(class = "small-box") %>% column(12, .) %>%
         fluidRow(),
 
@@ -81,7 +81,7 @@ page_launchpadUI <- function(id) {
 
       # BOP table
       "Victoria's overall trade position" %>%
-        h2() %>% div(class = "inner", style = "background-color: #1F1547;") %>%
+        h2() %>% div(class = "inner") %>%
         div(class = "small-box") %>% column(12, .) %>%
         fluidRow(),
 
