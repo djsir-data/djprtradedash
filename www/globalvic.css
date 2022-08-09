@@ -110,6 +110,18 @@ background-color: #FFFFFF;
   pointer-events: none;
 }
 
+.small-box .inner{
+  padding: 15px;
+  border-radius: 1.25rem;
+  background-color: var(--sunrise);
+  color: var(--midnight);
+}
+
+.small-box .inner h2{
+  font-size: 25px;
+  margin: 0;
+}
+
 .skin-blue .wrapper{
   background-color: #53565a;
 }
@@ -160,6 +172,44 @@ background-color: #FFFFFF;
   border-left: 10px solid var(--midnight);
   background: var(--twilight);
   color:var(--midnight);
+}
+
+.djprTable{
+   text-align: center;
+   width: 100%;
+   border-collapse: collapse;
+   overflow-x: auto;
+}
+
+.djprTable thead{
+  background-color: #000000;
+  color: #FFFFFF;
+  text-transform: Uppercase;
+}
+
+.djprTable th, .djprTable td {
+  padding: 15px;
+}
+
+.djprTable thead th{
+  border: 2px solid #FFFFFF;
+}
+
+.djprTable tbody td, .djprTable tbody th{
+  border: 1px solid #000000;
+}
+
+.djprTable th:first-child{
+   text-align: left;
+   border-left: none;
+}
+
+.djprTable td:last-child{
+   border-right: none;
+}
+
+.djprTable tbody tr:hover{
+  background-color: var(--sunrise);
 }
 
 
