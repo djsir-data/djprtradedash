@@ -55,6 +55,27 @@ dollar_stat <- function(stat){
   )
 }
 
+format_table_num <- function(x, suffix = "m", round = 0, plus_neg = TRUE){
+  signs <- if(plus_neg){ifelse(x < 0, "-", "+")}else{""}
+  x <- x %>%
+    abs() %>%
+    base::round(round) %>%
+    as.character()
+  x <- paste0(signs, "$", x, suffix)
+  return(x)
+}
+
+format_table_pc <- function(x, suffix = "%", round = 0, plus_neg = TRUE){
+  signs <- if(plus_neg){ifelse(x < 0, "-", "+")}else{""}
+  x <- x %>%
+    `*`(100) %>%
+    abs() %>%
+    base::round(round) %>%
+    as.character()
+  x <- paste0(signs, x, suffix)
+  return(x)
+}
+
 
 
 # Column shim
@@ -135,6 +156,15 @@ load_tabs <- function(){
     dplyr::collect() %>%
     dplyr::pull() %>%
     assign("merch_country_dest", ., envir = .GlobalEnv)
+
+  service_trade %>%
+    dplyr::summarise(
+      min = min(date, na.rm = TRUE),
+      max = max(date, na.rm = TRUE)
+    ) %>%
+    dplyr::collect()  %>%
+    dplyr::mutate(dplyr::across(dplyr::everything(), as.Date)) %>%
+    assign("service_dates", ., envir = .GlobalEnv)
 
   service_trade %>%
     arrange(desc(value)) %>%

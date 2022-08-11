@@ -46,75 +46,24 @@ to_eval <- list(
     args = list()
   ),
   "launchpad_imp_country_table" = list(
-    what = strip_flextable_dependancy,
-    args = list(
-      tab_launchpad_country_imp_exp(
-      direction = 'import',
-      data      = merch_imp,
-      rows      = 5
-      ) %>%
-        make_table_launchpad() %>%
-        flextable::autofit() %>%
-        flextable::htmltools_value()
-    )
+    what = table_merch_country,
+    args = list(flow = "imports")
   ),
   "launchpad_exp_country_table" = list(
-    what = strip_flextable_dependancy,
-    args = list(
-      tab_launchpad_country_imp_exp(
-        direction = 'export',
-        data      = merch,
-        rows      = 5
-      ) %>%
-        make_table_launchpad() %>%
-        flextable::autofit() %>%
-        flextable::htmltools_value()
-    )
+    what = table_merch_country,
+    args = list(flow = "exports")
   ),
   "launchpad_product_exp_table" = list(
-    what = strip_flextable_dependancy,
-    args = list(
-      tab_launchpad_product_imp_exp(
-        direction  = 'export',
-        data       = merch,
-        rows       = 5,
-        sitc_level = 3
-      ) %>%
-        make_table_launchpad() %>%
-        flextable::autofit() %>%
-        flextable::htmltools_value()
-    )
+    what = table_merch_product,
+    args = list(flow = "exports")
   ),
   "launchpad_product_imp_table" = list(
-    what = strip_flextable_dependancy,
-    args = list(
-      tab_launchpad_product_imp_exp(
-        direction  = 'import',
-        data       = merch_imp,
-        rows       = 5,
-        sitc_level = 3
-      ) %>%
-        make_table_launchpad() %>%
-        flextable::autofit() %>%
-        flextable::htmltools_value()
-    )
+    what = table_merch_product,
+    args = list(flow = "imports")
   ),
   "launchpad_bop_table" = list(
-    what = strip_flextable_dependancy,
-    args = list(
-      make_table_launchpad(
-        data = launchpad_table_export_import(),
-        header_row = c(
-          "",
-          "Current figure ($m)",
-          "Change since last quarter",
-          "Change in past year",
-          "Change since COVID"
-        )
-      ) %>%
-        flextable::autofit() %>%
-        flextable::htmltools_value()
-    )
+    what = table_bop,
+    args = list()
   ),
   "services_composition" = list(
     what = highcharts_service_compositon,
