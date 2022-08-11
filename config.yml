@@ -1,13 +1,19 @@
 default:
   dataconnection:
+    use_DBcache: FALSE
     dbname: "opendata"
     host: '10.210.1.26'
     user:  !expr Sys.getenv("PG_READ_OPEN_USER")
     password: !expr Sys.getenv("PG_READ_OPEN_PW")
     port: 443
 
+local_cache:
+  dataconnection:
+    use_DBcache: TRUE
+
 shinyapps:
   dataconnection:
+    use_DBcache: FALSE
     dbname: "opendata"
     host: 'sppdatarepo1.caz6tvdhkmqm.ap-southeast-2.rds.amazonaws.com'
     user:  !expr Sys.getenv("PG_READ_OPEN_USER")
