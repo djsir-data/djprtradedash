@@ -22,10 +22,11 @@ badge_services <- function(...){
           as.numeric(format(service_dates$max, "%y")) - 1,
           "-",
           format(service_dates$max, "%y"),
-          "FY"
+          " FY"
         )
       } %>%
         stringr::str_replace_all("[:blank:]", "&nbsp;") %>%
+        stringr::str_replace_all("-", "&#8209;") %>%
         HTML(),
       br(),
       span(style = "font-size:8px", "Annual")
