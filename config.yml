@@ -2,14 +2,14 @@ default:
   dataconnection:
     dbname: "opendata"
     host: '10.210.1.26'
-    user:  !expr getOption("PG_READ_OPEN_USER")
-    password: !expr getOption("PG_READ_OPEN_PW")
+    user:  !expr Sys.getenv("PG_READ_OPEN_USER")
+    password: !expr Sys.getenv("PG_READ_OPEN_PW")
     port: 443
 
 shinyapps:
   dataconnection:
     dbname: "opendata"
     host: 'sppdatarepo1.caz6tvdhkmqm.ap-southeast-2.rds.amazonaws.com'
-    user:  !expr getOption("PG_READ_OPEN_USER")
-    password: !expr getOption("PG_READ_OPEN_PW")
+    user:  !expr Sys.getenv("PG_READ_OPEN_USER")
+    password: !expr Sys.getenv("PG_READ_OPEN_PW")
     port: 5432
