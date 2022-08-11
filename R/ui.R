@@ -1,19 +1,18 @@
 
 ui <- function() {
 
-  custom_header <- tags$header(
-    class = "main-header fixed",
-    tags$a(
-      class = "sidebar-toggle",
-      href = "#",
-      `data-toggle` = "offcanvas",
-      role = "button",
-      span(
-        class = "sr-only",
-        "Toggle navigation"
+  custom_header <- shinydashboard::dashboardHeader()
+  custom_header$children[[2]] <- NULL
+  custom_header <- custom_header %>%
+    tagAppendChildren(
+      .cssSelector = ".navbar-custom-menu",
+      fluidRow(
+        div(class = "col", span(HTML("Latest</br>ABS data"), class = "badgeDescript")),
+        div(class = "col", badge_bop()),
+        div(class = "col", badge_goods()),
+        div(class = "col", badge_services())
       )
     )
-  )
 
 
   shinydashboard::dashboardPage(
@@ -32,9 +31,15 @@ ui <- function() {
     body = shinydashboard::dashboardBody(
       tags$head(
         # includeCSS("www/tradedash.css")
-        shiny::tags$link(rel = "stylesheet", type = "text/css", href = "djprshiny/dashboard.css"),
-        shiny::tags$link(rel = "stylesheet", type = "text/css", href = "djprshiny/bs5-card2.css"),
-        includeCSS("www/djpr-theme.css")
+        # shiny::tags$link(rel = "stylesheet", type = "text/css", href = "djprshiny/dashboard.css"),
+        # shiny::tags$link(rel = "stylesheet", type = "text/css", href = "djprshiny/bs5-card2.css"),
+        tags$link(
+          href = "https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css",
+          rel = "stylesheet",
+          integrity = "sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC",
+          crossorigin = "anonymous"
+        ),
+        includeCSS("www/globalvic.css")
         ),
       shiny::tags$script("$('html').attr(\"lang\", \"en\")"),
       shiny::tags$script("$('section.content').attr(\"role\", \"main\")"),
