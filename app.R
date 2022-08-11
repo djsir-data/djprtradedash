@@ -7,7 +7,7 @@ pkgload::load_all(".")
 if(file.exists(".renviron")) readRenviron(".renviron")
 
 # Optional cached DB mode (use cacheDB() to create)
-Sys.setenv(R_CONFIG_ACTIVE = "local_cache")
+# Sys.setenv(R_CONFIG_ACTIVE = "local_cache")
 
 # Establish database connections
 load_tabs()
