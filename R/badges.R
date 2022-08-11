@@ -8,7 +8,7 @@ badge_services <- function(...){
       "window.open('https://www.abs.gov.au/statistics/economy/international-trade/international-trade-supplementary-information-financial-year/latest-release','mywindow');"
     },
     class = "sourceBadge",
-    style = "display: table;",
+    style = "cursor: pointer;",
     div(
       style = "display: table-cell;",
       "Services"
