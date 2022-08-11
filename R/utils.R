@@ -6,7 +6,6 @@ tstrsplit_factor <- function(fac, split){
   lapply(split, function(x) x[ind])
 }
 
-
 # Trycatch infix function
 `%iferror%` <- function(a, b) tryCatch({a}, error = function(e){b})
 
@@ -84,6 +83,14 @@ column <- function(width, ...){
   shiny::div(class = colClass, ...)
 }
 
+to_col_xl <- function(x){
+  x$attribs$class <- paste0(
+    "col-xl-",
+    substr(x$attribs$class, 8, nchar(x$attribs$class))
+    )
+  return(x)
+}
+
 
 
 # Highcharts options
@@ -101,6 +108,12 @@ set_hcharts_options <- function(...){
 
 # load lazy tables for testing
 load_tabs <- function(){
+
+  if(exists("con", envir = .GlobalEnv)){
+    if(pool::dbIsValid(con)){
+      return(NULL)
+    }
+  }
 
   creds <- config::get("dataconnection")
 
