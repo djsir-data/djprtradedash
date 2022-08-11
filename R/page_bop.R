@@ -9,30 +9,19 @@ page_bopUI <- function(...) {
       fluidRow(),
 
     fluidRow(
-      column(
-        12,
-        div(
-          class = "box",
-          readRDS("inst/bop_good_services_chart.rds")
-        )
-      )
+      shinydashboard::box(
+        width = 12,
+        readRDS("inst/bop_good_services_chart.rds")
+      ) %>% to_col_xl()
     ),
 
     fluidRow(
-      column(
-        6,
-        div(
-          class = "box",
-          readRDS("inst/bop_goods_export_import_line.rds")
-        )
-      ),
-      column(
-        6,
-        div(
-          class = "box",
-          readRDS("inst/bop_total_bop_bar_chart.rds")
-        )
-      )
+      shinydashboard::box(
+        readRDS("inst/bop_goods_export_import_line.rds")
+      ) %>% to_col_xl(),
+      shinydashboard::box(
+        readRDS("inst/bop_total_bop_bar_chart.rds")
+      ) %>% to_col_xl()
     ),
 
 
@@ -43,30 +32,19 @@ page_bopUI <- function(...) {
       fluidRow(),
 
     fluidRow(
-      column(
-        6,
-        div(
-          class = "box",
-          readRDS("inst/bop_goods_bop_bar_chart.rds")
-        )
-      ),
-      column(
-        6,
-        div(
-          class = "box",
-          readRDS("inst/bop_good_trade_line_chart.rds")
-        )
-      )
+      shinydashboard::box(
+        readRDS("inst/bop_goods_bop_bar_chart.rds")
+      )%>% to_col_xl(),
+      shinydashboard::box(
+        readRDS("inst/bop_good_trade_line_chart.rds")
+      )%>% to_col_xl()
     ),
 
     fluidRow(
-      column(
-        12,
-        div(
-          class = "box",
-          readRDS("inst/bop_NSW_Vic_goods_line_chart.rds")
-        )
-      )
+      shinydashboard::box(
+        width = 12,
+        readRDS("inst/bop_NSW_Vic_goods_line_chart.rds")
+      )%>% to_col_xl()
     ),
 
     # Services
@@ -76,31 +54,20 @@ page_bopUI <- function(...) {
       fluidRow(),
 
     fluidRow(
-      column(
-        6,
-        div(
-          class = "box",
-          readRDS("inst/bop_service_bop_bar_chart.rds")
-        )
-      ),
+      shinydashboard::box(
+        readRDS("inst/bop_service_bop_bar_chart.rds")
+      ) %>% to_col_xl(),
 
-      column(
-        6,
-        div(
-          class = "box",
-          readRDS("inst/bop_services_trade_line_chart.rds")
-        )
-      )
+      shinydashboard::box(
+        readRDS("inst/bop_services_trade_line_chart.rds")
+      ) %>% to_col_xl()
     ),
 
     fluidRow(
-      column(
-        12,
-        div(
-          class = "box",
-          readRDS("inst/bop_NSW_Vic_Services_line_chart.rds")
-        )
-      )
+      shinydashboard::box(
+        width = 12,
+        readRDS("inst/bop_NSW_Vic_Services_line_chart.rds")
+      )%>% to_col_xl()
     ),
 
     # Balance of trade
@@ -110,13 +77,10 @@ page_bopUI <- function(...) {
       fluidRow(),
 
     fluidRow(
-      column(
-        12,
-        div(
-          class = "box",
-          readRDS("inst/bop_trade_balance_line_chart.rds")
-        )
-      )
+      shinydashboard::box(
+        width = 12,
+        readRDS("inst/bop_trade_balance_line_chart.rds")
+      )%>% to_col_xl()
     )
   )
 }
