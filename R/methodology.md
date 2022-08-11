@@ -1,8 +1,8 @@
-# DJPR Trade Dashboard Data Methodology
+# Global Victoria Trade Dashboard Data Methodology
 
 ## Introduction
 
-The **DJPR Trade Dashboard** includes detailed export and import data compiled and released by the *Australian Bureau of Statistics*, the *Department of Foreign Affairs and Trade* (DFAT) and the *Australian Border Force*. References and citations under respective charts will specify the time period of the data (i.e. whether it is produced on a monthly, quarterly or annual basis), as well as whether it is original (raw) data, seasonally adjusted, and/or revised. State level trade data is reflecting the exports/imports of businesses located within a particular state and not the value of goods that arrive at ports located within the state of interest.
+The **Global Victoria Trade Dashboard** includes detailed export and import data compiled and released by the *Australian Bureau of Statistics*, the *Department of Foreign Affairs and Trade* (DFAT) and the *Australian Border Force*. References and citations under respective charts will specify the time period of the data (i.e. whether it is produced on a monthly, quarterly or annual basis), as well as whether it is original (raw) data, seasonally adjusted, and/or revised. State level trade data is reflecting the exports/imports of businesses located within a particular state and not the value of goods that arrive at ports located within the state of interest.
 
 ## Balance of Payments Data
 
