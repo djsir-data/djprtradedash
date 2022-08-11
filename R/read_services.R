@@ -52,17 +52,20 @@ read_services <- function(...){
 
 
   # Get tables
-  table_index <- table_index %>%
-    dplyr::mutate(
-      title = mapply(
-        FUN       = readxl::read_excel,
-        path      = file,
-        sheet     = sheet,
-        range     = "A4",
-        col_names = FALSE
-      ) %>%
-        unlist()
-    )
+  suppressMessages(
+    table_index <- table_index %>%
+      dplyr::mutate(
+        title = mapply(
+          FUN       = readxl::read_excel,
+          path      = file,
+          sheet     = sheet,
+          range     = "A4",
+          col_names = FALSE
+        ) %>%
+          unlist()
+      )
+  )
+
 
 
   # Extract information from table titles
@@ -78,13 +81,46 @@ read_services <- function(...){
     )
 
 
+  # Find ranges to parse
+  range_constructor <- function(df){
+
+    cols <- c(
+      LETTERS,
+      paste0(
+        rep(LETTERS, each = length(LETTERS)),
+        rep(LETTERS, length(LETTERS))
+        )
+      )
+
+    m <- as.matrix(df)
+    start_row <- which(m == "Manufacturing services on physical inputs owned by others", arr.ind = T)[1, "row"] - 1
+    end_row <- which(m == "Government goods and services n.i.e", arr.ind = T)[1, "row"]
+    end_col <- cols[ncol(m)]
+
+    return(paste0("A", start_row, ":", end_col, end_row))
+  }
+
+
+  suppressMessages(
+    table_index <- table_index %>%
+      dplyr::mutate(
+        parse_range = mapply(
+          FUN       = readxl::read_excel,
+          path      = file,
+          sheet     = sheet,
+          col_names = FALSE
+        ) %>%
+          lapply(range_constructor) %>%
+          unlist()
+      )
+  )
+
+
   # Parse data
-
-
   table_index <- table_index %>%
     dplyr::group_by(dplyr::across()) %>%
     dplyr::summarise(
-      readxl::read_excel(file, sheet, "A6:W53") %>%
+      readxl::read_excel(file, sheet, parse_range) %>%
         dplyr::select(-1) %>%
         dplyr::bind_cols(service_hierarchy) %>%
         tidyr::pivot_longer(
@@ -98,7 +134,7 @@ read_services <- function(...){
   # Clean data classes
   table_index <- table_index %>%
     dplyr::mutate(
-      value = abs(as.numeric(value)) * 1000000,
+      value = suppressWarnings(abs(as.numeric(value)) * 1000000),
       value = ifelse(is.na(value), 0, value),
       date  = ifelse(
         period == "Financial Year",
@@ -116,14 +152,10 @@ read_services <- function(...){
     )
 
 
-  # # Clean service names
-  # table_index <- table_index %>%
-  #   dplyr::left_join(service_hierarchy)
-
 
   # Remove superfluous cols
   table_index <- table_index %>%
-    dplyr::select(-file, -sheet, -title)
+    dplyr::select(-file, -sheet, -title, -parse_range)
 
 
   # Return
@@ -183,7 +215,7 @@ service_hierarchy <- data.frame(
     "Reinsurance","Auxiliary insurance services",
     "Pension services",
     "Standardised guarantee services","Finance",
-    "Intelectual property","Software IP",
+    "Intellectual property","Software IP",
     "Media IP","R&D IP",
     "Trademarks & franchising","Other IP","ICT",
     "Telecommunications","IT",
@@ -217,10 +249,10 @@ service_hierarchy <- data.frame(
     "Construction","Insurance","Insurance",
     "Insurance","Insurance","Insurance",
     "Insurance","Finance",
-    "Intelectual property","Intelectual property",
-    "Intelectual property",
-    "Intelectual property","Intelectual property",
-    "Intelectual property","ICT","ICT",
+    "Intellectual property","Intellectual property",
+    "Intellectual property",
+    "Intellectual property","Intellectual property",
+    "Intellectual property","ICT","ICT",
     "ICT","ICT","ICT","ICT",
     "Other business services",
     "Other business services","Other business services",
