@@ -24,9 +24,9 @@ merch_imp <- merch_imp[dest == "Victoria"]
 
 
 
-# ABS International Trade Supplementary Information data
-supp_cy <- read_supp("cy")
-supp_fy <- read_supp("fy")
+# # ABS International Trade Supplementary Information data
+# supp_cy <- read_supp("cy")
+# supp_fy <- read_supp("fy")
 
 
 
@@ -47,8 +47,8 @@ bop <- read_bop()
 out <- list(
   'merch'         = merch,
   'merch_imp'     = merch_imp,
-  'supp_cy'       = supp_cy,
-  'supp_fy'       = supp_fy,
+  # 'supp_cy'       = supp_cy,
+  # 'supp_fy'       = supp_fy,
   'bop'           = bop,
   'service_trade' = services
   )
