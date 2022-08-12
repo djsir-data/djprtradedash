@@ -27,7 +27,10 @@ highcharts_merch_explorer <- function(
 
   # Ensure all combinations of date, product and country
   df <- df %>%
-    right_join(tidyr::expand(df, sitc, country_dest, date)) %>%
+    right_join(
+      tidyr::expand(df, sitc, country_dest, date),
+      by = c("sitc", "country_dest", "date")
+      ) %>%
     mutate(value = ifelse(is.na(value), 0, value))
 
 
@@ -50,7 +53,9 @@ highcharts_merch_explorer <- function(
     df <- df %>%
       dplyr::mutate(
         col = .data$sitc,
-        y_axis = factor(country_dest) %>% as.integer() %>% `-`(1L),
+        y_axis = factor(country_dest, levels = y_axis_labs) %>%
+          as.integer() %>%
+          `-`(1L),
         name = paste0(sitc, " - ", country_dest)
       )
   } else {
@@ -60,7 +65,9 @@ highcharts_merch_explorer <- function(
     df <- df %>%
       dplyr::mutate(
         col = .data$country_dest,
-        y_axis = factor(sitc) %>% as.integer() %>% `-`(1L),
+        y_axis = factor(sitc, levels = y_axis_labs) %>%
+          as.integer() %>%
+          `-`(1L),
         name = paste0(country_dest, " - ", sitc)
         )
   }
@@ -94,6 +101,7 @@ highcharts_merch_explorer <- function(
   df <- df %>%
     arrange(y_axis, col, date) %>%
     transmute(x = datetime_to_timestamp(date), y = value, col = col, yAxis = y_axis, name = name) %>%
+    arrange(yAxis, col, x) %>%
     group_nest(name, yAxis, col) %>%
     mutate(
       type = "line",
@@ -123,9 +131,12 @@ highcharts_merch_explorer <- function(
         format(merch_dates$max, "%B %Y"),
         ")."
       )
-    ) %>%
+    )  %>%
+    djpr_highcharts() %>%
     highcharter::hc_rangeSelector(
       inputEnabled = T,
+      floating = FALSE,
+      buttonPosition = list(align = "left"),
       selected = 0,
       buttons = list(
         list(
@@ -154,8 +165,7 @@ highcharts_merch_explorer <- function(
     ) %>%
     highcharter::hc_navigator(series = list(label = list(enabled = FALSE))) %>%
     hc_navigator(enabled = FALSE) %>%
-    hc_scrollbar(enabled = FALSE) %>%
-    djpr_highcharts()
+    hc_scrollbar(enabled = FALSE)
 
 }
 
