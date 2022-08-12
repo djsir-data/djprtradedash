@@ -4,33 +4,41 @@ page_servicesUI <- function(...){
     # Top pie chart
     "What services is Victoria trading?" %>%
       h2() %>% div(class = "inner") %>%
-      div(class = "small-box") %>% column(12, .) %>% 
+      div(class = "small-box") %>% column(12, .) %>%
       fluidRow(),
 
     shiny::fluidRow(
-        column(
-          8,
-          shiny::div(
-            class = "box",
-            style = "padding:10px;", ##CHECK
-            readRDS("inst/services_composition.rds")
-          )
-        ),
-        column(
-          4,
-          shiny::div(
-            class = "box",
-            style = "padding-left:20px;padding-top:10px;padding-right:10px;padding-bottom:10px;height:670px;overflow-y:auto;overflow-x:clip;",
-            h3("ABS service trade classification"),
-            readRDS("inst/service_category_list.rds")
-          )
-        )
+        shinydashboard::box(
+          width = 8,
+          readRDS("inst/services_composition.rds")
+        ) %>%
+          to_col_xl(),
+
+        shinydashboard::box(
+          title = "ABS service trade classification",
+          width = 4,
+          collapsible = TRUE,
+          readRDS("inst/service_category_list.rds")
+        ) %>%
+          tagAppendAttributes(
+            style = "background:var(--twilight);max-height:670px;overflow-y:auto;overflow-x:crop;",
+            .cssSelector = ".box"
+          ) %>%
+          tagAppendAttributes(
+            style = "padding:15px;",
+            .cssSelector = ".box-body"
+          ) %>%
+          tagAppendAttributes(
+            style = "font-size:20px;font-weight:bold;",
+            .cssSelector = ".box-header h3"
+          ) %>%
+          to_col_xl()
     ),
 
 
     "Comparing service exports to other states" %>%
       h2() %>% div(class = "inner") %>%
-      div(class = "small-box") %>% column(12, .) %>% 
+      div(class = "small-box") %>% column(12, .) %>%
       fluidRow(),
 
       column(
