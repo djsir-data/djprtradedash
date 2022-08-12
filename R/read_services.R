@@ -1,8 +1,10 @@
 #' Read service trade data
 #'
+#' Downloads, parses and cleans the latest service trade data
+#'
 #' @param ... unused
 #'
-#' @return
+#' @return data.frame
 #' @export
 
 read_services <- function(...){
@@ -166,43 +168,6 @@ read_services <- function(...){
 
 service_hierarchy <- data.frame(
   stringsAsFactors = FALSE,
-  # original_service = c(
-  #   "Manufacturing services on physical inputs owned by others",
-  #   "Maintenance and repair services n.i.e","Transport","Passenger (b)",
-  #   "Freight","Other",
-  #   "Postal and courier services (c)","Travel",
-  #   "Business","Personal","Education-related",
-  #   "Other","Construction",
-  #   "Insurance and Pension services",
-  #   "Direct insurance","Reinsurance",
-  #   "Auxiliary services","Pension services",
-  #   "Standardised guarantee services",
-  #   "Financial Services",
-  #   "Charges for the use of intellectual property n.i.e",
-  #   "Licences to reproduce and/or distribute computer services",
-  #   "Licences to reproduce and/or distribute audiovisual and related services",
-  #   "Outcomes of research and development",
-  #   "Franchise and trademarks licensing fees",
-  #   "Other charges for the use of intellectual property",
-  #   "Telecommunications, computer and information services","Telecommunication services",
-  #   "Computer and Information services",
-  #   "Computer services",
-  #   "Information services","Other services",
-  #   "Other business services",
-  #   "Research and development services",
-  #   "Professional and management consulting services",
-  #   "Legal, accounting, management consulting, public relations and other professional services",
-  #   "Advertising, market research and public opinion polling",
-  #   "Technical, trade-related and other business services",
-  #   "Architectural, engineering, scientific and other technical services",
-  #   "Waste treatment and de-pollution, agricultural and mining services",
-  #   "Operational leasing services",
-  #   "Trade-related commission services",
-  #   "Other business services n.i.e",
-  #   "Personal, cultural, and recreational services",
-  #   "Audiovisual and related services",
-  #   "Other personal, cultural and recreational services",
-  #   "Government goods and services n.i.e"),
   service = c(
     "Manufacturing services",
     "Maintenance","Transport",

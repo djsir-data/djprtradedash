@@ -10,8 +10,8 @@ read_services(...)
 \item{...}{unused}
 }
 \value{
-
+data.frame
 }
 \description{
-Read service trade data
+Downloads, parses and cleans the latest service trade data
 }
