@@ -15,7 +15,7 @@ load_tabs <- function(){
 
   # If running in chached database mode, load data
   if(creds$use_DBcache == TRUE){
-    load("DBcache.rData")
+    load("DBcache.rData", envir = .GlobalEnv)
     return(NULL)
   }
 
