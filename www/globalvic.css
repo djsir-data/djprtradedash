@@ -354,3 +354,30 @@ border-radius: 1.25rem 0 0 0;
       display: none;
    }
 }
+
+.multi-wrapper .search-input{
+  border-radius: 1.25rem 1.25rem 0 0;
+}
+
+.multi-wrapper{
+  border: none;
+}
+
+.multi-wrapper .non-selected-wrapper{
+  border: none;
+  border-radius: 0 0 0 1.25rem;
+}
+
+.multi-wrapper .selected-wrapper{
+  border: none;
+  border-radius: 0 0 1.25rem 0;
+  overflow: auto;
+}
+
+/*
+.shiny-options-group{
+  background-color: #FFFFFF;
+    border-radius: 1.25rem;
+    padding: 10px;
+}
+*/
