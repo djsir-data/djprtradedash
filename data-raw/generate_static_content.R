@@ -116,6 +116,10 @@ to_eval <- list(
   "bop_good_services_chart" = list(
     what = highcharts_good_services_chart,
     args = list()
+  ),
+  "ui" = list(
+    what = ui,
+    args = list()
   )
 )
 
