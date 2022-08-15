@@ -13,10 +13,20 @@ load_tabs <- function(){
   # Get environment-spesific connection information
   creds <- config::get("dataconnection")
 
-  # If running in chached database mode, load data
+  # If running in cached database mode, load data
   if(creds$use_DBcache == TRUE & !exists("merch", envir = .GlobalEnv)){
     load("DBcache.rData", envir = .GlobalEnv)
     return(NULL)
+  }
+
+  # Cache mode and data loaded
+  if(creds$use_DBcache == TRUE & exists("merch", envir = .GlobalEnv)){
+    if(inherits(merch, "tbl_lazy")){
+      load("DBcache.rData", envir = .GlobalEnv)
+      return(NULL)
+    } else {
+      return(NULL)
+    }
   }
 
   # Do not connect if there is already a working connection
