@@ -14,7 +14,7 @@ load_tabs <- function(){
   creds <- config::get("dataconnection")
 
   # If running in chached database mode, load data
-  if(creds$use_DBcache == TRUE){
+  if(creds$use_DBcache == TRUE & !exists("merch", envir = .GlobalEnv)){
     load("DBcache.rData", envir = .GlobalEnv)
     return(NULL)
   }
