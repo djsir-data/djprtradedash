@@ -1,7 +1,7 @@
 
 # Services
 badge_services <- function(...){
-  div(
+  tags$button(
     onclick = if(format(service_dates$max, "%m") == "12"){
       "window.open('https://www.abs.gov.au/statistics/economy/international-trade/international-trade-supplementary-information-calendar-year/latest-release','mywindow');"
     } else {
@@ -9,6 +9,7 @@ badge_services <- function(...){
     },
     class = "sourceBadge",
     style = "cursor: pointer;",
+    role = "button",
     div(
       style = "display: table-cell;",
       "Services"
@@ -37,10 +38,11 @@ badge_services <- function(...){
 # goods
 
 badge_goods <- function(...){
-  div(
+  tags$button(
     onclick="window.open('https://explore.data.abs.gov.au/vis?fs[0]=Economy%2C0%7CInternational%20trade%23INTERNATIONAL_TRADE%23&pg=0&fc=Economy&df[ds]=ECONOMY_TOPICS&df[id]=MERCH_EXP&df[ag]=ABS&df[vs]=1.0.0&pd=2021-01%2C&dq=0%2B1%2B2%2B3%2B4%2B5%2B6%2B7%2B8%2B9%2BTOT.TOT.TOT.M&ly[cl]=TIME_PERIOD&ly[rw]=COMMODITY_SITC','mywindow');",
     class = "sourceBadge",
     style = "cursor: pointer;",
+    role = "button",
     div(
       style = "display: table-cell;",
       "Goods"
@@ -60,10 +62,11 @@ badge_goods <- function(...){
 # BOP
 
 badge_bop <- function(...){
-  div(
+  tags$button(
     onclick="window.open('https://www.abs.gov.au/statistics/economy/international-trade/balance-payments-and-international-investment-position-australia/latest-release','mywindow');",
     class = "sourceBadge",
     style = "cursor: pointer;",
+    role = "button",
     div(
       style = "display: table-cell;",
       "BOP"
