@@ -104,10 +104,12 @@ page_merchUI <- function(...) {
             column(
               12,
               highchartOutput("merch_explorer", height = "auto")
-            ),
+            )
           )
         )
       )
-    )
+    ),
+
+    footer()
   )
 }

@@ -24,7 +24,11 @@ ui <- function() {
         shinydashboard::menuItem("Export explorer", tabName = "merch"),
         shinydashboard::menuItem("Balance of payments", tabName = "bop"),
         shinydashboard::menuItem("Services", tabName = "services"),
-        shinydashboard::menuItem("Notes", tabName = "methodology")
+        shinydashboard::menuItem("Notes", tabName = "methodology"),
+        shinydashboard::menuItem("Disclaimer", tabName = "disclaimer") %>%
+          shiny::tagAppendAttributes(
+            style = "display:none;"
+          )
       ),
       width = "250px"
     ),
@@ -43,6 +47,7 @@ ui <- function() {
         shiny::tags$script("$(document).ready(function(){$('a.merchLink').click(function(){$('.sidebar-menu a[data-value=\"merch\"]').trigger('click');})});"),
         shiny::tags$script("$(document).ready(function(){$('a.bopLink').click(function(){$('.sidebar-menu a[data-value=\"bop\"]').trigger('click');})});"),
         shiny::tags$script("$(document).ready(function(){$('a.servicesLink').click(function(){$('.sidebar-menu a[data-value=\"services\"]').trigger('click');})});"),
+        shiny::tags$script("$(document).ready(function(){$('a.disclaimerLink').click(function(){$('.sidebar-menu a[data-value=\"disclaimer\"]').trigger('click');})});"),
         # Resize highcharts on sidebar collapse
         shiny::tags$script(src = "sidebar_chart_resize.JS")
         ),
@@ -53,7 +58,8 @@ ui <- function() {
         shinydashboard::tabItem("merch", page_merchUI()),
         shinydashboard::tabItem("bop", page_bopUI()),
         shinydashboard::tabItem("services", page_servicesUI()),
-        shinydashboard::tabItem("methodology", page_methodology())
+        shinydashboard::tabItem("methodology", page_methodology()),
+        shinydashboard::tabItem("disclaimer", page_disclaimerUI())
       )
     )
   )

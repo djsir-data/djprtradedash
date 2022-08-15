@@ -16,12 +16,14 @@ page_launchpadUI <- function(id) {
         tags$li(
           span(class = "fa-li", tags$i(class = "fa fa-caret-left")),
           a(
+            href = "#",
             class = "merchLink",
             "Find your merchandise export market's performance")
           ),
         tags$li(
           span(class = "fa-li", tags$i(class = "fa fa-caret-left")),
           a(
+            href = "#",
             class = "bopLink",
             "Explore Victoria's overall trade performance"
             )
@@ -29,6 +31,7 @@ page_launchpadUI <- function(id) {
         tags$li(
           span(class = "fa-li", tags$i(class = "fa fa-caret-left")),
           a(
+            href = "#",
             class = "servicesLink",
             "Compare Victoria's service exports"
           )
@@ -165,8 +168,9 @@ page_launchpadUI <- function(id) {
       width = 12
     ) %>%
       to_col_xl() %>%
-      shiny::fluidRow()
+      shiny::fluidRow(),
 
+    footer()
   )
 }
 

@@ -81,7 +81,9 @@ page_bopUI <- function(...) {
         width = 12,
         readRDS("inst/bop_trade_balance_line_chart.rds")
       )%>% to_col_xl()
-    )
+    ),
+
+    footer()
   )
 }
 

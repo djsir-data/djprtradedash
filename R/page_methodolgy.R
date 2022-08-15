@@ -53,7 +53,9 @@ page_methodology <- function(...) {
         12,
         shiny::includeMarkdown("R/glossary.md")
       )
-    )
+    ),
+
+    footer()
   )
 
 }

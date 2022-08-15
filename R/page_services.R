@@ -98,7 +98,9 @@ page_servicesUI <- function(...){
           readRDS("inst/service_state_comparison.rds")
         )
       )
-    )
+    ),
+
+    footer()
 
 
   )
