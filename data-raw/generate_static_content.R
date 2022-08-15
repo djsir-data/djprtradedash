@@ -116,13 +116,8 @@ to_eval <- list(
   "bop_good_services_chart" = list(
     what = highcharts_good_services_chart,
     args = list()
-  ),
-  "ui" = list(
-    what = ui,
-    args = list()
   )
 )
-
 
 
 
@@ -133,6 +128,20 @@ evaluated <- lapply(
 )
 
 
-# Save
+# Define save paths
+if(!dir.exists("inst")) dir.create("inst")
 out_path <- file.path("inst", paste0(names(to_eval), ".rds"))
+
+
+# Write files
 mapply(saveRDS, evaluated, out_path)
+
+
+# Cache UI (has to be done after other dependant cached files)
+saveRDS(ui(), "inst/ui.rds")
+out_path <- c(out_path, "inst/ui.rds")
+
+# Exclude from git
+ignore <- readLines(".gitignore")
+ignore <- union(ignore, out_path)
+writeLines(ignore, ".gitignore")
