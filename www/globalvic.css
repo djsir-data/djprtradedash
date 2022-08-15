@@ -302,6 +302,8 @@ border-radius: 1.25rem 0 0 0;
   font-size: 14px;
   display: table;
   line-height: 0.8;
+  background-color: var(--midnight);
+  padding: 0;
 }
 
 .sourceBadge div:first-child{
@@ -374,10 +376,25 @@ border-radius: 1.25rem 0 0 0;
   overflow: auto;
 }
 
-/*
-.shiny-options-group{
-  background-color: #FFFFFF;
-    border-radius: 1.25rem;
-    padding: 10px;
+.box::-webkit-scrollbar {
+  width: 20px;
 }
-*/
+
+.box::-webkit-scrollbar-track {
+  background-color: transparent;
+}
+
+.box::-webkit-scrollbar-thumb {
+  background-color: var(--night);
+  border-radius: 1.25rem;
+  border: 6px solid transparent;
+  background-clip: content-box;
+}
+
+.box::-webkit-scrollbar-thumb:hover {
+  background-color: var(--midnight);
+}
+
+#shiny-tab-bop .box {
+    background-color: #E5E4E2;
+}
