@@ -1,4 +1,3 @@
-# Global Victoria Trade Dashboard Data Methodology
 
 ## Introduction
 
