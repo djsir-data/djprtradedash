@@ -26,6 +26,37 @@ to_col_xl <- function(x){
 
 
 
+# Generic table generation fun
+djpr_table <- function(df, first_col_header = TRUE){
+  # Table container
+  shiny::tags$table(
+    class = "djprTable",
+    # Header row
+    shiny::tags$thead(
+      shiny::tags$tr(lapply(colnames(df), function(x) shiny::tags$th(scope = "col", x)))
+    ),
+    # Table body
+    shiny::tags$tbody(
+      apply(df, 1, function(x) {
+        shiny::tags$tr(
+          c(
+            list(
+              if(first_col_header) {
+                shiny::tags$th(scope = "row", x[[1]])
+              } else {
+                shiny::tags$td(x[[1]])
+              }
+            ),
+            lapply(x[2:length(x)], function(y) shiny::tags$td(y))
+          )
+        )
+      }
+      )
+    )
+  )
+}
+
+
 
 
 

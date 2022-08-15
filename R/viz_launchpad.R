@@ -452,104 +452,497 @@ table_bop <- function(data = bop){
 
 
 
+# Headline goods chart
+highcharts_launchpad_goods <- function(
+    data  = merch,
+    dates = c(merch_dates$max - months(36), merch_dates$max),
+    top   = 5,
+    chart_type = "spline",
+    sitc_level = 3
+){
 
+  past_12_months <- merch_dates$max - months(12)
 
-# The table that shows the change in exports and imports of goods and services
-launchpad_table_export_import <- function(data = bop) {
-
-  if ('tbl_lazy' %in% class(data)) {
-    data <- data %>%
-      dplyr::collect() %>%
-      dplyr::mutate(date = as.Date(date))
-  }
-
-
-  df <- data %>%
-    dplyr::select(-series_id, -unit) %>%
+  top_5_code <- data %>%
     dplyr::filter(
-      indicator == "Chain Volume Measures",
-      state == "Victoria"
-      ) %>%
-    dplyr::mutate(value = abs(value))
-
-  datelist <- df %>%
-    dplyr::filter(date %in% c(
-      max(date),
-      max(date) - months(3),
-      max(date) - months(12),
-      as.Date("2019-12-01")
-      )) %>%
-    dplyr::select(date) %>%
-    dplyr::distinct() %>%
-    dplyr::arrange(dplyr::desc(date))
-
-  #clean table headings
-  latest_date <- datelist$date[1]
-  prev_qtr <- datelist$date[2]
-  prev_year <- datelist$date[3]
-  since_covid <- datelist$date[4]
-
-  nice_latest_date <- format(latest_date, "%b %Y")
-  nice_since_covid  <- format(since_covid, "%b %Y")
-  nice_prev_qtr <- format(prev_qtr, "%b %Y")
-  nice_prev_year <- format(prev_year, "%b %Y")
-
-  since_since_covid <- paste0("Since ", nice_since_covid)
-  since_prev_qtr <- paste0("Since ", nice_prev_qtr)
-  since_prev_year <- paste0("Since ", nice_prev_year)
-
-  df %>%
-    dplyr::filter(date %in% datelist$date) %>%
-    dplyr::group_by(exports_imports, goods_services) %>%
-    dplyr::arrange(exports_imports, goods_services) %>%
-    dplyr::mutate(
-      prev_qtr_change = paste0(
-        scales::comma(value - dplyr::lag(value,1), accuracy = 1),
-        "\n(",
-        scales::percent(
-          (value - dplyr::lag(value,1)) / dplyr::lag(value,1)
-          ),
-        ")"
-        ),
-      prev_year_change = paste0(
-        scales::comma(value - dplyr::lag(value, 2), accuracy = 1),
-        "\n(",
-        scales::percent(
-          (value - dplyr::lag(value, 2)) / dplyr::lag(value, 2)
-          ),
-        ")"
-        ),
-      covid_change = paste0(
-        scales::comma(value - dplyr::lag(value,3), accuracy = 1),
-        "\n(",
-        scales::percent(
-          (value - dplyr::lag(value,3)) / dplyr::lag(value,3)
-          ),
-        ")"
-        )
-      ) %>%
+      country_dest == "Total",
+      origin == "Victoria",
+      nchar(sitc_code) == !!sitc_level,
+      date >= past_12_months,
+      sitc != "Total",
+      substr(sitc_code, 1, 1) != "9" #confidential items and misc
+    ) %>%
+    dplyr::group_by(sitc_code) %>%
+    dplyr::summarise(value = sum(value, na.rm = TRUE)) %>%
     dplyr::ungroup() %>%
-    dplyr::filter(date == latest_date) %>%
-    dplyr::arrange(exports_imports, dplyr::desc(value)) %>%
+    dplyr::slice_max(value, n = top) %>%
+    dplyr::select(sitc_code) %>%
+    dplyr::collect() %>%
+    dplyr::pull()
+
+  level_3_data <- data %>%
+    dplyr::filter(
+      country_dest == "Total",
+      origin == "Victoria",
+      sitc_code %in% !!top_5_code,
+    ) %>%
+    dplyr::collect() %>%
+    dplyr::group_by(sitc) %>%
+    dplyr::arrange(date) %>%
     dplyr::mutate(
-      ` `   = paste(goods_services, exports_imports),
-      value = scales::comma(value, accuracy = 1)
-      ) %>%
-    dplyr::select(
-      -c(
-        exports_imports,
-        indicator,
-        goods_services,
-        state,
-        date
+      value = slider::slide_sum(value, before = 11L) * 1000
+    ) %>%
+    dplyr::ungroup() %>%
+    dplyr::mutate(
+      sitc_shrink = sitc %>%
+        stringr::str_remove_all(
+          "\\(.+\\)|and other.+|, fresh, chilled .+|, fats and waxes| and related products, nes|, inedible, except fuels| and live animals| and transport equipment|, lubricants and related materials| articles"
+        ) %>%
+        stringr::str_squish(),
+      level_2 = substr(sitc_code, 1, 2)
+    )
+
+  level_3_data %>%
+    dplyr::filter(
+      date >= dates[1],
+      date <= dates[2]
+    ) %>%
+    highcharter::hchart(
+      chart_type,
+      highcharter::hcaes(x = date, y = round(value, 0), group = sitc_shrink),
+      marker = list(enabled = F)
+    ) %>%
+    highcharter::hc_plotOptions(series = list(label = list(enabled = TRUE))) %>%
+    highcharter::hc_legend(enabled = FALSE) %>%
+    highcharter::hc_xAxis(
+      title = list(enabled = FALSE),
+      accessibility = list(
+        description = sprintf(
+          'Date from %s to %s',
+          format(dates[1], "%B %Y"),
+          format(dates[2], "%B %Y")
+        )
       )
     ) %>%
-    dplyr::rename(
-      !!paste0(nice_latest_date) := value,
-      !!paste0(nice_prev_qtr)    := prev_qtr_change,
-      !!paste0(nice_prev_year)   := prev_year_change,
-      !!paste0(nice_since_covid) := covid_change
-      ) %>%
-    dplyr::relocate(` `)
+    highcharter::hc_yAxis(
+      title = list(text = "Exports"),
+      labels = list(format = "${text}"),
+      tickAmount = 6,
+      accessibility = list(description = "Exports in Australian dollars")
+    ) %>%
+    #highcharter::hc_add_dependency("plugins/series-label.js") %>%
+    #highcharter::hc_add_dependency("plugins/accessibility.js") %>%
+    highcharter::hc_exporting(
+      enabled = TRUE,
+      filename = "Victorias good exports"
+    ) %>%
+    highcharter::hc_title(text = "Goods exports from Victoria") %>%
+    highcharter::hc_subtitle(text = "Year to date goods exports of level 1 SITC classifications $AUD") %>%
+    highcharter::hc_caption(
+      text = paste0(
+        "Source: ABS.Stat Merchandise Exports by Commodity (latest data is from ",
+        format(merch_dates$max, "%B %Y"),
+        ")."
+      )
+    ) %>%
+    djpr_highcharts()
 }
+
+
+# Headline services chart
+highcharts_launchpad_services <- function(
+    data    = service_trade,
+    n_years = 4,
+    period  = "Calendar Year",
+    chart_type = "spline"
+){
+
+  filter_years <- data %>%
+    dplyr::filter(period == !!period) %>%
+    dplyr::select(date) %>%
+    dplyr::distinct() %>%
+    dplyr::slice_max(date, n = n_years) %>%
+    dplyr::collect() %>%
+    dplyr::pull()
+
+  data <- data %>%
+    dplyr::filter(
+      flow == "Export",
+      state == "Vic.",
+      period == !!period,
+      date %in% !!filter_years
+    ) %>%
+    dplyr::collect() %>%
+    dplyr::mutate(
+      keep = level == 1,
+      keep = ifelse(level_1 == "Travel" & level > 2, T, keep),
+      keep = ifelse(service == "Travel", F, keep)
+    ) %>%
+    dplyr::filter(keep == TRUE) %>%
+    dplyr::select(date, value, service)
+
+  data %>%
+    highcharter::hchart(
+      chart_type,
+      highcharter::hcaes(x = date, y = value, group = service),
+      marker = list(enabled = F)
+    ) %>%
+    highcharter::hc_plotOptions(
+      series = list(label = list(enabled = TRUE)),
+      area = list(stacking = 'normal')
+    ) %>%
+    highcharter::hc_legend(enabled = FALSE) %>%
+    highcharter::hc_tooltip(
+      dateTimeLabelFormats = list(day = "%b %Y"),
+      valuePrefix = "$"
+    ) %>%
+    highcharter::hc_xAxis(title = list(enabled = FALSE)) %>%
+    highcharter::hc_yAxis(
+      title = list(text = "Exports"),
+      labels = list(format = "${text}"),
+      tickAmount = 6
+    ) %>%
+    #highcharter::hc_add_dependency("plugins/series-label.js") %>%
+    #highcharter::hc_add_dependency("plugins/accessibility.js") %>%
+    highcharter::hc_exporting(
+      enabled = TRUE,
+      filename = "Victorias service exports"
+    ) %>%
+    highcharter::hc_title(text = "Services exports from Victoria") %>%
+    highcharter::hc_subtitle(text = "Annual value of services exported $AUD") %>%
+    highcharter::hc_caption(
+      text = paste0(
+        "Source: ABS International Trade: Supplementary Information (latest data is from ",
+        format(filter_years[1], "%b %Y"),
+        ")."
+      )
+    ) %>%
+    djpr_highcharts()
+}
+
+
+# Top country exports/imports
+table_countries <- function(exports = merch, imports = merch_imp){
+
+  # Determine last 12 months of data
+  past_12_months <- merch_dates$max - months(12)
+
+  # Get the top export countries by sum of 12 month value
+  top_exp <- exports %>%
+    dplyr::filter(
+      country_dest != "Total",
+      origin == "Victoria",
+      date >= past_12_months,
+      sitc == "Total"
+    ) %>%
+    dplyr::group_by(country_dest) %>%
+    dplyr::summarise(value = sum(value, na.rm = TRUE)) %>%
+    dplyr::ungroup() %>%
+    dplyr::slice_max(value, n = 5) %>%
+    dplyr::select(country_dest) %>%
+    dplyr::collect() %>%
+    dplyr::pull()
+
+  # Get the top import countries by sum of 12 month value
+  top_imp <- imports %>%
+    dplyr::filter(
+      country_origin != "Total",
+      dest == "Victoria",
+      date >= past_12_months,
+      sitc == "Total"
+    ) %>%
+    dplyr::group_by(country_origin) %>%
+    dplyr::summarise(value = sum(value, na.rm = TRUE)) %>%
+    dplyr::ungroup() %>%
+    dplyr::slice_max(value, n = 5) %>%
+    dplyr::select(country_origin) %>%
+    dplyr::collect() %>%
+    dplyr::pull()
+
+  exp <- exports %>%
+    dplyr::filter(
+      country_dest != "Total",
+      origin == "Victoria",
+      date >= past_12_months,
+      sitc == "Total",
+      country_dest %in% top_exp
+    ) %>%
+    dplyr::arrange(country_dest, date) %>%
+    dplyr::collect() %>%
+    dplyr::group_by(country_dest) %>%
+    dplyr::summarise(
+      `Current monthly` = dplyr::last(value) * 1000,
+      `One month change` = (dplyr::last(value) - dplyr::nth(value, -2)) / dplyr::nth(value, -2),
+      `Three month change` = (dplyr::last(value) - dplyr::nth(value, -4)) / dplyr::nth(value, -4),
+      `Twelve month change` = (dplyr::last(value) - dplyr::nth(value, -13)) / dplyr::nth(value, -13)
+    ) %>%
+    dplyr::arrange(dplyr::desc(`Current monthly`)) %>%
+    dplyr::mutate(
+      `Current monthly` = scales::dollar(`Current monthly`, accuracy = 1, scale = 1/1e06, suffix = "m"),
+      dplyr::across(dplyr::contains("change"), ~scales::percent(., accuracy = 1)),
+      country_dest = stringr::str_remove_all(country_dest, "\\(.+\\)") %>%
+        stringr::str_squish() %>%
+        stringr::str_replace_all("United States of America", "USA") %>%
+        paste0("\t", .)
+    ) %>%
+    dplyr::rename(country = country_dest)
+
+  imp <- imports %>%
+    dplyr::filter(
+      country_origin != "Total",
+      dest == "Victoria",
+      date >= past_12_months,
+      sitc == "Total",
+      country_origin %in% top_imp
+    ) %>%
+    dplyr::arrange(country_origin, date) %>%
+    dplyr::collect() %>%
+    dplyr::group_by(country_origin) %>%
+    dplyr::summarise(
+      `Current monthly` = dplyr::last(value) * 1000,
+      `One month change` = (dplyr::last(value) - dplyr::nth(value, -2)) / dplyr::nth(value, -2),
+      `Three month change` = (dplyr::last(value) - dplyr::nth(value, -4)) / dplyr::nth(value, -4),
+      `Twelve month change` = (dplyr::last(value) - dplyr::nth(value, -13)) / dplyr::nth(value, -13)
+    ) %>%
+    dplyr::arrange(dplyr::desc(`Current monthly`)) %>%
+    dplyr::mutate(
+      `Current monthly` = scales::dollar(`Current monthly`, accuracy = 1, scale = 1/1e06, suffix = "m"),
+      dplyr::across(dplyr::contains("change"), ~scales::percent(., accuracy = 1)),
+      country_origin = stringr::str_remove_all(country_origin, "\\(.+\\)") %>%
+        stringr::str_squish() %>%
+        stringr::str_replace_all("United States of America", "USA") %>%
+        paste0("\t", .)
+    ) %>%
+    dplyr::rename(country = country_origin)
+
+  exp_header <- as.list(c("Exports", rep("", 4)))
+  imp_header <- as.list(c("Imports", rep("", 4)))
+
+  out <- rbind(exp_header, exp, imp_header, imp) %>%
+    djpr_table()
+
+  return(out)
+
+}
+
+
+# Overall trade position
+highcharts_bop_export_chart <- function(
+    data = bop
+) {
+
+  df <- data %>%
+    dplyr::filter(
+      state == "Victoria",
+      exports_imports == "Exports",
+      indicator == "Chain Volume Measures"
+    )
+
+  if ('tbl_lazy' %in% class(df)) {
+    df <- df %>%
+      dplyr::collect()
+  }
+
+  df <- df %>%
+    dplyr::select(-series_id, -unit) %>%
+    dplyr::mutate(goods_services = dplyr::if_else(goods_services == "Goods and Services", "Total", goods_services)) %>%
+    dplyr::mutate(value = abs(value) * 1000000)
+
+
+  latest_month <- format(max(df$date), "%B %Y")
+
+  latest_change <- df %>%
+    dplyr::filter(goods_services == "Total") %>%
+    dplyr::mutate(change = value - dplyr::lag(value, 1)) %>%
+    dplyr::filter(!is.na(change), date == max(date))
+
+
+
+  title <-
+    dplyr::case_when(
+      abs(latest_change$change) < 10 ~ "Victoria's total exports remained steady over the past quarter ",
+      latest_change$change > 0 ~ paste0("Victoria's total exports rose by ", dollar_stat(latest_change$change), " over the past quarter"),
+      latest_change$change < 0 ~ paste0("Victoria's total exports fell by ", dollar_stat(abs(latest_change$change)), " over the past quarter"),
+      TRUE ~ "Victoria's total exports over the past quarter"
+    )
+
+  caption <- paste0("Source: ABS Balance of Payment quarterly (latest data is from ", latest_month, ").</br> Note: Data seasonally Adjusted & Chain Volume Measures")
+
+  highcharter::highchart(type = "stock") %>%
+    highcharter::hc_add_series(
+      df,
+      "line",
+      highcharter::hcaes(x = date, y = value, group = goods_services),
+      label = list(enabled = TRUE)
+    ) %>%
+    highcharter::hc_yAxis(
+      title = list(text = "Exports"),
+      labels = list(format = "${text}")
+    ) %>%
+    #highcharter::hc_add_dependency("plugins/series-label.js") %>%
+    #highcharter::hc_add_dependency("plugins/accessibility.js") %>%
+    highcharter::hc_title(text = title) %>%
+    highcharter::hc_subtitle(text = "Victoria's exports of goods and services") %>%
+    highcharter::hc_caption(text = caption) %>%
+    highcharter::hc_rangeSelector(
+      inputEnabled = F,
+      selected = 1,
+      buttons = list(
+        list(
+          type  = 'all',
+          text  =  'All',
+          title =  'View all'
+        ),
+        list(
+          type  = 'year',
+          count = 5,
+          text  = '5y',
+          title = 'View five years'
+        ),
+        list(
+          type  = 'year',
+          count = 3,
+          text  = '3y',
+          title = 'View three years years'
+        ),
+        list(
+          type  = 'ytd',
+          text  = 'YTD',
+          title = 'View year to date'
+        )
+      )
+    ) %>%
+    highcharter::hc_navigator(series = list(label = list(enabled = FALSE))) %>%
+    djpr_highcharts()
+
+}
+
+
+
+# Rising goods chart
+highcharts_rising_goods <- function(
+    data  = merch,
+    top   = 5,
+    chart_type = "spline",
+    sitc_level = 3,
+    min_annual_value = 1e06
+){
+
+  past_12_months <- merch_dates$max - months(12)
+
+  top_5_code <- data %>%
+    dplyr::filter(
+      country_dest == "Total",
+      origin == "Victoria",
+      nchar(sitc_code) == !!sitc_level,
+      sitc != "Total",
+      substr(sitc_code, 1, 1) != "9" #confidential items and misc
+    ) %>%
+    dplyr::arrange(sitc_code, date) %>%
+    dplyr::collect() %>%
+    dplyr::group_by(sitc_code) %>%
+    dplyr::mutate(year_on_year_growth = (value - dplyr::lag(value, 12)) / dplyr::lag(value, 12)) %>%
+    dplyr::filter(date >= !!past_12_months) %>%
+    dplyr::summarise(mean_growth = mean(year_on_year_growth), value = sum(value)) %>%
+    dplyr::filter(value >= !!min_annual_value) %>%
+    dplyr::ungroup() %>%
+    dplyr::slice_max(mean_growth, n = top) %>%
+    dplyr::select(sitc_code) %>%
+    dplyr::pull()
+
+  level_3_data <- data %>%
+    dplyr::filter(
+      country_dest == "Total",
+      origin == "Victoria",
+      sitc_code %in% !!top_5_code,
+    ) %>%
+    dplyr::collect() %>%
+    dplyr::group_by(sitc) %>%
+    dplyr::mutate(value = slider::slide_mean(value, before = 11)) %>%
+    dplyr::ungroup() %>%
+    dplyr::mutate(
+      sitc_shrink = sitc %>%
+        stringr::str_remove_all(
+          "\\(.+\\)|and other.+|, fresh, chilled .+|, fats and waxes| and related products, nes|, inedible, except fuels| and live animals| and transport equipment|, lubricants and related materials| articles| of a kind used for the extraction of soft fixed vegetable oils"
+        ) %>%
+        stringr::str_squish()
+    ) %>%
+    dplyr::select(sitc_shrink, date, value) %>%
+    dplyr::arrange(date, sitc_shrink) %>%
+    dplyr::distinct()
+
+
+  highcharter::highchart(type = "stock") %>%
+    highcharter::hc_add_series(
+      level_3_data,
+      chart_type,
+      highcharter::hcaes(x = date, y = round(value, 0), group = sitc_shrink),
+      marker = list(enabled = F)
+    ) %>%
+    highcharter::hc_plotOptions(series = list(label = list(enabled = TRUE))) %>%
+    highcharter::hc_xAxis(
+      title = list(enabled = FALSE),
+      accessibility = list(
+        description = sprintf(
+          'Date from %s to %s',
+          format(min(level_3_data$date), "%B %Y"),
+          format(max(level_3_data$date), "%B %Y")
+        )
+      )
+    ) %>%
+    highcharter::hc_yAxis(
+      title = list(text = "Exports"),
+      labels = list(format = "${text}"),
+      tickAmount = 6,
+      accessibility = list(description = "Exports in Australian dollars")
+    ) %>%
+    #highcharter::hc_add_dependency("plugins/series-label.js") %>%
+    #highcharter::hc_add_dependency("plugins/accessibility.js") %>%
+    highcharter::hc_exporting(
+      enabled = TRUE,
+      filename = "Victorias good exports"
+    ) %>%
+    highcharter::hc_title(text = "Past year's top growing goods exports") %>%
+    highcharter::hc_subtitle(text = "Top 5 SITC level 3 exports by average year-on-year growth $AUD") %>%
+    highcharter::hc_caption(
+      text = paste0(
+        "Source: ABS.Stat Merchandise Exports by Commodity (latest data is from ",
+        format(merch_dates$max, "%B %Y"),
+        ").</br>Note: Data smoothed using 12-month rolling average."
+      )
+    ) %>%
+    highcharter::hc_rangeSelector(
+      inputEnabled = F,
+      selected = 1,
+      buttons = list(
+        list(
+          type  = 'all',
+          text  =  'All',
+          title =  'View all'
+        ),
+        list(
+          type  = 'year',
+          count = 5,
+          text  = '5y',
+          title = 'View five years'
+        ),
+        list(
+          type  = 'year',
+          count = 3,
+          text  = '3y',
+          title = 'View three years years'
+        ),
+        list(
+          type  = 'ytd',
+          text  = 'YTD',
+          title = 'View year to date'
+        )
+      )
+    ) %>%
+    highcharter::hc_navigator(series = list(label = list(enabled = FALSE))) %>%
+    djpr_highcharts()
+}
+
+
+
 
