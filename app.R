@@ -14,4 +14,3 @@ load_tabs()
 
 # Start shinyapp
 shiny::shinyApp(ui = ui(), server = server)
-# shiny::shinyApp(ui = readRDS("inst/ui.rds"), server = server)
