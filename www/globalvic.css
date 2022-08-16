@@ -19,7 +19,7 @@
 @font-face {
   font-family: "VIC-SemiBold";
   font-style: normal;
-  src: url("djprshiny/fonts//VIC-SemiBold.eot");
+  src: url("./fonts/VIC-SemiBold.eot");
   src: url("./fonts/VIC-SemiBold-iefix.eot?#iefix") format("embedded-opentype"),
        url("./fonts/VIC-SemiBold.woff2") format("woff2"),
        url("./fonts/VIC-SemiBold.woff") format("woff"),
