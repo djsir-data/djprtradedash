@@ -19,7 +19,7 @@ if(
 
 # Publish App
 rsconnect::deployApp(
-  appName = "gv-test",
+  appName = "djprtradedash",
   forceUpdate = TRUE
 )
 
