@@ -47,7 +47,7 @@ highcharts_total_bop_bar_chart <- function(data = bop) {
     TRUE ~ "Victoria's exports compared to other states"
   )
 
-  caption <- paste0("Source: ABS Balance of Payment quarterly (latest data is from ", latest_month, "). Note: Data seasonally Adjusted & Chain Volume Measures")
+  caption <- "Source: ABS Balance of Payment quarterly. Note: Data seasonally Adjusted & Chain Volume Measures."
 
 
   # Make highchart
@@ -144,7 +144,7 @@ highcharts_good_trade_line_chart <- function(data = bop) {
     "they were in ",year_prior #
   )
 
-  caption <- paste0("Source: ABS Balance of Payment quarterly (latest data is from ", latest_month, ". Note: Data seasonally Adjusted & Chain Volume Measures")
+  caption <- "Source: ABS Balance of Payment quarterly. Note: Data seasonally Adjusted & Chain Volume Measures."
 
   highchart(type = "stock") %>%
     hc_add_series(
@@ -255,7 +255,7 @@ highcharts_services_trade_line_chart <- function(data = bop) {
     dplyr::pull(value) %>%
     djprshiny::round2(1)
 
-  caption <- paste0("Source: ABS Balance of Payment quarterly (latest data is from ", latest_month, ". Note: Data seasonally Adjusted & Chain Volume Measures")
+  caption <- "Source: ABS Balance of Payment quarterly. Note: Data seasonally Adjusted & Chain Volume Measures."
 
   title <- paste0(
     "Victoria's services exports are ",
@@ -409,7 +409,7 @@ highcharts_service_bop_bar_chart <- function(data = bop) {
     TRUE ~ "Changes in services exports and imports in Victoria"
   )
 
-  caption <- paste0("Source: ABS Balance of Payments quarterly (latest data is from ", latest_month, "). Note: Data seasonally Adjusted & Chain Volume Measures")
+  caption <- "Source: ABS Balance of Payments quarterly. Note: Data seasonally Adjusted & Chain Volume Measures."
 
 
   df <- df %>%
@@ -533,7 +533,7 @@ highcharts_goods_bop_bar_chart <- function(data = bop) {
   )
 
 
-  caption <- paste0("Source: ABS Balance of Payments quarterly (latest data is from ", latest_month, "). Note: Data seasonally Adjusted & Chain Volume Measures")
+  caption <- paste0("Source: ABS Balance of Payments quarterly. Note: Data seasonally Adjusted & Chain Volume Measures.")
 
 
   df <- df %>%
@@ -636,7 +636,7 @@ highcharts_goods_export_import_line <- function(data = bop) {
     TRUE ~ paste0("Exports and imports of goods and services annual")
   )
 
-  caption <- paste0("Source: ABS Balance of Payment quarterly (latest data is from ", latest_month, "). Note: Data seasonally Adjusted & Chain Volume Measures")
+  caption <- paste0("Source: ABS Balance of Payment quarterly. Note: Data seasonally Adjusted & Chain Volume Measures.")
 
   highchart(type = "stock") %>%
     hc_yAxis_multiples(
@@ -747,7 +747,7 @@ highcharts_trade_balance_line_chart <- function(data = bop) {
   year_prior <- format(max(df$date)%m-%months(12), "%B %Y")
 
 
-  caption <- paste0("Source: ABS Balance of Payment quarterly (latest data is from ", latest_month, "). Note: Data seasonally Adjusted & Chain Volume Measures")
+  caption <- paste0("Source: ABS Balance of Payment quarterly. Note: Data seasonally Adjusted & Chain Volume Measures.")
 
 
   df <- df %>%
@@ -905,7 +905,7 @@ highcharts_NSW_Vic_goods_line_chart <- function(data = bop) {
   )
 
 
-  caption <- paste0("Source: ABS Balance of Payment quarterly (latest data is from ", latest_month, "). Note: Data seasonally Adjusted & Chain Volume Measures")
+  caption <- paste0("Source: ABS Balance of Payment quarterly. Note: Data seasonally Adjusted & Chain Volume Measures.")
 
   df <- df %>% arrange(state, date)
 
@@ -1045,7 +1045,7 @@ highcharts_NSW_Vic_Services_line_chart <- function(data = bop) {
     TRUE ~ "Annual growth exporst and imports in services"
   )
 
-  caption <- paste0("Source: ABS Balance of Payment quarterly (latest data is from ", latest_month, ". Note: Data seasonally Adjusted & Chain Volume Measures")
+  caption <- paste0("Source: ABS Balance of Payment quarterly. Note: Data seasonally Adjusted & Chain Volume Measures.")
 
   highchart(type = "stock") %>%
     hc_yAxis_multiples(
@@ -1172,9 +1172,7 @@ highcharts_good_services_chart <- function(data = bop) {
 
 
   caption <- paste0(
-    "Source: ABS Balance of Payment quarterly (latest data is from ",
-    latest_month,
-    "). Note: Data seasonally Adjusted & Chain Volume Measures"
+    "Source: ABS Balance of Payment quarterly. Note: Data seasonally Adjusted & Chain Volume Measures."
     )
 
   highchart(type = "stock") %>%

@@ -52,9 +52,7 @@ highcharts_service_compositon <- function(data = service_trade){
     djpr_highcharts() %>%
     highcharter::hc_caption(
       text = paste0(
-        "Source: ABS International Trade: Supplementary Information (latest data is from ",
-        date_text,
-        ")."
+        "Source: ABS International Trade: Supplementary Information."
       )
     ) %>%
     highcharter::hc_exporting(
@@ -157,9 +155,7 @@ highchart(type = "stock") %>%
   highcharter::hc_subtitle(text = "Export volume by Australian state $AUD") %>%
   highcharter::hc_caption(
     text = paste0(
-      "Source: ABS International Trade: Supplementary Information (latest data is from ",
-      format(max(data$date), "%Y"),
-      ")."
+      "Source: ABS International Trade: Supplementary Information."
     )
   ) %>%
   highcharter::hc_rangeSelector(

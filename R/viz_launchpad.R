@@ -540,9 +540,7 @@ highcharts_launchpad_goods <- function(
     highcharter::hc_subtitle(text = "Year to date goods exports of level 1 SITC classifications $AUD") %>%
     highcharter::hc_caption(
       text = paste0(
-        "Source: ABS.Stat Merchandise Exports by Commodity (latest data is from ",
-        format(merch_dates$max, "%B %Y"),
-        ")."
+        "Source: ABS.Stat Merchandise Exports by Commodity."
       )
     ) %>%
     highcharter::hc_tooltip(
@@ -616,9 +614,7 @@ highcharts_launchpad_services <- function(
     highcharter::hc_subtitle(text = "Annual value of services exported $AUD") %>%
     highcharter::hc_caption(
       text = paste0(
-        "Source: ABS International Trade: Supplementary Information (latest data is from ",
-        format(filter_years[1], "%b %Y"),
-        ")."
+        "Source: ABS International Trade: Supplementary Information."
       )
     ) %>%
     djpr_highcharts()
@@ -770,7 +766,7 @@ highcharts_bop_export_chart <- function(
       TRUE ~ "Victoria's total exports over the past quarter"
     )
 
-  caption <- paste0("Source: ABS Balance of Payment quarterly (latest data is from ", latest_month, ").</br> Note: Data seasonally Adjusted & Chain Volume Measures")
+  caption <- paste0("Source: ABS Balance of Payment quarterly.</br> Note: Data seasonally Adjusted & Chain Volume Measures")
 
   highcharter::highchart(type = "stock") %>%
     highcharter::hc_add_series(
@@ -917,9 +913,7 @@ highcharts_rising_goods <- function(
     highcharter::hc_subtitle(text = "Top 5 SITC level 3 exports by average year-on-year growth $AUD") %>%
     highcharter::hc_caption(
       text = paste0(
-        "Source: ABS.Stat Merchandise Exports by Commodity (latest data is from ",
-        format(merch_dates$max, "%B %Y"),
-        ").</br>Note: Data smoothed using 12-month rolling average."
+        "Source: ABS.Stat Merchandise Exports by Commodity.</br>Note: Data smoothed using 12-month rolling average."
       )
     ) %>%
     highcharter::hc_rangeSelector(

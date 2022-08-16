@@ -92,9 +92,7 @@ highcharts_merch_explorer <- function(
 
   # Caption
   caption <- paste0(
-    "Source: ABS.Stat Merchandise Exports data per commodity (latest data is from ",
-    merch_dates$max,
-    "). "
+    "Source: ABS.Stat Merchandise Exports data per commodity."
   )
 
   # Hacky af I'm so sorry
