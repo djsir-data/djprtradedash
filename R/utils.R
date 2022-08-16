@@ -6,117 +6,63 @@ tstrsplit_factor <- function(fac, split){
   lapply(split, function(x) x[ind])
 }
 
-
 # Trycatch infix function
 `%iferror%` <- function(a, b) tryCatch({a}, error = function(e){b})
 
 
-# Assign multiple lazy data frames to global environement
-assign_table_global <- function(con, tables){
-  lapply(tables, function(tab){
-    assign(tab, dplyr::tbl(con, tab), envir = .GlobalEnv)
-  })
+# Column shim
+column <- function(width, ...){
+  colClass <- paste0("col-xl-", width)
+  shiny::div(class = colClass, ...)
+}
+
+to_col_xl <- function(x){
+  x$attribs$class <- paste0(
+    "col-xl-",
+    substr(x$attribs$class, 8, nchar(x$attribs$class))
+    )
+  return(x)
 }
 
 
-# Format dollar figures
-dollar_stat <- function(stat){
-  dplyr::case_when(
-    stat > 1e10 ~ scales::dollar(
-      stat / 1e09,
-      accuracy = 1,
-      suffix = "b"
+
+# Generic table generation fun
+djpr_table <- function(df, first_col_header = TRUE){
+  # Table container
+  shiny::tags$table(
+    class = "djprTable",
+    # Header row
+    shiny::tags$thead(
+      shiny::tags$tr(lapply(colnames(df), function(x) shiny::tags$th(scope = "col", x)))
     ),
-    stat > 1e09 ~ scales::dollar(
-      stat / 1e09,
-      accuracy = 1.1,
-      suffix = "b"
-    ),
-    stat > 1e07 ~ scales::dollar(
-      stat / 1e06,
-      accuracy = 1,
-      prefix = "$",
-      suffix = "m"
-    ),
-    stat > 1e06 ~ scales::dollar(
-      stat / 1e06,
-      accuracy = 1.1,
-      prefix = "$",
-      suffix = "m"
-    ),
-    stat > 1e04 ~ scales::dollar(
-      stat / 1e03,
-      accuracy = 1,
-      suffix = "k"
-    ),
-    stat > 1e03 ~ scales::dollar(
-      stat / 1e03,
-      accuracy = 1.1,
-      suffix = "k"
-    ),
-    TRUE ~ scales::dollar(
-      stat,
-      accuracy = 1
+    # Table body
+    shiny::tags$tbody(
+      apply(df, 1, function(x) {
+        shiny::tags$tr(
+          c(
+            list(
+              if(first_col_header) {
+                shiny::tags$th(scope = "row", x[[1]])
+              } else {
+                shiny::tags$td(x[[1]])
+              }
+            ),
+            lapply(x[2:length(x)], function(y) shiny::tags$td(y))
+          )
+        )
+      }
+      )
     )
   )
 }
 
 
-# Delete cache files
-kill_cache <- function(...){
-  unlink("./app-cache/*", recursive = TRUE, force = TRUE)
-}
 
 
-# Shiny components
-bop_date_slider <- function(
-  id,
-  label = "Dates",
-  min = bop_dates$min,
-  max = bop_dates$max,
-  value = c(bop_dates$min, bop_dates$max),
-  width = "90%",
-  timeFormat = "%b %Y",
-  dragRange = TRUE,
-  ticks = FALSE,
-  ...
-  ){
-  shiny::sliderInput(
-    shiny::NS(id, "dates"),
-    label = "Dates",
-    min = min,
-    max = max,
-    value = value,
-    width = width,
-    timeFormat = timeFormat,
-    dragRange = dragRange,
-    ticks = ticks,
-    ...
-  )
-}
 
-merch_date_slider <- function(
-  id,
-  label = "Dates",
-  min = merch_dates$min,
-  max = merch_dates$max,
-  value = c(merch_dates$min, merch_dates$max),
-  width = "90%",
-  timeFormat = "%b %Y",
-  dragRange = TRUE,
-  ticks = FALSE,
-  ...
-){
-  shiny::sliderInput(
-    shiny::NS(id, "dates"),
-    label = "Dates",
-    min = min,
-    max = max,
-    value = value,
-    width = width,
-    timeFormat = timeFormat,
-    dragRange = dragRange,
-    ticks = ticks,
-    ...
-  )
-}
+
+
+
+
+
+

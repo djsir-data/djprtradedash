@@ -1,252 +1,202 @@
 page_launchpadUI <- function(id) {
 
 
-  shiny::tagList(
+  shiny::fluidPage(
 
-      # Launchpad text & export plot
-      djprshiny::djpr_h2_box("DJPR Trade Dashboard"),
-      shiny::column(
-        5,
-        shiny::div(
-          class = "box",
-          style = "height: 450px;",
-          shiny::p(
-            style = "padding: 10px;",
-            "Conthent goes here"
+    # Header banner
+    div(
+      class = "col-xl-12",
+      # Manual box class
+      div(
+        class = "box",
+        style = "background-color:var(--twilight);display:table;",
+        # Left triangle clip image
+        div(
+          style = paste0(
+            "width: 30%;",
+            "background-image: url(\"containers.png\");",
+            "background-repeat: no-repeat;",
+            "background-size: ", round(1920 / 2.5), "px ", round(1280 / 2.5), "px;",
+            "clip-path: polygon(0 0, 100% 0, 45% 100%, 0% 100%);",
+            "display: table-cell;",
+            "border-radius: 1.25rem 0 0 1.25rem;"
+          )
+        ),
+        # Header with collapse
+        div(
+          class = "box-header",
+          h3(
+            style = "font-size:20px;font-weight:bold;",
+            "Victorian trade data"
+            ),
+          # Header Collapse
+          div(
+            class="box-tools pull-right",
+            tags$button(
+              class = "btn btn-box-tool",
+              `data-widget` = "collapse",
+              tags$i(
+                class = "fa fa-minus",
+                role = "presentation",
+                `aria-label` = "minus icon"
+                )
             )
           )
         ),
-      djprshiny::djpr_async_ui(
-        id    = "top_export_line_chart",
-        width = 7,
-        height = "400px",
-        merch_date_slider("top_export_line_chart")
+        # Content
+        div(
+          class = "box-body",
+          style = "font-size:16px;",
+          # Content text
+          p(
+            "This dashboard explores the latest Australian Bureau of Statisitics",
+            " (ABS) data on Victoria's trade of goods and services. Click menu ",
+            "icons for chart and data downloads."
+          ),
+          # List of links
+          tags$ul(
+            class = "fa-ul",
+            tags$li(
+              span(class = "fa-li", tags$i(class = "fa fa-caret-left")),
+              a(
+                href = "#",
+                class = "merchLink",
+                "Find your merchandise export market's performance")
+            ),
+            tags$li(
+              span(class = "fa-li", tags$i(class = "fa fa-caret-left")),
+              a(
+                href = "#",
+                class = "bopLink",
+                "Explore Victoria's overall trade performance"
+              )
+            ),
+            tags$li(
+              span(class = "fa-li", tags$i(class = "fa fa-caret-left")),
+              a(
+                href = "#",
+                class = "servicesLink",
+                "Compare Victoria's service exports"
+              )
+            )
+          )
+        )
+      )
+    ),
+
+
+    # Launchpad text & export plot
+    "Victorian trade at a glance" %>%
+      h2() %>% div(class = "inner") %>%
+      div(class = "small-box") %>% column(12, .) %>%
+      fluidRow(),
+
+    shiny::fluidRow(
+      column(
+        6,
+        shiny::div(
+          class = "box",
+          div(
+            class="box-body",
+            readRDS("inst/launchpad_services.rds")
+          )
+        )
       ),
-
-      # Cards
-      shiny::fluidRow(style = 'padding:20px;',
-        shiny::column(4,
-
-                      shiny::div(class = 'card text-white bg-dark mb-3',
-                          style = 'height:200px;',
-                          shiny::div(class = 'card-header',
-                                     shiny::h4('Exports Explorer')
-                          ),
-                          shiny::div(class = 'card-body',
-                                     shiny::div(class = 'row',
-                                                shiny::div(class = 'col',
-                                      'Description of what to find in merch explorer',
-                                      shiny::div(style = 'position:absolute;bottom:20px',
-                                          shinyWidgets::actionBttn('btn_explore', "Explore",
-                                                                   style = 'material-flat',
-                                                                   color = 'success'))),
-                                      shiny::div(class = 'col-6',
-                                      style = "text-align: right;padding-bottom:15px;",
-                                      shiny::img(style = 'display:inline;height:10vh;width:auto;',
-                                          src = 'https://icongr.am/material/binoculars.svg?size=164&color=fafafa',
-                                          alt = 'small icon of binoculars')))
-                          )
-                      )
-      ),
-      shiny::column(4,
-
-                    shiny::div(class = 'card text-white bg-dark mb-3',
-                        style = 'height:200px;',
-                        shiny::div(class = 'card-header',
-                                   shiny::h4("Balance of Payments")),
-                        shiny:: div(class = 'card-body',
-                                    shiny::div(class = 'row',
-                                               shiny::div(class = 'col',
-                                    'description of balance of payments',
-                                    shiny::div(style = 'position:absolute;bottom:20px',
-                                        shinyWidgets::actionBttn('btn_balance', "Balance",
-                                                                 style = 'material-flat',
-                                                                 color = 'success'))),
-                                    shiny::div(class = 'col-6',
-                                    style = "text-align: right;padding-bottom:15px;",
-                                    shiny::img(style = 'display:inline;height:10vh;width:auto;',
-                                        src = 'https://icongr.am/clarity/balance.svg?size=164&color=fafafa',
-                                        alt = 'small icon of weighing balance')))
-                        )
-                    )
-      ),
-      shiny::column(4,
-
-                    shiny::div(class = 'card text-white bg-dark mb-3',
-                        style = 'height:200px;',
-                        shiny::div(class = 'card-header',
-                                   shiny::h4("Help and Methodology")),
-                        shiny::div(class = 'card-body',
-                                   shiny::div(class = 'row',
-                                              shiny::div(class = 'col',
-                                    'some text here',
-                                    shiny::div(style = 'position:absolute;bottom:20px',
-                                        shinyWidgets::actionBttn('btn_help', 'Help',
-                                                                 style = 'material-flat',
-                                                                 color = 'success'))),
-                                    shiny::div(class="col-6",
-                                    style = "text-align: right;padding-bottom:15px;",
-                                    shiny::img(style = 'display:inline;height:10vh;width:auto;',
-                                        src = 'https://icongr.am/clarity/help-info.svg?color=fafafa',
-                                        alt = 'small icon of I for')))
-                        )
-                    )
-      )),
-
-
-      # Line charts
-      djprshiny::djpr_async_ui(
-        "good_services_export_line_launchpad",
-        height = "400px",
-        merch_date_slider("good_services_export_line_launchpad")
-      ),
-
-      djprshiny::djpr_async_ui(
-        "top_country_line_chart",
-        height = "400px",
-        merch_date_slider("top_country_line_chart")
-      ),
-
-      # Country tables
-      djprshiny::djpr_h2_box("Countries"),
-      shinydashboard::box(
-        title = shiny::h3("Top 5 Exports ($m)"),
-        shiny::uiOutput("country_export_table", height = "600px")
-      ),
-      shinydashboard::box(
-        title = shiny::h3("Top 5 Imports ($m)"),
-        shiny::uiOutput("country_import_table", height = "600px")
-      ),
-
-      # Product tables
-      djprshiny::djpr_h2_box("Products"),
-      shinydashboard::box(
-        title = shiny::h3("Top 5 Exports ($m)"),
-        shiny::uiOutput("product_export_table", height = "600px")
-      ),
-      shinydashboard::box(
-        title = shiny::h3("Top 5 Imports ($m)"),
-        shiny::uiOutput("product_import_table", height = "600px")
-      ),
-
-      # BOP table
-      djprshiny::djpr_h2_box("Balance of payments"),
-      shinydashboard::box(
-        shiny::uiOutput("launchpad_bop_table", height = "600px"),
-        width = 12
+      column(
+        6,
+        shiny::div(
+          class = "box",
+          div(
+            class="box-body",
+            readRDS("inst/launchpad_goods.rds")
+          )
+        )
       )
 
+    ),
+
+
+    # Latest changes
+    "Latest changes in Victorian trade" %>%
+      h2() %>% div(class = "inner") %>%
+      div(class = "small-box") %>% column(12, .) %>%
+      fluidRow(),
+
+    shiny::fluidRow(
+      column(
+        6,
+        shiny::div(
+          class = "box",
+          div(
+            class="box-body",
+            readRDS("inst/launchpad_bop.rds")
+          )
+        )
+      ),
+      column(
+        6,
+        shiny::div(
+          class = "box",
+          div(
+            class="box-body",
+            readRDS("inst/launchpad_rising_goods.rds")
+          )
+        )
+      )
+    ),
+
+    # Top traders - countries
+    "Top merchandise trading partners" %>%
+      h2() %>% div(class = "inner") %>%
+      div(class = "small-box") %>% column(12, .) %>%
+      fluidRow(),
+
+    shiny::fluidRow(
+      shinydashboard::box(
+        title = "Top export destinations",
+        readRDS("inst/launchpad_exp_country_table.rds")
+      )%>%
+        to_col_xl() ,
+      shinydashboard::box(
+        title = "Top import sources",
+        readRDS("inst/launchpad_imp_country_table.rds")
+      )%>%
+        to_col_xl()
+    ),
+
+    # Product tables
+    "Top trading merchandise" %>%
+      h2() %>% div(class = "inner") %>%
+      div(class = "small-box") %>% column(12, .) %>%
+      fluidRow(),
+
+    shiny::fluidRow(
+      shinydashboard::box(
+        title = "Top export products",
+        readRDS("inst/launchpad_product_exp_table.rds")
+      )%>%
+        to_col_xl() ,
+      shinydashboard::box(
+        title = "Top import products",
+        readRDS("inst/launchpad_product_imp_table.rds")
+      )%>%
+        to_col_xl()
+    ),
+
+    # BOP table
+    "Victoria's overall trade position" %>%
+      h2() %>% div(class = "inner") %>%
+      div(class = "small-box") %>% column(12, .) %>%
+      fluidRow(),
+
+    shinydashboard::box(
+      readRDS("inst/launchpad_bop_table.rds"),
+      width = 12
+    ) %>%
+      to_col_xl() %>%
+      shiny::fluidRow(),
+
+    footer()
   )
 }
 
-
-
-
-
-
-page_launchpad <- function(input, output, session, table_rowcount = 5){
-
-
-  # info nav buttons
-  observeEvent(input$btn_explore, {
-    shinydashboard::updateTabItems(session,
-                                   "tabs",
-                                   selected = "merch")
-  })
-  observeEvent(input$btn_balance, {
-    shinydashboard::updateTabItems(session,
-                                   "tabs",
-                                   selected = "bop")
-  })
-  observeEvent(input$btn_help, {
-    shinydashboard::updateTabItems(session,
-                                   "tabs",
-                                   selected = "methodology")
-  })
-
-
-  #Launchpad tables and charts
-  djprshiny::djpr_async_server(
-    id       = "top_export_line_chart",
-    plot_fun = viz_launchpad_chart,
-    data     = merch,
-    dates    = input$dates
-  )
-
-  djprshiny::djpr_async_server(
-    id       = "good_services_export_line_launchpad",
-    plot_fun = viz_good_services_export_chart,
-    data     = bop,
-    dates    = input$dates
-  )
-
-  djprshiny::djpr_async_server(
-    id       = "top_country_line_chart",
-    plot_fun = viz_launchpad_countries,
-    data     = merch,
-    dates    = input$dates
-  )
-
-  output$country_export_table <- shiny::renderUI({
-    make_table_launchpad(
-      data = tab_launchpad_country_imp_exp(
-        direction = 'export',
-        data      = merch,
-        rows      = table_rowcount
-        )
-      ) %>%
-      flextable::htmltools_value()
-  })
-
-  output$country_import_table <- shiny::renderUI({
-    make_table_launchpad(
-      data = tab_launchpad_country_imp_exp(
-        direction = 'import',
-        data      = merch_imp,
-        rows      = table_rowcount
-        )
-      ) %>%
-      flextable::htmltools_value()
-  })
-
-  output$product_export_table <- shiny::renderUI({
-    make_table_launchpad(
-      data = tab_launchpad_product_imp_exp(
-        direction  = 'export',
-        data       = merch,
-        rows       = table_rowcount,
-        sitc_level = 3
-        )
-      ) %>%
-      flextable::htmltools_value()
-  })
-
-  output$product_import_table <- shiny::renderUI({
-    make_table_launchpad(
-      data = tab_launchpad_product_imp_exp(
-        direction  = 'import',
-        data       = merch_imp,
-        rows       = table_rowcount,
-        sitc_level = 3
-        )
-      ) %>%
-      flextable::htmltools_value()
-  })
-
-  output$launchpad_bop_table <- shiny::renderUI({
-    make_table_launchpad(
-      data = launchpad_table_export_import(),
-      header_row = c(
-        "",
-        "Current figure ($m)",
-        "Change since last quarter",
-        "Change in past year",
-        "Change since COVID"
-        )
-      ) %>%
-      flextable::htmltools_value()
-  })
-
-
-
-}

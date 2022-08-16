@@ -1,10 +1,7 @@
 
 server <- function(input, output, session) {
 
-  page_launchpad(input, output, session, table_rowcount = 5)
-  page_bop(input, output, session, plt_change, table_rowcount = 5)
-  page_merch(input, output, session, plt_change)
-
+  set_hcharts_options()
 
   merch_last_12 <- merch_dates$max - months(12)
 
@@ -25,5 +22,31 @@ server <- function(input, output, session) {
     sitc_merch,
     filter = "top"
   )
+
+
+  # Service page content
+  observeEvent(
+    eventExpr = {
+      input$service_state_comp_inp
+      input$service_state_comp_states
+      },
+    handlerExpr = {
+    update_service_state_comp(
+      product = input$service_state_comp_inp,
+      states = input$service_state_comp_states
+      )
+  })
+
+  # merch explorer content
+  output$merch_explorer <- renderHighchart({
+      highcharts_merch_explorer(
+        countries = req(input$merch_countries),
+        goods = req(input$merch_sitc),
+        origin_state = "Victoria",
+        facet_by = input$merch_explorer_facets,
+        smooth = input$merch_explorer_smooth
+      )
+    })
+
 
 }

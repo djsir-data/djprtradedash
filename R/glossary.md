@@ -1,4 +1,3 @@
-## Glossary
 
 **12-month rolling average**
 
