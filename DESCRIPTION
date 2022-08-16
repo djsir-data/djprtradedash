@@ -8,7 +8,7 @@ Authors@R:
     person(given = "Department of Jobs, Precincts and Regions (Victoria)",
            role = c("cph", "fnd"))
            )
-Description: What the package does (one paragraph).
+Description: Dashboard of Victorian trade data
 License: MIT + file LICENSE
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
@@ -22,10 +22,9 @@ Imports:
     djprshiny (>= 0.0.6.905),
     lubridate,
     dplyr,
-    glue,
     shiny,
     shinyWidgets,
-    readabs (>= 0.4.10.901),
+    readabs,
     tidyr,
     stringr,
     scales,
@@ -41,11 +40,8 @@ Imports:
     pool,
     highcharter,
     readxl,
-    flextable,
     dbplyr,
     config
-Remotes: 
-    MattCowgill/readabs
 Depends: 
     R (>= 3.5.0)
 Config/testthat/edition: 3
