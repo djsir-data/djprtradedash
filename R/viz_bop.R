@@ -132,7 +132,7 @@ highcharts_good_trade_line_chart <- function(data = bop) {
       date == max(date)
     ) %>%
     dplyr::pull(value) %>%
-    djprshiny::round2(1)
+    round2(1)
 
   title <- paste0(
     "Victoria's goods exports are ",
@@ -245,7 +245,7 @@ highcharts_services_trade_line_chart <- function(data = bop) {
        dplyr::mutate( tooltip = paste0(
         exports_imports, "\n",
         format(date, "%b %Y"), "\n",
-        djprshiny::round2(value, 1), "%"))
+        round2(value, 1), "%"))
 
   latest_export <- df %>%
     dplyr::filter(
@@ -253,7 +253,7 @@ highcharts_services_trade_line_chart <- function(data = bop) {
       date == max(date)
     ) %>%
     dplyr::pull(value) %>%
-    djprshiny::round2(1)
+    round2(1)
 
   caption <- "Source: ABS Balance of Payment quarterly. Note: Data seasonally Adjusted & Chain Volume Measures."
 
@@ -382,7 +382,7 @@ highcharts_service_bop_bar_chart <- function(data = bop) {
       date == max(date)
     ) %>%
     dplyr::pull(value) %>%
-    djprshiny::round2(1)
+    round2(1)
 
   latest_import <- df %>%
     dplyr::filter(
@@ -391,7 +391,7 @@ highcharts_service_bop_bar_chart <- function(data = bop) {
       date == max(date)
     ) %>%
     dplyr::pull(value) %>%
-    djprshiny::round2(1)
+    round2(1)
 
   latest_month <- format(max(df$date), "%B %Y")
   year_prior <- format(max(df$date)%m-%months(12), "%B %Y")
@@ -505,7 +505,7 @@ highcharts_goods_bop_bar_chart <- function(data = bop) {
       date == max(date)
     ) %>%
     dplyr::pull(value) %>%
-    djprshiny::round2(1)
+    round2(1)
 
   latest_import <- df %>%
     dplyr::filter(
@@ -514,7 +514,7 @@ highcharts_goods_bop_bar_chart <- function(data = bop) {
       date == max(date)
     ) %>%
     dplyr::pull(value) %>%
-    djprshiny::round2(1)
+    round2(1)
 
   latest_month <- format(max(df$date), "%B %Y")
   year_prior <- format(max(df$date)%m-% months(12), "%B %Y")
@@ -615,13 +615,13 @@ highcharts_goods_export_import_line <- function(data = bop) {
   export_latest <- df %>%
     dplyr::filter(exports_imports == "Exports" &
       date == max(date)) %>%
-    dplyr::mutate(value = djprshiny::round2(value, 1)) %>%
+    dplyr::mutate(value = round2(value, 1)) %>%
     dplyr::pull(value)
 
   import_latest <- df %>%
     dplyr::filter(exports_imports == "Imports" &
       date == max(date)) %>%
-    dplyr::mutate(value = djprshiny::round2(value, 1)) %>%
+    dplyr::mutate(value = round2(value, 1)) %>%
     dplyr::pull(value)
 
 
@@ -762,7 +762,7 @@ highcharts_trade_balance_line_chart <- function(data = bop) {
   total_latest <- df %>%
     dplyr::filter(goods_services == "Goods and Services" &
       date == max(date)) %>%
-    dplyr::mutate(value = djprshiny::round2(value, 1)) %>%
+    dplyr::mutate(value = round2(value, 1)) %>%
     dplyr::pull(value)
 
 
@@ -862,13 +862,13 @@ highcharts_NSW_Vic_goods_line_chart <- function(data = bop) {
     dplyr::mutate(
       value = 100 * ((value / dplyr::lag(value, 4) - 1))
     ) %>%
-    dplyr::mutate(value = djprshiny::round2(value, 1)) %>%
+    dplyr::mutate(value = round2(value, 1)) %>%
     dplyr::filter(!is.na(value)) %>%
     dplyr::ungroup() %>%
     dplyr::mutate(tooltip = paste0(
       exports_imports, "\n",
       format(date, "%b %Y"), "\n",
-      djprshiny::round2(value, 1), "%"
+      round2(value, 1), "%"
     ))
 
 
@@ -879,7 +879,7 @@ highcharts_NSW_Vic_goods_line_chart <- function(data = bop) {
       date == max(date)
     ) %>%
     dplyr::pull(value) %>%
-    djprshiny::round2(1)
+    round2(1)
 
   latest_NSW_export <- df %>%
     dplyr::filter(
@@ -888,7 +888,7 @@ highcharts_NSW_Vic_goods_line_chart <- function(data = bop) {
       date == max(date)
     ) %>%
     dplyr::pull(value) %>%
-    djprshiny::round2(1)
+    round2(1)
 
   latest_month <- format(max(df$date), "%B %Y")
 
@@ -1010,7 +1010,7 @@ highcharts_NSW_Vic_Services_line_chart <- function(data = bop) {
     dplyr::mutate(
       value = 100 * ((value / dplyr::lag(value, 4) - 1))
     ) %>%
-    dplyr::mutate(value = djprshiny::round2(value, 1)) %>%
+    dplyr::mutate(value = round2(value, 1)) %>%
     dplyr::filter(!is.na(value)) %>%
     dplyr::ungroup()
 
@@ -1022,7 +1022,7 @@ highcharts_NSW_Vic_Services_line_chart <- function(data = bop) {
       date == max(date)
     ) %>%
     dplyr::pull(value) %>%
-    djprshiny::round2(1)
+    round2(1)
 
   latest_NSW_export <- df %>%
     dplyr::filter(
@@ -1031,7 +1031,7 @@ highcharts_NSW_Vic_Services_line_chart <- function(data = bop) {
       date == max(date)
     ) %>%
     dplyr::pull(value) %>%
-    djprshiny::round2(1)
+    round2(1)
 
   latest_month <- format(max(df$date), "%B %Y")
 
