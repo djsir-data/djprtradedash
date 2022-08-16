@@ -19,7 +19,7 @@ jobs:
       - uses: r-lib/actions/setup-r-dependencies@v2
         with:
           extra-packages: |
-          any::pkgload
+            any::ggplot2
       - name: Generate charts
         run: |
          Rscript -e "source('data-raw/generate_static_content.R')"
