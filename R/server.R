@@ -40,12 +40,13 @@ server <- function(input, output, session) {
   # merch explorer content
   output$merch_explorer <- renderHighchart({
       highcharts_merch_explorer(
-        countries = input$merch_countries,
-        goods = input$merch_sitc,
+        countries = req(input$merch_countries),
+        goods = req(input$merch_sitc),
         origin_state = "Victoria",
         facet_by = input$merch_explorer_facets,
         smooth = input$merch_explorer_smooth
       )
     })
+
 
 }
