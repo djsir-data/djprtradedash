@@ -16,7 +16,6 @@
 #' read_merch()
 #' }
 #' @export
-#' @import data.table
 #' @return A tibble containing merchandise export data
 
 
@@ -25,17 +24,36 @@ read_merch <- function(path = tempdir(),
                        min_date = as.Date("2010-01-01"),
                        series = "export") {
 
+
+  url <- switch(series,
+                export = "https://www.abs.gov.au/websitedbs/D3110132.nsf/home/DataExplorer/$File/MERCH_EXP.zip",
+                import = "https://www.abs.gov.au/websitedbs/D3110132.nsf/home/DataExplorer/$File/MERCH_IMP.zip")
+
+  dest_zip <- file.path(path,
+                        basename(url),
+                        fsep = .Platform$file.sep)
+
+  resp <- httr::GET(url, httr::write_disk(dest_zip,
+                                          overwrite=TRUE))
+
+  assertthat::assert_that(httr::status_code(resp) == 200,
+                          msg = paste0('Download has failed: ',
+                                       httr::http_status(resp)$message))
+
+  csv <- utils::unzip(dest_zip, unzip = 'unzip', list = TRUE)
+  utils::unzip(dest_zip, exdir=path, unzip = 'unzip')
+
+  csv <- file.path(path,
+                   csv$Name[1],
+                   fsep = .Platform$file.sep)
+
+  merch <- data.table::fread(
+    file.path(csv),
+    stringsAsFactors = TRUE,
+    data.table = TRUE
+  )
+
   if (series == "export") {
-    url <- "https://www.abs.gov.au/websitedbs/D3110132.nsf/home/DataExplorer/$File/MERCH_EXP.zip"
-    exports_dest_zip <- file.path(path, basename(url))
-    download.file(url, exports_dest_zip, mode="wb")
-    utils::unzip(exports_dest_zip, exdir=path)
-    exp_csv<- list.files(path, pattern="MERCH_EXP.csv",full.names=TRUE)
-    merch <- data.table::fread(
-      file.path(exp_csv),
-      stringsAsFactors = TRUE,
-      data.table = TRUE
-      )
 
     data.table::setnames(
       merch,
@@ -65,32 +83,18 @@ read_merch <- function(path = tempdir(),
       date = lubridate::ymd(paste0(date, "-01")),
       export_import = series
     )]
-
     merch[origin == "Total", origin := "Australia"]
-
     merch <- merch[order(origin,
                    sitc,
                    country_dest,
                    date)]
-
     merch <- merch[date >= min_date & date <= max_date]
-
     merch <- unique(merch)
-
     merch <- merch[, .(sitc, country_dest, origin, date, value, unit, sitc_code, country_code, export_import)]
-  }
+
+    }
 
   if (series == "import") {
-    url <- "https://www.abs.gov.au/websitedbs/D3110132.nsf/home/DataExplorer/$File/MERCH_IMP.zip"
-    imports_dest_zip <- file.path(path, basename(url))
-    download.file(url, imports_dest_zip, mode="wb")
-    utils::unzip(imports_dest_zip, exdir=path)
-    imp_csv<- list.files(path, pattern="MERCH_IMP.csv",full.names=TRUE)
-    merch <- data.table::fread(
-      file.path(imp_csv),
-      stringsAsFactors = TRUE,
-      data.table = TRUE
-      )
 
     data.table::setnames(
       merch,
@@ -120,19 +124,17 @@ read_merch <- function(path = tempdir(),
       date = lubridate::ymd(paste0(date, "-01")),
       export_import = series
     )]
-
     merch[dest == "Total", dest := "Australia"]
-
     merch <- merch[order(dest,
                    sitc,
                    country_origin,
                    date)]
-
     merch <- merch[date >= min_date & date <= max_date]
-
     merch <- unique(merch)
-
     merch <- merch[, .(sitc, country_origin, dest, date, value, unit, sitc_code, country_code, export_import)]
-  }
-  merch
+
+    }
+
+  return(merch)
+
 }

@@ -1,0 +1,146 @@
+/* Generated with the help of <https://transfonter.org/> */
+/* VIC fonts sourced from: <https://www.vic.gov.au/brand-victoria-fonts> */
+@font-face {
+    font-family: 'VIC-font';
+    src: url('VIC-SemiBoldItalic.eot');
+    src: url('VIC-SemiBoldItalic.eot?#iefix') format('embedded-opentype'),
+        url('VIC-SemiBoldItalic.woff2') format('woff2'),
+        url('VIC-SemiBoldItalic.woff') format('woff'),
+        url('VIC-SemiBoldItalic.ttf') format('truetype');
+    font-weight: 600;
+    font-style: italic;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'VIC-font';
+    src: url('VIC-ExtraLightItalic.eot');
+    src: url('VIC-ExtraLightItalic.eot?#iefix') format('embedded-opentype'),
+        url('VIC-ExtraLightItalic.woff2') format('woff2'),
+        url('VIC-ExtraLightItalic.woff') format('woff'),
+        url('VIC-ExtraLightItalic.ttf') format('truetype');
+    font-weight: 200;
+    font-style: italic;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'VIC-font';
+    src: url('VIC-SemiBold.eot');
+    src: url('VIC-SemiBold.eot?#iefix') format('embedded-opentype'),
+        url('VIC-SemiBold.woff2') format('woff2'),
+        url('VIC-SemiBold.woff') format('woff'),
+        url('VIC-SemiBold.ttf') format('truetype');
+    font-weight: 600;
+    font-style: normal;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'VIC-font';
+    src: url('VIC-Bold.eot');
+    src: url('VIC-Bold.eot?#iefix') format('embedded-opentype'),
+        url('VIC-Bold.woff2') format('woff2'),
+        url('VIC-Bold.woff') format('woff'),
+        url('VIC-Bold.ttf') format('truetype');
+    font-weight: bold;
+    font-style: normal;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'VIC-font';
+    src: url('VIC-BoldItalic.eot');
+    src: url('VIC-BoldItalic.eot?#iefix') format('embedded-opentype'),
+        url('VIC-BoldItalic.woff2') format('woff2'),
+        url('VIC-BoldItalic.woff') format('woff'),
+        url('VIC-BoldItalic.ttf') format('truetype');
+    font-weight: bold;
+    font-style: italic;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'VIC-font';
+    src: url('VIC-LightItalic.eot');
+    src: url('VIC-LightItalic.eot?#iefix') format('embedded-opentype'),
+        url('VIC-LightItalic.woff2') format('woff2'),
+        url('VIC-LightItalic.woff') format('woff'),
+        url('VIC-LightItalic.ttf') format('truetype');
+    font-weight: 300;
+    font-style: italic;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'VIC-font';
+    src: url('VIC-Light.eot');
+    src: url('VIC-Light.eot?#iefix') format('embedded-opentype'),
+        url('VIC-Light.woff2') format('woff2'),
+        url('VIC-Light.woff') format('woff'),
+        url('VIC-Light.ttf') format('truetype');
+    font-weight: 300;
+    font-style: normal;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'VIC-font';
+    src: url('VIC-ExtraLight.eot');
+    src: url('VIC-ExtraLight.eot?#iefix') format('embedded-opentype'),
+        url('VIC-ExtraLight.woff2') format('woff2'),
+        url('VIC-ExtraLight.woff') format('woff'),
+        url('VIC-ExtraLight.ttf') format('truetype');
+    font-weight: 200;
+    font-style: normal;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'VIC-font';
+    src: url('VIC-Italic.eot');
+    src: url('VIC-Italic.eot?#iefix') format('embedded-opentype'),
+        url('VIC-Italic.woff2') format('woff2'),
+        url('VIC-Italic.woff') format('woff'),
+        url('VIC-Italic.ttf') format('truetype');
+    font-weight: normal;
+    font-style: italic;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'VIC-font';
+    src: url('VIC-Medium.eot');
+    src: url('VIC-Medium.eot?#iefix') format('embedded-opentype'),
+        url('VIC-Medium.woff2') format('woff2'),
+        url('VIC-Medium.woff') format('woff'),
+        url('VIC-Medium.ttf') format('truetype');
+    font-weight: 500;
+    font-style: normal;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'VIC-font';
+    src: url('VIC-Regular.eot');
+    src: url('VIC-Regular.eot?#iefix') format('embedded-opentype'),
+        url('VIC-Regular.woff2') format('woff2'),
+        url('VIC-Regular.woff') format('woff'),
+        url('VIC-Regular.ttf') format('truetype');
+    font-weight: normal;
+    font-style: normal;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'VIC-font';
+    src: url('VIC-MediumItalic.eot');
+    src: url('VIC-MediumItalic.eot?#iefix') format('embedded-opentype'),
+        url('VIC-MediumItalic.woff2') format('woff2'),
+        url('VIC-MediumItalic.woff') format('woff'),
+        url('VIC-MediumItalic.ttf') format('truetype');
+    font-weight: 500;
+    font-style: italic;
+    font-display: swap;
+}
+

@@ -10,7 +10,6 @@
 #' read_bop()
 #' }
 #' @export
-#' @importFrom dplyr .data
 
 read_bop <- function(path = tempdir()) {
   suppressMessages(
@@ -27,7 +26,7 @@ read_bop <- function(path = tempdir()) {
       filenames = list.files(path)[grepl("21.xls", list.files(path))]
     )
   ) %>%
-    dplyr::mutate(series = paste("Exports", .data$series, sep = " ; "))
+    dplyr::mutate(series = paste("Exports", series, sep = " ; "))
   unlink(file.path(path, list.files(path)[grepl("21.xls", list.files(path))]))
 
   suppressMessages(
@@ -44,24 +43,24 @@ read_bop <- function(path = tempdir()) {
       filenames = list.files(path)[grepl("22.xls", list.files(path))]
     )
   ) %>%
-    dplyr::mutate(series = paste("Imports", .data$series, sep = " ; "))
+    dplyr::mutate(series = paste("Imports", series, sep = " ; "))
 
   bop <- dplyr::bind_rows(credits, debits)
 
   bop <- bop %>%
-    dplyr::filter(.data$series_type == "Seasonally Adjusted")
+    dplyr::filter(series_type == "Seasonally Adjusted")
 
   bop <- bop %>%
     dplyr::select(
-      .data$series,
-      .data$date,
-      .data$value,
-      .data$series_id,
-      .data$unit
+      series,
+      date,
+      value,
+      series_id,
+      unit
     )
 
   bop %>%
-    tidyr::separate(.data$series,
+    tidyr::separate(series,
       into = c(
         "exports_imports",
         "indicator",
@@ -70,7 +69,7 @@ read_bop <- function(path = tempdir()) {
       extra = "drop",
       sep = ";"
     ) %>%
-    tidyr::separate(.data$goods_state,
+    tidyr::separate(goods_state,
       into = c(
         "goods_services",
         "state"
@@ -86,5 +85,5 @@ read_bop <- function(path = tempdir()) {
       )),
       ~ trimws(.x, "both")
     )) %>%
-    dplyr::filter(!is.na(.data$value))
+    dplyr::filter(!is.na(value))
 }

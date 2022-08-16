@@ -1,58 +1,49 @@
-page_merch <- function(...) {
-  # djpr_tab_panel(
-  selecter_height <- 325
-  inner_height <- selecter_height - 44
+page_merchUI <- function(...) {
 
-  tabPanel(
-    title = "Merchandise exports",
-    tags$head(
-      tags$style(paste0(".multi-wrapper {height: ", selecter_height, "px;}")),
-      tags$style(paste0(
-        ".multi-wrapper .non-selected-wrapper, .multi-wrapper .selected-wrapper {height: ",
-        inner_height,
-        "px;}"
-      ))
-    ),
-    # ggiraph_js(),
-    value = "tab-merchandise-exports",
-    # toc_space = 2,
-    # right_space = 1,
-    br(),
-    br(),
-    h1("Merchandise Exports Data Explorer"),
-    fluidRow(
-      column(
-        4,
+  shiny::fluidPage(
+
+    "Merchandise exports" %>%
+      h2() %>% div(class = "inner") %>%
+      div(class = "small-box") %>% column(12, .) %>%
+      fluidRow(),
+    shiny::fluidRow(
+
+      # Chart option selectors
+      shinydashboard::box(
+        title = "Explorer options",
+        width = 4,
+        collapsible = TRUE,
         shinyWidgets::multiInput(
           inputId = "merch_countries",
-          label = "Export destinations: ",
-          choices = sort(unique(as.character(merch$country_dest))),
+          label = "Select export destinations",
+          choices = sort(merch_country_dest),
           selected = c("Thailand", "Malaysia"),
           width = "100%",
           options = list(
             non_selected_header = "All destinations:",
             selected_header = "Selected destinations:"
           )
-        ),
+        ) %>% fluidRow(),
+        br(),
         shinyWidgets::multiInput(
           inputId = "merch_sitc",
-          label = "Goods",
-          choices = "",
+          label = "Select Goods",
+          choices = sort(merch_sitc_lu$sitc),
           selected = "Medicinal and pharmaceutical products (excl. medicaments of group 542)",
           width = "100%",
           options = list(
             non_selected_header = "All goods:",
             selected_header = "Selected goods:"
           )
-        )
-      ),
-      column(
-        8,
-        # djpr_plot_ui("merch_explorer")
-        fluidRow(
-          column(
-            4,
+        )%>% fluidRow(),
+        br(),
+        tags$label("Options"),
+        shiny::fluidRow(
+          style = "background-color: #FFFFFF; border-radius: 1.25rem;margin:1px;padding:10px;",
+          shiny::column(
+            6,
             shinyWidgets::awesomeRadio(
+              width = "80%",
               inputId = "merch_explorer_sitc",
               label = "SITC Level: ",
               choices = c(
@@ -62,63 +53,63 @@ page_merch <- function(...) {
                 "All"
               ),
               selected = 3,
-              inline = TRUE,
               status = "primary"
             )
           ),
-          column(
-            4,
+          shiny::column(
+            6,
+            fluidRow(
+              tags$label("12 month average"),
+              shinyWidgets::materialSwitch(
+                "merch_explorer_smooth",
+                status = "primary",
+                value = TRUE,
+                inline = T
+              )
+            ),
             shinyWidgets::awesomeRadio(
+              width = "80%",
               inputId = "merch_explorer_facets",
-              label = "Facet on: ",
+              label = "Facet on:",
               choices = c(
                 "Destination country" = "country_dest",
                 "Good type" = "sitc"
               ),
               selected = "country_dest",
-              inline = TRUE,
               status = "primary"
-            )
-          ),
-          column(
-            4,
-            "Smooth using:\n",
-            shinyWidgets::materialSwitch("merch_explorer_smooth",
-              label = "12 month rolling average",
-              status = "primary",
-              value = TRUE
-            )
+            ) %>% fluidRow()
+
           )
-        ),
-        plotOutput("merch_explorer",
-          height = "600px"
-        ),
-        fluidRow(
-          column(
-            8,
-            sliderInput("merch_explorer_dates",
-              label = "",
-              min = min(merch$date),
-              max = max(merch$date),
-              value = c(
-                min(merch$date),
-                max(merch$date)
-              ),
-              dragRange = TRUE,
-              timeFormat = "%b %Y",
-              ticks = FALSE
+        )
+      ) %>%
+        tagAppendAttributes(
+          style = "background:var(--twilight);",
+          .cssSelector = ".box"
+        ) %>%
+        tagAppendAttributes(
+          style = "padding:15px;",
+          .cssSelector = ".box-body"
+        ) %>%
+        tagAppendAttributes(
+          style = "font-size:20px;font-weight:bold;",
+          .cssSelector = ".box-header h3"
+        ) %>%
+        to_col_xl(),
+      column(
+        8,
+        div(
+          class = "box",
+          style = "padding:15px;",
+          fluidRow(
+            column(
+              12,
+              highchartOutput("merch_explorer", height = "auto")
             )
-          ),
-          column(
-            4,
-            br(),
-            djprshiny::download_ui("merch_explorer_dl")
           )
         )
       )
     ),
-    br(),
-    centred_row(htmlOutput("merch_footnote")),
-    br()
+
+    footer()
   )
 }

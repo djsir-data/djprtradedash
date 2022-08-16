@@ -1,38 +1,89 @@
-page_bop <- function(...) {
-  djpr_tab_panel(
-    title = "Balance of Payments",
-    h1("Key indicators"),
-    paste0("This page contains Victoria's international transactions, typically quarterly or
-    yearly, over a particular period.  It shows the sum of the transactions of those involving
-    goods or services."),
-    h2(br(), "Goods and Services"),
-    djpr_plot_ui("good_services_import_chart"),
-    br(),
-    djpr_plot_ui("total_bop_bar_chart",
-      interactive = FALSE
+page_bopUI <- function(...) {
+
+  shiny::fluidPage(
+
+    # Overview
+    "Balance of Payments" %>%
+      h2() %>% div(class = "inner") %>%
+      div(class = "small-box") %>% column(12, .) %>%
+      fluidRow(),
+
+    fluidRow(
+      shinydashboard::box(
+        width = 12,
+        readRDS("inst/bop_good_services_chart.rds")
+      ) %>% to_col_xl()
     ),
-    br(),
-    djpr_plot_ui("goods_export_import_line"),
-    # br(),
-    # djpr_plot_ui("vic_total_bop_cumul_line"),
-    h2(br(), "Goods"),
-    djpr_plot_ui("goods_bop_bar_chart",
-      interactive = FALSE
+
+    fluidRow(
+      shinydashboard::box(
+        readRDS("inst/bop_goods_export_import_line.rds")
+      ) %>% to_col_xl(),
+      shinydashboard::box(
+        readRDS("inst/bop_total_bop_bar_chart.rds")
+      ) %>% to_col_xl()
     ),
-    br(),
-    djpr_plot_ui("good_trade_line_chart"),
-    br(),
-    djpr_plot_ui("NSW_Vic_goods_line_chart"),
-    br(),
-    h2(br(), "Services"),
-    djpr_plot_ui("service_bop_bar_chart",
-      interactive = FALSE
+
+
+    # Goods
+    "Goods" %>%
+      h2() %>% div(class = "inner") %>%
+      div(class = "small-box") %>% column(12, .) %>%
+      fluidRow(),
+
+    fluidRow(
+      shinydashboard::box(
+        readRDS("inst/bop_goods_bop_bar_chart.rds")
+      )%>% to_col_xl(),
+      shinydashboard::box(
+        readRDS("inst/bop_good_trade_line_chart.rds")
+      )%>% to_col_xl()
     ),
-    br(),
-    djpr_plot_ui("services_trade_line_chart"),
-    djpr_plot_ui("NSW_Vic_Services_line_chart"),
-    br(),
-    h2(br(), "Balance of Trade "),
-    djpr_plot_ui("trade_balance_line_chart")
+
+    fluidRow(
+      shinydashboard::box(
+        width = 12,
+        readRDS("inst/bop_NSW_Vic_goods_line_chart.rds")
+      )%>% to_col_xl()
+    ),
+
+    # Services
+    "Services" %>%
+      h2() %>% div(class = "inner") %>%
+      div(class = "small-box") %>% column(12, .) %>%
+      fluidRow(),
+
+    fluidRow(
+      shinydashboard::box(
+        readRDS("inst/bop_service_bop_bar_chart.rds")
+      ) %>% to_col_xl(),
+
+      shinydashboard::box(
+        readRDS("inst/bop_services_trade_line_chart.rds")
+      ) %>% to_col_xl()
+    ),
+
+    fluidRow(
+      shinydashboard::box(
+        width = 12,
+        readRDS("inst/bop_NSW_Vic_Services_line_chart.rds")
+      )%>% to_col_xl()
+    ),
+
+    # Balance of trade
+    "Balance of Trade" %>%
+      h2() %>% div(class = "inner") %>%
+      div(class = "small-box") %>% column(12, .) %>%
+      fluidRow(),
+
+    fluidRow(
+      shinydashboard::box(
+        width = 12,
+        readRDS("inst/bop_trade_balance_line_chart.rds")
+      )%>% to_col_xl()
+    ),
+
+    footer()
   )
 }
+

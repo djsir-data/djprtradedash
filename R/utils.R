@@ -1,3 +1,4 @@
+# Transpose and string split factor levels
 tstrsplit_factor <- function(fac, split){
   lev <- levels(fac)
   ind <- as.integer(fac)
@@ -5,80 +6,73 @@ tstrsplit_factor <- function(fac, split){
   lapply(split, function(x) x[ind])
 }
 
-validate_query <- function(query){
-  if(!("list" %in% class(query))) return(NULL)
-  names(query) <- tolower(names(query))
-  if(!("country" %in% names(query))) return(NULL)
-  return(query[["country"]][1])
-}
-
+# Trycatch infix function
 `%iferror%` <- function(a, b) tryCatch({a}, error = function(e){b})
 
-data_unavil_ggplot<- function(...){
-  g <- ggplot2::ggplot(NULL, aes(1,1,label = paste0(..., collapse = ""))) +
-    ggplot2::theme_void() +
-    ggplot2::geom_text(size = 5, colour = djprtheme::djpr_blue) +
-    ggplot2::theme(panel.background = element_rect(fill = "#bfbfbf"))
-  djprtheme::gg_font_change(g, "Roboto")
+
+# Column shim
+column <- function(width, ...){
+  colClass <- paste0("col-xl-", width)
+  shiny::div(class = colClass, ...)
 }
 
-error_safe_plotfun <- function(plotfun){
-    function(...) plotfun(...) %iferror% data_unavil_ggplot("Data unavailable")
+to_col_xl <- function(x){
+  x$attribs$class <- paste0(
+    "col-xl-",
+    substr(x$attribs$class, 8, nchar(x$attribs$class))
+    )
+  return(x)
 }
 
-dollar_stat <- function(stat){
-  dplyr::case_when(
-    stat > 1e10 ~ scales::dollar(
-      stat / 1e09,
-      accuracy = 1,
-      suffix = "b"
+
+
+# Generic table generation fun
+djpr_table <- function(df, first_col_header = TRUE){
+  # Table container
+  shiny::tags$table(
+    class = "djprTable",
+    # Header row
+    shiny::tags$thead(
+      shiny::tags$tr(lapply(colnames(df), function(x) shiny::tags$th(scope = "col", x)))
     ),
-    stat > 1e09 ~ scales::dollar(
-      stat / 1e09,
-      accuracy = 1.1,
-      suffix = "b"
-    ),
-    stat > 1e07 ~ scales::dollar(
-      stat / 1e06,
-      accuracy = 1,
-      prefix = "$",
-      suffix = "m"
-    ),
-    stat > 1e06 ~ scales::dollar(
-      stat / 1e06,
-      accuracy = 1.1,
-      prefix = "$",
-      suffix = "m"
-    ),
-    stat > 1e04 ~ scales::dollar(
-      stat / 1e03,
-      accuracy = 1,
-      suffix = "k"
-    ),
-    stat > 1e03 ~ scales::dollar(
-      stat / 1e03,
-      accuracy = 1.1,
-      suffix = "k"
-    ),
-    TRUE ~ scales::dollar(
-      stat,
-      accuracy = 1
+    # Table body
+    shiny::tags$tbody(
+      apply(df, 1, function(x) {
+        shiny::tags$tr(
+          c(
+            list(
+              if(first_col_header) {
+                shiny::tags$th(scope = "row", x[[1]])
+              } else {
+                shiny::tags$td(x[[1]])
+              }
+            ),
+            lapply(x[2:length(x)], function(y) shiny::tags$td(y))
+          )
+        )
+      }
+      )
     )
   )
 }
 
-slide_mean <- function(x, before = 5){
-  n_before <- c(seq_len(before), rep(before + 1, length(x) - before))
-  data.table::frollmean(x, n_before, adaptive = TRUE)
+
+
+round2 <- function (x, digits = 0)
+{
+  posneg <- sign(x)
+  z <- abs(x) * 10^digits
+  z <- z + 0.5 + sqrt(.Machine$double.eps)
+  z <- trunc(z)
+  z <- z/10^digits
+  z * posneg
 }
 
 
-#Unused
-append_header <- function(...){
-  htmltools::tags$script(
-    HTML(
-    "var header = $('.navbar > .container-fluid > .navbar-collapse');
-     header.append('",HTML(...),"')"
-    )
-  )
-}
+
+
+
+
+
+
+

@@ -1,62 +1,202 @@
-page_launchpad <- function(...) {
-  djpr_tab_panel(
-    title = "Launchpad",
-    ggiraph_js(),
-    HTML(""),
-    value = "tab-launchpad",
-    br(),
-    h1(
-      span("DJPR Trade Dashboard",
-        style = "font-size: 40px; color: #1F1547; font-family: 'Roboto Slab'"
+page_launchpadUI <- function(id) {
+
+
+  shiny::fluidPage(
+
+    # Header banner
+    div(
+      class = "col-xl-12",
+      # Manual box class
+      div(
+        class = "box",
+        style = "background-color:var(--twilight);display:table;",
+        # Left triangle clip image
+        div(
+          style = paste0(
+            "width: 30%;",
+            "background-image: url(\"containers.png\");",
+            "background-repeat: no-repeat;",
+            "background-size: ", round(1920 / 2.5), "px ", round(1280 / 2.5), "px;",
+            "clip-path: polygon(0 0, 100% 0, 45% 100%, 0% 100%);",
+            "display: table-cell;",
+            "border-radius: 1.25rem 0 0 1.25rem;"
+          )
+        ),
+        # Header with collapse
+        div(
+          class = "box-header",
+          h3(
+            style = "font-size:20px;font-weight:bold;",
+            "Victorian trade data"
+            ),
+          # Header Collapse
+          div(
+            class="box-tools pull-right",
+            tags$button(
+              class = "btn btn-box-tool",
+              `data-widget` = "collapse",
+              tags$i(
+                class = "fa fa-minus",
+                role = "presentation",
+                `aria-label` = "minus icon"
+                )
+            )
+          )
+        ),
+        # Content
+        div(
+          class = "box-body",
+          style = "font-size:16px;",
+          # Content text
+          p(
+            "This dashboard explores the latest Australian Bureau of Statisitics",
+            " (ABS) data on Victoria's trade of goods and services. Click menu ",
+            "icons for chart and data downloads."
+          ),
+          # List of links
+          tags$ul(
+            class = "fa-ul",
+            tags$li(
+              span(class = "fa-li", tags$i(class = "fa fa-caret-left")),
+              a(
+                href = "#",
+                class = "merchLink",
+                "Find your merchandise export market's performance")
+            ),
+            tags$li(
+              span(class = "fa-li", tags$i(class = "fa fa-caret-left")),
+              a(
+                href = "#",
+                class = "bopLink",
+                "Explore Victoria's overall trade performance"
+              )
+            ),
+            tags$li(
+              span(class = "fa-li", tags$i(class = "fa fa-caret-left")),
+              a(
+                href = "#",
+                class = "servicesLink",
+                "Compare Victoria's service exports"
+              )
+            )
+          )
+        )
       )
     ),
-    h2("Overview", align='center'),
-    djpr_plot_ui("top_export_line_chart"),
-    br(),
-    fluidRow(
-      column(width = 6,
-        djpr_plot_ui("good_services_export_line_launchpad")
-        ),
-      column(width = 6,
-        djpr_plot_ui("top_country_line_chart")
-        ),
+
+
+    # Launchpad text & export plot
+    "Victorian trade at a glance" %>%
+      h2() %>% div(class = "inner") %>%
+      div(class = "small-box") %>% column(12, .) %>%
+      fluidRow(),
+
+    shiny::fluidRow(
+      column(
+        6,
+        shiny::div(
+          class = "box",
+          div(
+            class="box-body",
+            readRDS("inst/launchpad_services.rds")
+          )
+        )
       ),
-    br(),
-    h6("Below is a summary of high-level trade data, at both product (SITC) and country level. For more granular or specific data related to trade please use the other tabs in this app where appropriate." ),
-    br(),
-    br(),
-    h2("Countries", align='center'),
-    br(),
-    fluidRow(
-      column(width = 6,
-             h4("Top 5 Exports ($m)"),
-             uiOutput("country_export_table", height = "600px"),
-             style='padding-left:0px; padding-right:20px;'),
-      column(width = 6,
-             h4("Top 5 Imports ($m)"),
-             uiOutput("country_import_table", height = "600px"),
-             style='padding-left:20px; padding-right:0px;')
-    ),
-    br(),
-    h2("Products", align='center'),
-    br(),
-    fluidRow(column(width = 6,
-                    h4("Top 5 Exports ($m)"),
-                    uiOutput("product_export_table", height = "600px"),
-                    style='padding-left:0px; padding-right:20px;'),
-             column(width = 6,
-                    h4("Top 5 Imports ($m)"),
-                    uiOutput("product_import_table", height = "600px"),
-                    style='padding-left:20px; padding-right:0px;')
-    ),
-    br(),
-    h2("Balance of Payments", align='center'),
-    br(),
-    uiOutput("launchpad_bop_table", height = "600px"),
-    br(),
-    centred_row(htmlOutput("launchpad_footnote")),
-    br()
+      column(
+        6,
+        shiny::div(
+          class = "box",
+          div(
+            class="box-body",
+            readRDS("inst/launchpad_goods.rds")
+          )
+        )
+      )
 
-)
+    ),
 
+
+    # Latest changes
+    "Latest changes in Victorian trade" %>%
+      h2() %>% div(class = "inner") %>%
+      div(class = "small-box") %>% column(12, .) %>%
+      fluidRow(),
+
+    shiny::fluidRow(
+      column(
+        6,
+        shiny::div(
+          class = "box",
+          div(
+            class="box-body",
+            readRDS("inst/launchpad_bop.rds")
+          )
+        )
+      ),
+      column(
+        6,
+        shiny::div(
+          class = "box",
+          div(
+            class="box-body",
+            readRDS("inst/launchpad_rising_goods.rds")
+          )
+        )
+      )
+    ),
+
+    # Top traders - countries
+    "Top merchandise trading partners" %>%
+      h2() %>% div(class = "inner") %>%
+      div(class = "small-box") %>% column(12, .) %>%
+      fluidRow(),
+
+    shiny::fluidRow(
+      shinydashboard::box(
+        title = "Top export destinations",
+        readRDS("inst/launchpad_exp_country_table.rds")
+      )%>%
+        to_col_xl() ,
+      shinydashboard::box(
+        title = "Top import sources",
+        readRDS("inst/launchpad_imp_country_table.rds")
+      )%>%
+        to_col_xl()
+    ),
+
+    # Product tables
+    "Top trading merchandise" %>%
+      h2() %>% div(class = "inner") %>%
+      div(class = "small-box") %>% column(12, .) %>%
+      fluidRow(),
+
+    shiny::fluidRow(
+      shinydashboard::box(
+        title = "Top export products",
+        readRDS("inst/launchpad_product_exp_table.rds")
+      )%>%
+        to_col_xl() ,
+      shinydashboard::box(
+        title = "Top import products",
+        readRDS("inst/launchpad_product_imp_table.rds")
+      )%>%
+        to_col_xl()
+    ),
+
+    # BOP table
+    "Victoria's overall trade position" %>%
+      h2() %>% div(class = "inner") %>%
+      div(class = "small-box") %>% column(12, .) %>%
+      fluidRow(),
+
+    shinydashboard::box(
+      readRDS("inst/launchpad_bop_table.rds"),
+      width = 12
+    ) %>%
+      to_col_xl() %>%
+      shiny::fluidRow(),
+
+    footer()
+  )
 }
+
