@@ -545,6 +545,10 @@ highcharts_launchpad_goods <- function(
         ")."
       )
     ) %>%
+    highcharter::hc_tooltip(
+      dateTimeLabelFormats = list(day = "%b %Y"),
+      valuePrefix = "$"
+    ) %>%
     djpr_highcharts()
 }
 
@@ -593,7 +597,7 @@ highcharts_launchpad_services <- function(
     ) %>%
     highcharter::hc_legend(enabled = FALSE) %>%
     highcharter::hc_tooltip(
-      dateTimeLabelFormats = list(day = "%b %Y"),
+      dateTimeLabelFormats = list(day = "%Y"),
       valuePrefix = "$"
     ) %>%
     highcharter::hc_xAxis(title = list(enabled = FALSE)) %>%
@@ -813,6 +817,13 @@ highcharts_bop_export_chart <- function(
       )
     ) %>%
     highcharter::hc_navigator(series = list(label = list(enabled = FALSE))) %>%
+    hc_exporting(
+      enabled = TRUE
+    ) %>%
+    highcharter::hc_tooltip(
+      dateTimeLabelFormats = list(day = "%b %Y"),
+      valuePrefix = "$"
+    ) %>%
     djpr_highcharts()
 
 }
@@ -863,7 +874,7 @@ highcharts_rising_goods <- function(
     dplyr::mutate(
       sitc_shrink = sitc %>%
         stringr::str_remove_all(
-          "\\(.+\\)|and other.+|, fresh, chilled .+|, fats and waxes| and related products, nes|, inedible, except fuels| and live animals| and transport equipment|, lubricants and related materials| articles| of a kind used for the extraction of soft fixed vegetable oils"
+          "\\(.+\\)|and other.+|, fresh, chilled .+|, fats and waxes| and related products, nes|, inedible, except fuels| and live animals| and transport equipment|, lubricants and related materials| articles| of a kind used for the extraction of soft fixed vegetable oils|;.+"
         ) %>%
         stringr::str_squish()
     ) %>%
@@ -940,6 +951,10 @@ highcharts_rising_goods <- function(
       )
     ) %>%
     highcharter::hc_navigator(series = list(label = list(enabled = FALSE))) %>%
+    highcharter::hc_tooltip(
+      dateTimeLabelFormats = list(day = "%b %Y"),
+      valuePrefix = "$"
+    ) %>%
     djpr_highcharts()
 }
 
