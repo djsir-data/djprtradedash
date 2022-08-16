@@ -13,5 +13,5 @@ if(file.exists(".renviron")) readRenviron(".renviron")
 load_tabs()
 
 # Start shinyapp
-shiny::shinyApp(ui = ui(), server = server)
-# shiny::shinyApp(ui = readRDS("inst/ui.rds"), server = server)
+# shiny::shinyApp(ui = ui(), server = server)
+shiny::shinyApp(ui = readRDS("inst/ui.rds"), server = server)
