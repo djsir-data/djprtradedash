@@ -446,12 +446,6 @@ table_bop <- function(data = bop){
 
 
 
-
-
-
-
-
-
 # Headline goods chart
 highcharts_launchpad_goods <- function(
     data  = merch,
@@ -760,10 +754,10 @@ highcharts_bop_export_chart <- function(
 
   title <-
     dplyr::case_when(
-      abs(latest_change$change) < 10 ~ "Victoria's total exports remained steady over the past quarter ",
-      latest_change$change > 0 ~ paste0("Victoria's total exports rose by ", dollar_stat(latest_change$change), " over the past quarter"),
-      latest_change$change < 0 ~ paste0("Victoria's total exports fell by ", dollar_stat(abs(latest_change$change)), " over the past quarter"),
-      TRUE ~ "Victoria's total exports over the past quarter"
+      abs(latest_change$change) < 10 ~ "Victoria's exports remained steady over the past quarter ",
+      latest_change$change > 0 ~ paste0("Victoria's exports rose by ", dollar_stat(latest_change$change), " over the past quarter"),
+      latest_change$change < 0 ~ paste0("Victoria's exports fell by ", dollar_stat(abs(latest_change$change)), " over the past quarter"),
+      TRUE ~ "Victoria's exports over the past quarter"
     )
 
   caption <- paste0("Source: ABS Balance of Payment quarterly.</br> Note: Data seasonally Adjusted & Chain Volume Measures")
