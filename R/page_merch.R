@@ -2,82 +2,65 @@ page_merchUI <- function(...) {
 
   shiny::fluidPage(
 
-    # Header banner
-    div(
-      class = "col-xl-12",
-      # Manual box class
-      div(
-        class = "box",
-        style = "background-color:var(--twilight);display:table;",
-        # Left triangle clip image
-        div(
-          style = paste0(
-            "width: 30%;",
-            "background-image: url(\"containers.png\");",
-            "background-repeat: no-repeat;",
-            "background-size: ", round(1920 / 2.5), "px ", round(1280 / 2.5), "px;",
-            "clip-path: polygon(0 0, 100% 0, 45% 100%, 0% 100%);",
-            "display: table-cell;",
-            "border-radius: 1.25rem 0 0 1.25rem;"
-          )
+    fluidRow(
+      column(
+        12,
+        h2(
+          "Victorian trade dashboard",
+          style = "margin-top: 2rem; margin-bottom: 2rem;"
+        )
+      )
+    ),
+    fluidRow(
+      column(
+        12,
+        # style = "font-size: 16px;",
+        img(
+          src = "containers.jpg",
+          style = "border-radius: 1.25rem;float: left; margin-right: 1rem; margin-right: 1rem;",
+          width = "402",
+          height = "268",
+          alt = "Shipping containers"
         ),
-        # Header with collapse
-        div(
-          class = "box-header",
-          h3(
-            style = "font-size:20px;font-weight:bold;",
-            "Victorian trade data"
+        p(
+          "The Victorian Trade Dashboard helps business explore the latest ",
+          "ABS trade data to gauge individual export market performance and",
+          " get the latest information on Victoria’s overall trade position.",
+          br(), br(),
+          "On this page, you can explore specific goods export markets based",
+          " on destination and type of product. Products are classified",
+          " according to the standard international trade classification",
+          " (SITC) – to find your specific markets, search below or lookup",
+          " a product category here. You can download all information as",
+          " chart images or data tables via chart menus. ",
+          br()
+        ),
+
+        tags$ul(
+          tags$li(
+            a(
+              href = "#",
+              class = "merchLink",
+              "Find your merchandise export market's performance")
           ),
-          # Header Collapse
-          div(
-            class="box-tools pull-right",
-            tags$button(
-              class = "btn btn-box-tool",
-              `data-widget` = "collapse",
-              tags$i(
-                class = "fa fa-minus",
-                role = "presentation",
-                `aria-label` = "minus icon"
-              )
+          tags$li(
+            a(
+              href = "#",
+              class = "bopLink",
+              "Explore Victoria's overall trade performance"
             )
-          )
-        ),
-        # Content
-        div(
-          class = "box-body",
-          style = "font-size:16px;",
-          # Content text
-          p("This site helps exporters guage market size and performance for various goods and services."),
-          # List of links
-          tags$ul(
-            class = "fa-ul",
-            tags$li(
-              span(class = "fa-li", tags$i(class = "fa fa-caret-left")),
-              a(
-                href = "#",
-                class = "merchLink",
-                "Find your merchandise export market's performance")
-            ),
-            tags$li(
-              span(class = "fa-li", tags$i(class = "fa fa-caret-left")),
-              a(
-                href = "#",
-                class = "bopLink",
-                "Explore Victoria's overall trade performance"
-              )
-            ),
-            tags$li(
-              span(class = "fa-li", tags$i(class = "fa fa-caret-left")),
-              a(
-                href = "#",
-                class = "servicesLink",
-                "Compare Victoria's service exports"
-              )
+          ),
+          tags$li(
+            a(
+              href = "#",
+              class = "servicesLink",
+              "Compare Victoria's service exports"
             )
           )
         )
       )
     ),
+
 
     "Merchandise exports" %>%
       h2() %>% div(class = "inner") %>%

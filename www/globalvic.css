@@ -37,20 +37,28 @@
        url("./fonts/VIC-Bold.ttf") format("truetype");
 }
 
+html{
+  font-size: 12pt !important;
+}
+
 h1 {
   font-family: "VIC-Bold";
+  font-size: 2rem;
 }
 
 h2{
   font-family: "VIC-SemiBold";
+  font-size: 1.75rem;
 }
 
-h3, h4, h5, h6, p, a, body{
+h3, h4, h5, h6{
   font-family: "VIC-Regular";
+  font-size: 1.5rem;
 }
 
-body{
-  font-size: 14px;
+p, a, body{
+  font-family: "VIC-Regular";
+  font-size: 1rem;
 }
 
 body {
@@ -107,7 +115,7 @@ border-radius: 1.25rem 0 0 0;
 }
 
 .skin-blue .main-header .navbar .sidebar-toggle:before{
-  font-size: 20px;
+  font-size: 1.25rem;
   text-align: center;
   width: 50px;
   display: table-cell;
@@ -127,7 +135,6 @@ border-radius: 1.25rem 0 0 0;
 }
 
 .small-box .inner h2{
-  font-size: 25px;
   margin: 0;
 }
 
@@ -148,7 +155,7 @@ border-radius: 1.25rem 0 0 0;
   height: 100%;
   color: #FFFFFF;
   height:60px;
-  font-size: 20px;
+  font-size: 1.25rem;
   font-family: "VIC-SemiBold";
   vertical-align: middle;
   padding-left: 10px;
@@ -193,7 +200,7 @@ border-radius: 1.25rem 0 0 0;
    width: 100%;
    border-collapse: collapse;
    overflow-x: auto;
-   font-size: 12px;
+   font-size: 0.9rem;
    font-variant-numeric: tabular-nums;
 }
 
@@ -249,7 +256,7 @@ border-radius: 1.25rem 0 0 0;
    width: 100%;
    border-collapse: collapse;
    overflow-x: auto;
-   font-size: 12px;
+   font-size: 0.9rem;
 }
 
 .highcharts-data-table thead{
@@ -292,12 +299,13 @@ border-radius: 1.25rem 0 0 0;
   line-height: 0.8;
   background-color: var(--midnight);
   padding: 0;
+  overflow:hidden;
 }
 
 .sourceBadge div:first-child{
   display: table-cell;
   background-color: #FFFFFF;
-  border-radius: 0.9rem 0 0 0.9rem;
+  /*border-radius: 0.9rem 0 0 0.9rem;*/
   display: table-cell;
   color: var(--midnight);
   padding: 5px;

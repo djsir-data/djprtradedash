@@ -20,10 +20,10 @@ ui <- function() {
     header = custom_header,
     sidebar = shinydashboard::dashboardSidebar(
       shinydashboard::sidebarMenu(id = 'tabs',
-        shinydashboard::menuItem("Export explorer", tabName = "merch", selected = TRUE),
+        shinydashboard::menuItem("Goods exports", tabName = "merch", selected = TRUE),
+        shinydashboard::menuItem("Service Exports", tabName = "services"),
         shinydashboard::menuItem("Trade overview", tabName = "launchpad"),
         shinydashboard::menuItem("Balance of payments", tabName = "bop"),
-        shinydashboard::menuItem("Services", tabName = "services"),
         shinydashboard::menuItem("FAQ & sources", tabName = "methodology"),
         shinydashboard::menuItem("Disclaimer", tabName = "disclaimer") %>%
           shiny::tagAppendAttributes(
