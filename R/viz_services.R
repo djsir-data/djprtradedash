@@ -188,6 +188,10 @@ highchart(type = "stock") %>%
   ) %>%
   highcharter::hc_navigator(series = list(label = list(enabled = FALSE))) %>%
   djpr_highcharts() %>%
+  highcharter::hc_tooltip(
+    dateTimeLabelFormats = list(day = "%Y"),
+    valuePrefix = "$"
+  ) %>%
   hc_elementId("service_state_comp")
 }
 
