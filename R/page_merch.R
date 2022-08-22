@@ -64,9 +64,10 @@ page_merchUI <- function(...) {
 
 
     "Merchandise exports" %>%
-      h2() %>% div(class = "inner") %>%
-      div(class = "small-box") %>% column(12, .) %>%
+      h2() %>%
+      column(12, .) %>%
       fluidRow(),
+
     shiny::fluidRow(
 
       # Chart option selectors
@@ -89,8 +90,12 @@ page_merchUI <- function(...) {
         shinyWidgets::multiInput(
           inputId = "merch_sitc",
           label = "Select Goods",
-          choices = sort(merch_sitc_lu$sitc),
-          selected = "Medicinal and pharmaceutical products (excl. medicaments of group 542)",
+          choices = sort(
+            merch_sitc_lu$sitc[
+              merch_sitc_lu$n == 3
+            ]
+          ),
+          selected = "Wheat (incl. spelt) and meslin, unmilled",
           width = "100%",
           options = list(
             non_selected_header = "All goods:",
@@ -98,15 +103,13 @@ page_merchUI <- function(...) {
           )
         )%>% fluidRow(),
         br(),
-        tags$label("Options"),
         shiny::fluidRow(
           style = "background-color: #FFFFFF; border-radius: 1.25rem;margin:1px;padding:10px;",
           shiny::column(
-            6,
-            shinyWidgets::awesomeRadio(
-              width = "80%",
+            12,
+            shinyWidgets::radioGroupButtons(
               inputId = "merch_explorer_sitc",
-              label = "SITC Level: ",
+              label = "SITC Level",
               choices = c(
                 1,
                 2,
@@ -114,32 +117,29 @@ page_merchUI <- function(...) {
                 "All"
               ),
               selected = 3,
-              status = "primary"
-            )
-          ),
-          shiny::column(
-            6,
-            fluidRow(
-              tags$label("12 month average"),
-              shinyWidgets::materialSwitch(
-                "merch_explorer_smooth",
-                status = "primary",
-                value = TRUE,
-                inline = T
-              )
+              status = "primary",
+              justified = T
             ),
-            shinyWidgets::awesomeRadio(
-              width = "80%",
+            shinyWidgets::radioGroupButtons(
+              "merch_explorer_smooth",
+              status = "primary",
+              label = "Data smoothing",
+              choiceNames = c("No smoothing", "12 month average"),
+              choiceValues = c(F,T),
+              selected = TRUE,
+              justified = T
+            ),
+            shinyWidgets::radioGroupButtons(
               inputId = "merch_explorer_facets",
-              label = "Facet on:",
+              label = "Chart facet",
               choices = c(
                 "Destination country" = "country_dest",
                 "Good type" = "sitc"
               ),
               selected = "country_dest",
-              status = "primary"
-            ) %>% fluidRow()
-
+              status = "primary",
+              justified = T
+            )
           )
         )
       ) %>%
