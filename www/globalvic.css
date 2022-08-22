@@ -123,6 +123,10 @@ border-radius: 1.25rem 0 0 0;
   top:-5px;
 }
 
+.sidebar{
+  padding-top: 1rem;
+}
+
 .small-box{
   pointer-events: none;
 }
@@ -394,3 +398,20 @@ border-radius: 1.25rem 0 0 0;
 #shiny-tab-bop .box {
     background-color: #E5E4E2;
 }
+
+.btn:focus{
+  box-shadow: none;
+}
+
+#shiny-tab-methodology .box-header h3.fa-plus:before{
+  content: "\2B\A0";
+}
+
+#shiny-tab-methodology .box-header h3.fa-minus:before{
+  content: "\2D\A0";
+}
+
+#shiny-tab-methodology .box-header:before {
+    content: "";
+}
+
