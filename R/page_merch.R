@@ -17,7 +17,7 @@ page_merchUI <- function(...) {
         # style = "font-size: 16px;",
         img(
           src = "containers.jpg",
-          style = "border-radius: 1.25rem;float: left; margin-right: 1rem; margin-right: 1rem;",
+          style = "border-radius: 1.25rem;float: left; margin-right: 1rem; margin-bottom: 1rem;",
           width = "402",
           height = "268",
           alt = "Shipping containers"
@@ -30,33 +30,34 @@ page_merchUI <- function(...) {
           "On this page, you can explore specific goods export markets based",
           " on destination and type of product. Products are classified",
           " according to the standard international trade classification",
-          " (SITC) – to find your specific markets, search below or lookup",
-          " a product category here. You can download all information as",
-          " chart images or data tables via chart menus. ",
-          br()
-        ),
-
-        tags$ul(
-          tags$li(
-            a(
-              href = "#",
-              class = "merchLink",
-              "Find your merchandise export market's performance")
+          " (SITC) – to find your specific markets, search below or ",
+          tags$a(
+            "lookup a product category here",
+            href = "#",
+            class = "methodologyLink"
           ),
-          tags$li(
-            a(
-              href = "#",
-              class = "bopLink",
-              "Explore Victoria's overall trade performance"
-            )
+          ". You can download all information as chart images or data tables",
+          " via chart menus. ",
+          br(), br(),
+          "For information on services, you can view ",
+          a(
+            "Victorias service export breakdown here",
+            href = "#",
+            class = "servicesLink"
           ),
-          tags$li(
-            a(
-              href = "#",
-              class = "servicesLink",
-              "Compare Victoria's service exports"
-            )
+          ". For more information on victoria's overall trade, you you can explore the",
+          a(
+            "trade overview here",
+            href = "#",
+            class = "launchpadLink"
+          ),
+          " or ",
+          a(
+            "balance of payments information here.",
+            href = "#",
+            class = "bopLink"
           )
+
         )
       )
     ),
