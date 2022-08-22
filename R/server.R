@@ -42,7 +42,7 @@ server <- function(input, output, session) {
       highcharts_merch_explorer(
         countries = req(input$merch_countries),
         goods = req(input$merch_sitc),
-        origin_state = "Victoria",
+        origin_state = req(input$merch_origin),
         facet_by = input$merch_explorer_facets,
         smooth = input$merch_explorer_smooth
       )

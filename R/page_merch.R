@@ -2,15 +2,11 @@ page_merchUI <- function(...) {
 
   shiny::fluidPage(
 
-    fluidRow(
-      column(
-        12,
-        h2(
-          "Victorian trade dashboard",
-          style = "margin-top: 2rem; margin-bottom: 2rem;"
-        )
-      )
-    ),
+    "Victorian trade dashboard" %>%
+      h2() %>% div(class = "inner") %>%
+      div(class = "small-box") %>% column(12, .) %>%
+      fluidRow(),
+
     fluidRow(
       column(
         12,
@@ -23,7 +19,7 @@ page_merchUI <- function(...) {
           alt = "Shipping containers"
         ),
         p(
-          "The Victorian Trade Dashboard helps business explore the latest ",
+          "The Victorian Trade Dashboard helps businesses explore the latest ",
           "ABS trade data to gauge individual export market performance and",
           " get the latest information on Victoria’s overall trade position.",
           br(), br(),
@@ -63,9 +59,9 @@ page_merchUI <- function(...) {
     ),
 
 
-    "Merchandise exports" %>%
-      h2() %>%
-      column(12, .) %>%
+    "Goods exports" %>%
+      h2() %>% div(class = "inner") %>%
+      div(class = "small-box") %>% column(12, .) %>%
       fluidRow(),
 
     shiny::fluidRow(
@@ -79,7 +75,7 @@ page_merchUI <- function(...) {
           inputId = "merch_countries",
           label = "Select export destinations",
           choices = sort(merch_country_dest),
-          selected = c("Thailand", "Malaysia"),
+          selected = c("China (excludes SARs and Taiwan)", "Indonesia"),
           width = "100%",
           options = list(
             non_selected_header = "All destinations:",
@@ -89,13 +85,16 @@ page_merchUI <- function(...) {
         br(),
         shinyWidgets::multiInput(
           inputId = "merch_sitc",
-          label = "Select Goods",
+          label = "Select goods",
           choices = sort(
             merch_sitc_lu$sitc[
               merch_sitc_lu$n == 3
             ]
           ),
-          selected = "Wheat (incl. spelt) and meslin, unmilled",
+          selected = c(
+            "Meat of bovine animals, fresh, chilled or frozen",
+            "Milk and cream and milk products (excl. butter or cheese)"
+            ),
           width = "100%",
           options = list(
             non_selected_header = "All goods:",
@@ -117,14 +116,14 @@ page_merchUI <- function(...) {
                 "All"
               ),
               selected = 3,
-              status = "primary",
+              status = "secondary",
               justified = T
             ),
             shinyWidgets::radioGroupButtons(
               "merch_explorer_smooth",
-              status = "primary",
+              status = "secondary",
               label = "Data smoothing",
-              choiceNames = c("No smoothing", "12 month average"),
+              choiceNames = c("Off", "12-month average"),
               choiceValues = c(F,T),
               selected = TRUE,
               justified = T
@@ -133,11 +132,22 @@ page_merchUI <- function(...) {
               inputId = "merch_explorer_facets",
               label = "Chart facet",
               choices = c(
-                "Destination country" = "country_dest",
-                "Good type" = "sitc"
+                "Country" = "country_dest",
+                "Good" = "sitc"
               ),
               selected = "country_dest",
-              status = "primary",
+              status = "secondary",
+              justified = T
+            ),
+            shinyWidgets::radioGroupButtons(
+              inputId = "merch_origin",
+              label = "Export origin",
+              choices = c(
+                "Vic only" = "Victoria",
+                "Australia"  = "Australia"
+              ),
+              selected = "Victoria",
+              status = "secondary",
               justified = T
             )
           )
