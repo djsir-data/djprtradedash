@@ -301,7 +301,7 @@ border-radius: 1.25rem 0 0 0;
   font-size: 14px;
   display: table;
   line-height: 0.8;
-  background-color: var(--midnight);
+  background-color: #FFFFFF;
   padding: 0;
   overflow:hidden;
 }
@@ -321,7 +321,9 @@ border-radius: 1.25rem 0 0 0;
 .sourceBadge div:last-child{
   display: table-cell;
   vertical-align: middle;
+  background-color: var(--midnight);
   padding: 5px;
+  padding-right: 10px;
 }
 
 .nav:before, .nav:after, .navbar:before, .navbar:after{
