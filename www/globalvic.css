@@ -92,7 +92,7 @@ a{
 
 .content-wrapper, .right-side{
 background-color: #FFFFFF;
-border-radius: 1.25rem 0 0 0;
+border-radius: 1rem 0 0 0;
 }
 
 .skin-blue .main-header .navbar .sidebar-toggle{
@@ -133,7 +133,7 @@ border-radius: 1.25rem 0 0 0;
 
 .small-box .inner{
   padding: 15px;
-  border-radius: 1.25rem;
+  border-radius: 1rem;
   background-color: var(--sunrise);
   color: var(--midnight);
 }
@@ -149,7 +149,7 @@ border-radius: 1.25rem 0 0 0;
 .box, .small-box{
   box-shadow: none;
   border:none;
-  border-radius:1.25rem;
+  border-radius:1rem;
   background-color: transparent;
   overflow-x: auto;
 }
@@ -297,7 +297,7 @@ border-radius: 1.25rem 0 0 0;
 .sourceBadge{
   color:#FFFFFF;
   border: 2px solid #FFFFFF;
-  border-radius: 1.25rem;
+  border-radius: 1rem;
   font-size: 14px;
   display: table;
   line-height: 0.8;
@@ -360,7 +360,7 @@ border-radius: 1.25rem 0 0 0;
 }
 
 .multi-wrapper .search-input{
-  border-radius: 1.25rem 1.25rem 0 0;
+  border-radius: 1rem 1rem 0 0;
 }
 
 .multi-wrapper{
@@ -369,12 +369,12 @@ border-radius: 1.25rem 0 0 0;
 
 .multi-wrapper .non-selected-wrapper{
   border: none;
-  border-radius: 0 0 0 1.25rem;
+  border-radius: 0 0 0 1rem;
 }
 
 .multi-wrapper .selected-wrapper{
   border: none;
-  border-radius: 0 0 1.25rem 0;
+  border-radius: 0 0 1rem 0;
   overflow: auto;
 }
 
@@ -388,7 +388,7 @@ border-radius: 1.25rem 0 0 0;
 
 .box::-webkit-scrollbar-thumb {
   background-color: var(--night);
-  border-radius: 1.25rem;
+  border-radius: 1rem;
   border: 6px solid transparent;
   background-clip: content-box;
 }

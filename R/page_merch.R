@@ -13,7 +13,7 @@ page_merchUI <- function(...) {
         # style = "font-size: 16px;",
         img(
           src = "containers.jpg",
-          style = "border-radius: 1.25rem;float: left; margin-right: 1rem; margin-bottom: 1rem;",
+          style = "border-radius: 1rem;float: left; margin-right: 1rem; margin-bottom: 1rem;",
           width = "402",
           height = "268",
           alt = "Shipping containers"
@@ -103,7 +103,7 @@ page_merchUI <- function(...) {
         )%>% fluidRow(),
         br(),
         shiny::fluidRow(
-          style = "background-color: #FFFFFF; border-radius: 1.25rem;margin:1px;padding:10px;",
+          style = "background-color: #FFFFFF; border-radius: 1rem;margin:1px;padding:10px;",
           shiny::column(
             12,
             shinyWidgets::radioGroupButtons(
