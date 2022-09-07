@@ -3,7 +3,6 @@
 export(read_bop)
 export(read_merch)
 export(read_services)
-export(read_supp)
 import(dplyr)
 import(highcharter)
 import(shiny)

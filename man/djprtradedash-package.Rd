@@ -6,13 +6,23 @@
 \alias{djprtradedash-package}
 \title{djprtradedash: DJPR Trade Dashboard}
 \description{
-What the package does (one paragraph).
+Dashboard of Victorian trade data
 }
 \author{
 \strong{Maintainer}: Matt Cowgill \email{mattcowgill@gmail.com} (\href{https://orcid.org/0000-0003-0422-3300}{ORCID})
 
+Authors:
+\itemize{
+  \item Henry McMillan \email{henry.mcmillan@ecodev.vic.gov.au}
+}
+
 Other contributors:
 \itemize{
+  \item Emma Seyoum-Tegegn \email{emma.seyoum-tegegn@ecodev.vic.gov.au} [contributor]
+  \item Louis Cui \email{louis.cui@ecodev.vic.gov.au} [contributor]
+  \item Matt De Pasquale \email{matt.depasquale@ecodev.vic.gov.au} [contributor]
+  \item Matt Johnson \email{mrjoh3@gmail.com} [contributor]
+  \item Duy Nguyen \email{duy.nguyen@ecodev.vic.gov.au} [contributor]
   \item Department of Jobs, Precincts and Regions (Victoria) [copyright holder, funder]
 }
 
