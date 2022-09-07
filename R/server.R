@@ -29,11 +29,13 @@ server <- function(input, output, session) {
     eventExpr = {
       input$service_state_comp_inp
       input$service_state_comp_states
+      input$service_state_comp_period
       },
     handlerExpr = {
     update_service_state_comp(
       product = input$service_state_comp_inp,
-      states = input$service_state_comp_states
+      states = input$service_state_comp_states,
+      period = input$service_state_comp_period
       )
   })
 

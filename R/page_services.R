@@ -53,6 +53,14 @@ page_servicesUI <- function(...){
           selected = "Education travel",
           multiple = FALSE
         ),
+        shinyWidgets::radioGroupButtons(
+          "service_state_comp_period",
+          label = "Reference period",
+          choices = c("Calendar year" = "Calendar Year", "Financial year" = "Financial Year"),
+          selected = "Calendar Year",
+          justified = TRUE,
+          status = "secondary"
+        ),
         checkboxGroupInput(
           "service_state_comp_states",
           "Select states to display",

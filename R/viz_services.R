@@ -36,7 +36,7 @@ highcharts_service_compositon <- function(data = service_trade){
       as.integer(format(max_date, "%Y")) - 1,
       "-",
       format(max_date, "%y")
-      )
+    )
   }
 
   level_1 <- level_1 %>% select(-date)
@@ -114,7 +114,7 @@ highcharts_service_state_comp <- function(
     data = service_trade,
     product = "Education travel",
     period = "Calendar Year"
-    ){
+){
 
   data <- data %>%
     filter(
@@ -126,73 +126,78 @@ highcharts_service_state_comp <- function(
     select(state, date, value) %>%
     collect()
 
-highchart(type = "stock") %>%
-  hc_add_series(data, "spline", hcaes(x=date, y = value, group = state)) %>%
-  highcharter::hc_plotOptions(series = list(label = list(enabled = TRUE))) %>%
-  highcharter::hc_xAxis(
-    title = list(enabled = FALSE),
-    accessibility = list(
-      description = sprintf(
-        'Date from %s to %s',
-        format(min(data$date), "%B %Y"),
-        format(max(data$date), "%B %Y")
+  # if(period == "Calendar Year"){
+  #   data <- data %>%
+  #     mutate(
+  #       date = lubridate::floor_date(date, "years")
+  #     )
+  # }
+
+  highchart(type = "stock") %>%
+    hc_add_series(data, "spline", hcaes(x=date, y = value, group = state)) %>%
+    highcharter::hc_plotOptions(series = list(label = list(enabled = TRUE))) %>%
+    highcharter::hc_xAxis(
+      title = list(enabled = FALSE),
+      accessibility = list(
+        description = sprintf(
+          'Date from %s to %s',
+          format(min(data$date), "%B %Y"),
+          format(max(data$date), "%B %Y")
+        )
       )
-    )
-  ) %>%
-  highcharter::hc_yAxis(
-    title = list(text = "Exports"),
-    labels = list(format = "${text}"),
-    tickAmount = 6,
-    accessibility = list(description = "Exports in Australian dollars")
-  ) %>%
-  #highcharter::hc_add_dependency("plugins/series-label.js") %>%
-  #highcharter::hc_add_dependency("plugins/accessibility.js") %>%
-  highcharter::hc_exporting(
-    enabled = TRUE,
-    filename = paste(product, "exports")
-  ) %>%
-  highcharter::hc_title(text = paste(product, "exports comparison")) %>%
-  highcharter::hc_subtitle(text = "Export volume by Australian state $AUD") %>%
-  highcharter::hc_caption(
-    text = paste0(
-      "Source: ABS International Trade: Supplementary Information."
-    )
-  ) %>%
-  highcharter::hc_rangeSelector(
-    inputEnabled = F,
-    selected = 1,
-    buttons = list(
-      list(
-        type  = 'all',
-        text  =  'All',
-        title =  'View all'
-      ),
-      list(
-        type  = 'year',
-        count = 5,
-        text  = '5y',
-        title = 'View five years'
-      ),
-      list(
-        type  = 'year',
-        count = 3,
-        text  = '3y',
-        title = 'View three years years'
-      ),
-      list(
-        type  = 'ytd',
-        text  = 'YTD',
-        title = 'View year to date'
+    ) %>%
+    highcharter::hc_yAxis(
+      title = list(text = "Exports"),
+      labels = list(format = "${text}"),
+      tickAmount = 6,
+      accessibility = list(description = "Exports in Australian dollars")
+    ) %>%
+    highcharter::hc_exporting(
+      enabled = TRUE,
+      filename = paste(product, "exports")
+    ) %>%
+    highcharter::hc_title(text = paste(product, "exports comparison")) %>%
+    highcharter::hc_subtitle(text = "Export volume by Australian state $AUD") %>%
+    highcharter::hc_caption(
+      text = paste0(
+        "Source: ABS International Trade: Supplementary Information."
       )
-    )
-  ) %>%
-  highcharter::hc_navigator(series = list(label = list(enabled = FALSE))) %>%
-  djpr_highcharts() %>%
-  highcharter::hc_tooltip(
-    dateTimeLabelFormats = list(day = "%Y"),
-    valuePrefix = "$"
-  ) %>%
-  hc_elementId("service_state_comp")
+    ) %>%
+    highcharter::hc_rangeSelector(
+      inputEnabled = F,
+      selected = 1,
+      buttons = list(
+        list(
+          type  = 'all',
+          text  =  'All',
+          title =  'View all'
+        ),
+        list(
+          type  = 'year',
+          count = 5,
+          text  = '5y',
+          title = 'View five years'
+        ),
+        list(
+          type  = 'year',
+          count = 3,
+          text  = '3y',
+          title = 'View three years years'
+        ),
+        list(
+          type  = 'ytd',
+          text  = 'YTD',
+          title = 'View year to date'
+        )
+      )
+    ) %>%
+    highcharter::hc_navigator(series = list(label = list(enabled = FALSE))) %>%
+    djpr_highcharts() %>%
+    highcharter::hc_tooltip(
+      dateTimeLabelFormats = list(day = "%Y"),
+      valuePrefix = "$"
+    ) %>%
+    hc_elementId("service_state_comp")
 }
 
 update_service_state_comp <- function(
@@ -201,7 +206,7 @@ update_service_state_comp <- function(
     data = service_trade,
     proxy_id = "service_state_comp",
     period = "Calendar Year"
-    ){
+){
 
   data <- data %>%
     filter(
@@ -213,6 +218,16 @@ update_service_state_comp <- function(
     select(state, date, value) %>%
     collect()
 
+  if(period == "Calendar Year"){
+    # data <- data %>%
+    #   mutate(
+    #     date = lubridate::floor_date(date, "years")
+    #   )
+    tooltip_dates <- "%Y"
+  } else {
+    tooltip_dates <- "%b %Y"
+  }
+
   highchartProxy(proxy_id) %>%
     hcpxy_remove_series(all = TRUE)
 
@@ -220,7 +235,12 @@ update_service_state_comp <- function(
     hcpxy_add_series(data, "spline", hcaes(x = date, y = value, group = state))
 
   highchartProxy(proxy_id) %>%
-    hcpxy_update(title = list(text = paste(product, "exports comparison")))
+    hcpxy_update(
+      title = list(text = paste(product, "exports comparison")),
+      tooltip = list(
+        dateTimeLabelFormats = list(day = "%Y")
+      )
+      )
 
 }
 
