@@ -3,8 +3,8 @@ default:
     use_DBcache: FALSE
     dbname: "opendata"
     host: '10.210.1.26'
-    user:  !expr Sys.getenv("PG_READ_OPEN_USER")
-    password: !expr Sys.getenv("PG_READ_OPEN_PW")
+    user:  !expr if(Sys.getenv("PG_MASTER_USER") == "") Sys.getenv("PG_READ_OPEN_USER") else Sys.getenv("PG_MASTER_USER")
+    password: !expr if(Sys.getenv("PG_MASTER_PW") == "") Sys.getenv("PG_READ_OPEN_PW") else Sys.getenv("PG_MASTER_PW")
     port: 443
 
 local_cache:
