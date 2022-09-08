@@ -124,11 +124,11 @@ highcharts_merch_explorer <- function(
     #highcharter::hc_add_dependency("plugins/accessibility.js") %>%
     highcharter::hc_exporting(enabled = TRUE) %>%
     highcharter::hc_caption(
-      text = paste0(
-        "Source: ABS.Stat Merchandise Exports by Commodity (latest data is from ",
-        format(merch_dates$max, "%B %Y"),
-        ")."
-      )
+      text = if(smooth){
+        "Source: ABS.Stat Merchandise Exports by Commodity. Data smoothed with 12 month rolling average"
+      } else {
+        "Source: ABS.Stat Merchandise Exports by Commodity. "
+      }
     )  %>%
     djpr_highcharts() %>%
     highcharter::hc_rangeSelector(
@@ -162,6 +162,10 @@ highcharts_merch_explorer <- function(
       )
     ) %>%
     highcharter::hc_navigator(series = list(label = list(enabled = FALSE))) %>%
+    highcharter::hc_tooltip(
+      dateTimeLabelFormats = list(day = "%b %Y"),
+      valuePrefix = "$"
+    ) %>%
     hc_navigator(enabled = FALSE) %>%
     hc_scrollbar(enabled = FALSE)
 

@@ -2,70 +2,68 @@ page_merchUI <- function(...) {
 
   shiny::fluidPage(
 
-    fluidRow(
-      column(
-        12,
-        h2(
-          "Victorian Trade Dashboard",
-          style = "margin-top: 2rem; margin-bottom: 2rem;"
-        )
-      )
-    ),
+    "Victorian trade dashboard" %>%
+      h2() %>% div(class = "inner") %>%
+      div(class = "small-box") %>% column(12, .) %>%
+      fluidRow(),
+
     fluidRow(
       column(
         12,
         # style = "font-size: 16px;",
         img(
           src = "containers.jpg",
-          style = "border-radius: 1.25rem;float: left; margin-right: 1rem; margin-right: 1rem;",
+          style = "border-radius: 1rem;float: left; margin-right: 1rem; margin-bottom: 1rem;",
           width = "402",
           height = "268",
           alt = "Shipping containers"
         ),
         p(
-          "The Victorian Trade Dashboard helps business explore the latest ",
+          "The Victorian Trade Dashboard helps businesses explore the latest ",
           "ABS trade data to gauge individual export market performance and",
           " get the latest information on Victoria’s overall trade position.",
           br(), br(),
           "On this page, you can explore specific goods export markets based",
           " on destination and type of product. Products are classified",
           " according to the standard international trade classification",
-          " (SITC) to find your specific markets, search below or lookup",
-          " a product category here. You can download all information as",
-          " chart images or data tables via chart menus. ",
-          br()
-        ),
-
-        tags$ul(
-          tags$li(
-            a(
-              href = "#",
-              class = "merchLink",
-              "Find your merchandise export market's performance")
+          " (SITC) - to find your specific markets, search below or ",
+          tags$a(
+            "lookup a product category here",
+            href = "#",
+            class = "methodologyLink"
           ),
-          tags$li(
-            a(
-              href = "#",
-              class = "bopLink",
-              "Explore Victoria's overall trade performance"
-            )
+          ". You can download all information as chart images or data tables",
+          " via chart menus. ",
+          br(), br(),
+          "For information on services, you can view ",
+          a(
+            "Victorias service export breakdown here",
+            href = "#",
+            class = "servicesLink"
           ),
-          tags$li(
-            a(
-              href = "#",
-              class = "servicesLink",
-              "Compare Victoria's service exports"
-            )
+          ". For more information on victoria's overall trade, you you can explore the",
+          a(
+            "trade overview here",
+            href = "#",
+            class = "launchpadLink"
+          ),
+          " or ",
+          a(
+            "balance of payments information here.",
+            href = "#",
+            class = "bopLink"
           )
+
         )
       )
     ),
 
 
-    "Merchandise exports" %>%
+    "Goods exports" %>%
       h2() %>% div(class = "inner") %>%
       div(class = "small-box") %>% column(12, .) %>%
       fluidRow(),
+
     shiny::fluidRow(
 
       # Chart option selectors
@@ -77,7 +75,7 @@ page_merchUI <- function(...) {
           inputId = "merch_countries",
           label = "Select export destinations",
           choices = sort(merch_country_dest),
-          selected = c("Thailand", "Malaysia"),
+          selected = c("China (excludes SARs and Taiwan)", "Indonesia"),
           width = "100%",
           options = list(
             non_selected_header = "All destinations:",
@@ -87,9 +85,16 @@ page_merchUI <- function(...) {
         br(),
         shinyWidgets::multiInput(
           inputId = "merch_sitc",
-          label = "Select Goods",
-          choices = sort(merch_sitc_lu$sitc),
-          selected = "Medicinal and pharmaceutical products (excl. medicaments of group 542)",
+          label = "Select goods",
+          choices = sort(
+            merch_sitc_lu$sitc[
+              merch_sitc_lu$n == 3
+            ]
+          ),
+          selected = c(
+            "Meat of bovine animals, fresh, chilled or frozen",
+            "Milk and cream and milk products (excl. butter or cheese)"
+            ),
           width = "100%",
           options = list(
             non_selected_header = "All goods:",
@@ -97,15 +102,13 @@ page_merchUI <- function(...) {
           )
         )%>% fluidRow(),
         br(),
-        tags$label("Options"),
         shiny::fluidRow(
-          style = "background-color: #FFFFFF; border-radius: 1.25rem;margin:1px;padding:10px;",
+          style = "background-color: #FFFFFF; border-radius: 1rem;margin:1px;padding:10px;",
           shiny::column(
-            6,
-            shinyWidgets::awesomeRadio(
-              width = "80%",
+            12,
+            shinyWidgets::radioGroupButtons(
               inputId = "merch_explorer_sitc",
-              label = "SITC Level: ",
+              label = "SITC Level",
               choices = c(
                 1,
                 2,
@@ -113,32 +116,40 @@ page_merchUI <- function(...) {
                 "All"
               ),
               selected = 3,
-              status = "primary"
-            )
-          ),
-          shiny::column(
-            6,
-            fluidRow(
-              tags$label("12 month average"),
-              shinyWidgets::materialSwitch(
-                "merch_explorer_smooth",
-                status = "primary",
-                value = TRUE,
-                inline = T
-              )
+              status = "secondary",
+              justified = T
             ),
-            shinyWidgets::awesomeRadio(
-              width = "80%",
+            shinyWidgets::radioGroupButtons(
+              "merch_explorer_smooth",
+              status = "secondary",
+              label = "Data smoothing",
+              choiceNames = c("Off", "12-month average"),
+              choiceValues = c(F,T),
+              selected = TRUE,
+              justified = T
+            ),
+            shinyWidgets::radioGroupButtons(
               inputId = "merch_explorer_facets",
-              label = "Facet on:",
+              label = "Chart facet",
               choices = c(
-                "Destination country" = "country_dest",
-                "Good type" = "sitc"
+                "Country" = "country_dest",
+                "Good" = "sitc"
               ),
               selected = "country_dest",
-              status = "primary"
-            ) %>% fluidRow()
-
+              status = "secondary",
+              justified = T
+            ),
+            shinyWidgets::radioGroupButtons(
+              inputId = "merch_origin",
+              label = "Export origin",
+              choices = c(
+                "Vic only" = "Victoria",
+                "Australia"  = "Australia"
+              ),
+              selected = "Victoria",
+              status = "secondary",
+              justified = T
+            )
           )
         )
       ) %>%

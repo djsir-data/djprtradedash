@@ -83,46 +83,12 @@ read_services <- function(...){
     )
 
 
-  # Find ranges to parse
-  range_constructor <- function(df){
-
-    cols <- c(
-      LETTERS,
-      paste0(
-        rep(LETTERS, each = length(LETTERS)),
-        rep(LETTERS, length(LETTERS))
-        )
-      )
-
-    m <- as.matrix(df)
-    start_row <- which(m == "Manufacturing services on physical inputs owned by others", arr.ind = T)[1, "row"] - 1
-    end_row <- which(m == "Government goods and services n.i.e", arr.ind = T)[1, "row"]
-    end_col <- cols[ncol(m)]
-
-    return(paste0("A", start_row, ":", end_col, end_row))
-  }
-
-
-  suppressMessages(
-    table_index <- table_index %>%
-      dplyr::mutate(
-        parse_range = mapply(
-          FUN       = readxl::read_excel,
-          path      = file,
-          sheet     = sheet,
-          col_names = FALSE
-        ) %>%
-          lapply(range_constructor) %>%
-          unlist()
-      )
-  )
-
 
   # Parse data
   table_index <- table_index %>%
     dplyr::group_by(dplyr::across()) %>%
     dplyr::summarise(
-      readxl::read_excel(file, sheet, parse_range) %>%
+      readxl::read_excel(file, sheet, readxl::cell_rows(6:53)) %>%
         dplyr::select(-1) %>%
         dplyr::bind_cols(service_hierarchy) %>%
         tidyr::pivot_longer(
@@ -157,7 +123,7 @@ read_services <- function(...){
 
   # Remove superfluous cols
   table_index <- table_index %>%
-    dplyr::select(-file, -sheet, -title, -parse_range)
+    dplyr::select(-file, -sheet, -title)
 
 
   # Return

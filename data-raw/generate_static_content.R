@@ -11,13 +11,6 @@ load_tabs()
 set_hcharts_options()
 
 
-# Function to strip flextable dependancy
-strip_flextable_dependancy <- function(flex){
-  is_dependancy <- sapply(flex, inherits, what = "html_dependency")
-  flex[!is_dependancy]
-}
-
-
 # List funs to eval and save content
 # Follows do.call syntax (what = fun, args = args)
 to_eval <- list(
