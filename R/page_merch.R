@@ -30,7 +30,7 @@ page_merchUI <- function(...) {
           "On this page, you can explore specific goods export markets based",
           " on destination and type of product. Products are classified",
           " according to the standard international trade classification",
-          " (SITC) – to find your specific markets, search below or lookup",
+          " (SITC) to find your specific markets, search below or lookup",
           " a product category here. You can download all information as",
           " chart images or data tables via chart menus. ",
           br()
