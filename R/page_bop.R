@@ -71,7 +71,7 @@ page_bopUI <- function(...) {
     ),
 
     # Balance of trade
-    "Balance of Trade" %>%
+    "Balance of trade" %>%
       h2() %>% div(class = "inner") %>%
       div(class = "small-box") %>% column(12, .) %>%
       fluidRow(),

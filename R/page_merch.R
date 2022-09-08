@@ -41,7 +41,7 @@ page_merchUI <- function(...) {
             href = "#",
             class = "servicesLink"
           ),
-          ". For more information on victoria's overall trade, you you can explore the",
+          ". For more information on Victoria's overall trade, you you can explore the",
           a(
             "trade overview here",
             href = "#",
@@ -49,7 +49,7 @@ page_merchUI <- function(...) {
           ),
           " or ",
           a(
-            "balance of payments information here.",
+            "Balance of Payments information here.",
             href = "#",
             class = "bopLink"
           )
