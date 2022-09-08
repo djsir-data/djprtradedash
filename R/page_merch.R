@@ -6,7 +6,7 @@ page_merchUI <- function(...) {
       column(
         12,
         h2(
-          "Victorian trade dashboard",
+          "Victorian Trade Dashboard",
           style = "margin-top: 2rem; margin-bottom: 2rem;"
         )
       )
