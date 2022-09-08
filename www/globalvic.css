@@ -394,3 +394,8 @@ border-radius: 1.25rem 0 0 0;
 #shiny-tab-bop .box {
     background-color: #E5E4E2;
 }
+
+#ss-connect-dialog{
+  top: 50px !important;
+  bottom: auto !important;
+}
