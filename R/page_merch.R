@@ -2,7 +2,7 @@ page_merchUI <- function(...) {
 
   shiny::fluidPage(
 
-    "Victorian trade dashboard" %>%
+    "Victorian Trade Dashboard" %>%
       h2() %>% div(class = "inner") %>%
       div(class = "small-box") %>% column(12, .) %>%
       fluidRow(),
