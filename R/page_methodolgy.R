@@ -117,7 +117,7 @@ References and citations beneath respective charts will specify the time period 
       fluidRow(),
 
     shinydashboard::box(
-      title = "Can I download data or charts from the dashboard?",
+      title = "Can I download data or charts?",
       p(
         "All diagrams and charts have a context menu in the upper right-hand corner which allows users to: print the chart; download the chart as an image or PDF; download the underlying data as a CSV or XLS file; or view the data in a table."
       ),
