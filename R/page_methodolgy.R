@@ -9,7 +9,7 @@ page_methodology <- function(...) {
     shinydashboard::box(
       title = "What does the Victorian Trade Dashboard show?",
       p(
-        "The Dashboard shows detailed export and import data for Victorian",
+        "The  Victorian Trade Dashboard shows detailed export and import data for Victorian",
         " goods and services. It shows goods (i.e.  physical products and",
         " commodities) which are produced in Victoria and sold to",
         " international markets (exports), and goods which are produced",

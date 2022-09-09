@@ -800,7 +800,7 @@ highcharts_trade_balance_line_chart <- function(data = bop) {
       text = paste0(
         "Cumulative annual change in Victorian exports and imports in ",
         latest_month,
-        "(%)"
+        " (%)"
         )
     ) %>%
     highcharter::hc_caption(text = caption) %>%

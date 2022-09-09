@@ -2,7 +2,7 @@ page_merchUI <- function(...) {
 
   shiny::fluidPage(
 
-    "Victorian trade dashboard" %>%
+    "Victorian Trade Dashboard" %>%
       h2() %>% div(class = "inner") %>%
       div(class = "small-box") %>% column(12, .) %>%
       fluidRow(),
@@ -26,7 +26,7 @@ page_merchUI <- function(...) {
           "On this page, you can explore specific goods export markets based",
           " on destination and type of product. Products are classified",
           " according to the standard international trade classification",
-          " (SITC) – to find your specific markets, search below or ",
+          " (SITC) - to find your specific markets, search below or ",
           tags$a(
             "lookup a product category here",
             href = "#",
@@ -41,7 +41,7 @@ page_merchUI <- function(...) {
             href = "#",
             class = "servicesLink"
           ),
-          ". For more information on victoria's overall trade, you you can explore the",
+          ". For more information on Victoria's overall trade, you you can explore the",
           a(
             "trade overview here",
             href = "#",
@@ -49,7 +49,7 @@ page_merchUI <- function(...) {
           ),
           " or ",
           a(
-            "balance of payments information here.",
+            "Balance of Payments information here.",
             href = "#",
             class = "bopLink"
           )
