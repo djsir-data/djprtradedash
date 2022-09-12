@@ -174,7 +174,11 @@ page_merchUI <- function(...) {
           fluidRow(
             column(
               12,
-              highchartOutput("merch_explorer", height = "auto")
+              shinycssloaders::withSpinner(
+                highchartOutput("merch_explorer", height = "auto"),
+                type = 8,
+                color = "#000000"
+              )
             )
           )
         )

@@ -109,6 +109,30 @@ to_eval <- list(
   "bop_good_services_chart" = list(
     what = highcharts_good_services_chart,
     args = list()
+  ),
+  "merch_dates" = list(
+    what = get,
+    args = list(x = "merch_dates")
+  ),
+  "bop_dates" = list(
+    what = get,
+    args = list(x = "bop_dates")
+  ),
+  "merch_sitc_lu" = list(
+    what = get,
+    args = list(x = "merch_sitc_lu")
+  ),
+  "merch_country_dest" = list(
+    what = get,
+    args = list(x = "merch_country_dest")
+  ),
+  "service_dates" = list(
+    what = get,
+    args = list(x = "service_dates")
+  ),
+  "service_categories" = list(
+    what = get,
+    args = list(x = "service_categories")
   )
 )
 

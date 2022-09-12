@@ -29,3 +29,9 @@ inst/bop_NSW_Vic_goods_line_chart.rds
 inst/bop_NSW_Vic_Services_line_chart.rds
 inst/bop_good_services_chart.rds
 inst/ui.rds
+inst/merch_dates.rds
+inst/bop_dates.rds
+inst/merch_sitc_lu.rds
+inst/merch_country_dest.rds
+inst/service_dates.rds
+inst/service_categories.rds
