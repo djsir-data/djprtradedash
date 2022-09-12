@@ -21,9 +21,9 @@ ui <- function() {
     sidebar = shinydashboard::dashboardSidebar(
       shinydashboard::sidebarMenu(id = 'tabs',
         shinydashboard::menuItem("Goods exports", tabName = "merch", selected = TRUE),
-        shinydashboard::menuItem("Service Exports", tabName = "services"),
+        shinydashboard::menuItem("Service exports", tabName = "services"),
         shinydashboard::menuItem("Trade overview", tabName = "launchpad"),
-        shinydashboard::menuItem("Balance of payments", tabName = "bop"),
+        shinydashboard::menuItem("Balance of Payments", tabName = "bop"),
         shinydashboard::menuItem("FAQ & sources", tabName = "methodology"),
         shinydashboard::menuItem("Disclaimer", tabName = "disclaimer") %>%
           shiny::tagAppendAttributes(

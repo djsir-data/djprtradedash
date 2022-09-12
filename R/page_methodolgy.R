@@ -9,7 +9,7 @@ page_methodology <- function(...) {
     shinydashboard::box(
       title = "What does the Victorian Trade Dashboard show?",
       p(
-        "The Dashboard shows detailed export and import data for Victorian",
+        "The  Victorian Trade Dashboard shows detailed export and import data for Victorian",
         " goods and services. It shows goods (i.e.  physical products and",
         " commodities) which are produced in Victoria and sold to",
         " international markets (exports), and goods which are produced",
@@ -117,7 +117,7 @@ References and citations beneath respective charts will specify the time period 
       fluidRow(),
 
     shinydashboard::box(
-      title = "Can I download data or charts from the dashboard?",
+      title = "Can I download data or charts?",
       p(
         "All diagrams and charts have a context menu in the upper right-hand corner which allows users to: print the chart; download the chart as an image or PDF; download the underlying data as a CSV or XLS file; or view the data in a table."
       ),

@@ -3,9 +3,9 @@
 
 A 12-month rolling average, or moving average, is simply a series of 12-month averages over multiple consecutive 12-month periods.
 
-**Balance of payments**
+**Balance of Payments**
 
-Balance of payments is a statistical statement that systematically summarises the economic transactions occurring between residents of Australia and residents of the rest of the world (non-residents) over a specific period of time. 
+Balance of Payments is a statistical statement that systematically summarises the economic transactions occurring between residents of Australia and residents of the rest of the world (non-residents) over a specific period of time. 
 
 **Chain volume measures**
 
