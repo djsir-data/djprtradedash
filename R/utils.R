@@ -1,5 +1,6 @@
 # Transpose and string split factor levels
 tstrsplit_factor <- function(fac, split){
+  if(!inherits(fac, "factor")){ fac <- factor(fac)}
   lev <- levels(fac)
   ind <- as.integer(fac)
   split <- data.table::tstrsplit(lev, split = split)
