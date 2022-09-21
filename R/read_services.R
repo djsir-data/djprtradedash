@@ -16,13 +16,28 @@ read_services <- function(...){
       "international-trade-supplementary-information-financial-year"
     ),
     readabs::get_available_files
-  ) %>%
-    dplyr::filter(
-      stringr::str_detect(label, "services|Services"),
-      stringr::str_detect(label, "State|state")
-      ) %>%
-    dplyr::pull(url)
+  )
 
+  # Error handling for when labels don't work
+  urls <- if(any(is.na(urls$label))){
+    urls %>%
+      dplyr::filter(
+        file %in% c(
+          "536805500303.xlsx",
+          "536805500304.xlsx",
+          "536805500403.xlsx",
+          "536805500404.xlsx"
+        )
+      ) %>%
+      dplyr::pull(url)
+  } else {
+    urls %>%
+      dplyr::filter(
+        stringr::str_detect(label, "services|Services"),
+        stringr::str_detect(label, "State|state")
+      ) %>%
+      dplyr::pull(url)
+  }
 
   # Create destinations
   temp_dir <- tempdir()

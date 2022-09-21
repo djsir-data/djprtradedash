@@ -135,7 +135,7 @@ highcharts_merch_explorer <- function(
       inputEnabled = T,
       floating = FALSE,
       buttonPosition = list(align = "left"),
-      selected = 0,
+      selected = 1,
       buttons = list(
         list(
           type  = 'all',
