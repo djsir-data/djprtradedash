@@ -25,9 +25,11 @@ read_merch <- function(path = tempdir(),
                        series = "export") {
 
 
-  url <- switch(series,
-                export = "https://www.abs.gov.au/websitedbs/D3110132.nsf/home/DataExplorer/$File/MERCH_EXP.zip",
-                import = "https://www.abs.gov.au/websitedbs/D3110132.nsf/home/DataExplorer/$File/MERCH_IMP.zip")
+  url <- switch(
+    series,
+    export = "https://api.data.abs.gov.au/files/ABS_MERCH_EXP_1.0.0.csv",
+    import = "https://api.data.abs.gov.au/files/ABS_MERCH_IMP_1.0.0.csv"
+    )
 
   dest_zip <- file.path(path,
                         basename(url),
