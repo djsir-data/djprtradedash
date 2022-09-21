@@ -8,8 +8,8 @@ pkgload::load_all()
 
 
 # Merchandise trade data
-merch     <- read_merch(series = "export")
-merch_imp <- read_merch(series = "import")
+merch     <- read_merch(series = "export", min_date = as.Date("2000-01-01"))
+merch_imp <- read_merch(series = "import", min_date = as.Date("2000-01-01"))
 
 
 
