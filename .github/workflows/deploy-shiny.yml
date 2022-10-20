@@ -1,13 +1,15 @@
 on:
+  schedule:
+    - cron: '0 0 * * *'
   push:
     branches:
       - main
       - master
 
-name: Deploy to shinyapps
+name: Update DB and deploy
 jobs:
   deploy-shiny:
-    runs-on: ubuntu-18.04
+    runs-on: macOS-latest
     env:
       R_CONFIG_ACTIVE: github
       GITHUB_PAT: ${{ secrets.GITHUB_TOKEN }}
@@ -40,6 +42,10 @@ jobs:
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           AWS_DEFAULT_REGION: ${{ env.AWS_DEFAULT_REGION }}
+
+      - name: Update database
+        run: |
+         Rscript -e "source('data-raw/create_dash_data.R')"
 
       - name: Generate charts
         run: |

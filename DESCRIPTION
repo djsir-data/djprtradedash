@@ -23,7 +23,8 @@ Suggests:
     covr,
     rmarkdown,
     testthat (>= 3.0.0),
-    assertthat
+    assertthat,
+    rlang
 Imports:
     lubridate,
     dplyr,
