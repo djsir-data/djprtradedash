@@ -99,3 +99,10 @@ if(length(out) > 0){
 
 
 
+# Clear environment and disconnect
+pool::poolClose(con)
+rm(list = ls())
+
+
+
+
