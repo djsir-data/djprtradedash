@@ -25,6 +25,11 @@ jobs:
           extra-packages: |
             any::pkgload
             any::rsconnect
+            any::BH
+            any::cpp11
+            any::plogr
+            any::prettyunits
+            any::progress
 
       - name: Get Github action IP
         id: ip
