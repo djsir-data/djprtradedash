@@ -1,6 +1,6 @@
 Package: djprtradedash
 Title: DJPR Trade Dashboard
-Version: 0.0.1.9000
+Version: 0.0.2
 Authors@R: 
     c(
     person("Henry", "McMillan", , "henry.mcmillan@ecodev.vic.gov.au", role = "aut"),
@@ -11,7 +11,7 @@ Authors@R:
     person("Duy", "Nguyen", , "duy.nguyen@ecodev.vic.gov.au", role = "ctb"),
     person("Matt", "Cowgill", , "mattcowgill@gmail.com", role = c("aut", "cre"),
            comment = c(ORCID = "0000-0003-0422-3300")),
-    person(given = "Department of Jobs, Precincts and Regions (Victoria)",
+    person(given = "Department of Jobs, Skills, Industry and Regions (Victoria)",
            role = c("cph", "fnd"))
            )
 Description: Dashboard of Victorian trade data
