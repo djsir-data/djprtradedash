@@ -22,7 +22,7 @@ jobs:
           use-public-rspm: true
           r-version: '4.2.1'
 
-      - uses: r-lib/actions/setup-r-dependencies@v1
+      - uses: r-lib/actions/setup-r-dependencies@v2
         with:
           extra-packages: covr
 
