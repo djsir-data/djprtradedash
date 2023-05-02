@@ -11,6 +11,9 @@
 #' @param min_date The minimum date to include in your data
 #' @param max_date The maximum date to include in your data
 #' @param series Selects whether import or export merchandise data is downloaded
+#'
+#' @importFrom httr GET write_disk http_status
+#' @importFrom assertthat assert_that
 #' @examples
 #' \dontrun{
 #' read_merch()
@@ -22,8 +25,9 @@
 read_merch <- function(path = tempdir(),
                        max_date = Sys.Date(),
                        min_date = as.Date("2000-01-01"),
-                       series = "export") {
+                       series = c("export","import")) {
 
+  series <- match.arg(series)
 
   url <- switch(
     series,
@@ -33,7 +37,13 @@ read_merch <- function(path = tempdir(),
 
   dest <- file.path(path, basename(url), fsep = .Platform$file.sep)
 
-  download.file(url, dest, mode = "wb")
+  #download.file(url, dest, mode = "wb")
+
+  resp <- httr::GET(url, httr::write_disk(dest, overwrite=TRUE))
+  status <- httr::http_status(resp)
+
+  assertthat::assert_that(status$category == "Success",
+                          msg = glue('Download Failed with message: {status$message}'))
 
   merch <- data.table::fread(
     dest,
