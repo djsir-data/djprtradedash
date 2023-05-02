@@ -4,7 +4,7 @@
 \name{djprtradedash-package}
 \alias{djprtradedash}
 \alias{djprtradedash-package}
-\title{djprtradedash: DJPR Trade Dashboard}
+\title{djprtradedash: DJSIR Trade Dashboard}
 \description{
 Dashboard of Victorian trade data
 }
@@ -23,7 +23,7 @@ Other contributors:
   \item Matt De Pasquale \email{matt.depasquale@ecodev.vic.gov.au} [contributor]
   \item Matt Johnson \email{mrjoh3@gmail.com} [contributor]
   \item Duy Nguyen \email{duy.nguyen@ecodev.vic.gov.au} [contributor]
-  \item Department of Jobs, Precincts and Regions (Victoria) [copyright holder, funder]
+  \item Department of Jobs, Skills, Industry and Regions (Victoria) [copyright holder, funder]
 }
 
 }

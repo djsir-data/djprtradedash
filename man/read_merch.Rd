@@ -7,8 +7,8 @@
 read_merch(
   path = tempdir(),
   max_date = Sys.Date(),
-  min_date = as.Date("2010-01-01"),
-  series = "export"
+  min_date = as.Date("2000-01-01"),
+  series = c("export", "import")
 )
 }
 \arguments{
