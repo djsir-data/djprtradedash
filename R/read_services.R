@@ -61,11 +61,10 @@ read_services <- function(...){
   # Find all applicable sheets
   table_index <- data.frame(file = dest_file) %>%
     dplyr::group_by(file) %>%
-    dplyr::summarise(
+    dplyr::reframe(
       sheet = readxl::excel_sheets(file) %>%
         stringr::str_subset("Table")
-      ) %>%
-    dplyr::ungroup()
+      )
 
 
   # Get tables
@@ -101,8 +100,8 @@ read_services <- function(...){
 
   # Parse data
   table_index <- table_index %>%
-    dplyr::group_by(dplyr::across()) %>%
-    dplyr::summarise(
+    dplyr::group_by(dplyr::across(everything())) %>%
+    dplyr::reframe(
       readxl::read_excel(file, sheet, readxl::cell_rows(6:53)) %>%
         dplyr::select(-1) %>%
         dplyr::bind_cols(service_hierarchy) %>%
@@ -110,8 +109,7 @@ read_services <- function(...){
           -dplyr::all_of(names(service_hierarchy)),
           names_to = "date"
           )
-    ) %>%
-    dplyr::ungroup()
+    )
 
 
   # Clean data classes
