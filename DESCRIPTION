@@ -23,9 +23,9 @@ Suggests:
     covr,
     rmarkdown,
     testthat (>= 3.0.0),
-    assertthat,
     rlang
 Imports:
+    assertthat,
     lubridate,
     dplyr,
     shiny,
