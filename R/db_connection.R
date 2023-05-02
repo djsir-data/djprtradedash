@@ -100,8 +100,8 @@ load_tabs <- function(){
 
   service_trade %>%
     arrange(desc(value)) %>%
-    select(service) %>%
     collect() %>%
+    dplyr::select(service) %>%
     pull() %>%
     unique() %>%
     assign("service_categories", ., envir = .GlobalEnv)
