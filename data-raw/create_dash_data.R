@@ -70,37 +70,40 @@ if(length(hash_matches) > 0){
 
 
 
+# Error handling
+trycatch(
+  {
+    # Add data to database
+    mapply(
+      FUN       = pool::dbWriteTable,
+      conn      = list(con),
+      name      = names(out),
+      value     = out,
+      overwrite = TRUE
+    )
+    
+    # Update hashes
+    if(length(out) > 0){
+    
+      new_hashes <- data.frame(
+        name = names(out),
+        timestamp = Sys.time(),
+        rlanghash = sapply(out, rlang::hash)
+      )
+    
+      pool::dbAppendTable(con, "tablevalidation", new_hashes)
+    }
 
-
-# Add data to database
-mapply(
-  FUN       = pool::dbWriteTable,
-  conn      = list(con),
-  name      = names(out),
-  value     = out,
-  overwrite = TRUE
+    # Clear environment and disconnect
+    pool::poolClose(con)
+    
+  },
+  error = function(e) warning(e)
 )
 
 
 
-
-# Update hashes
-if(length(out) > 0){
-
-  new_hashes <- data.frame(
-    name = names(out),
-    timestamp = Sys.time(),
-    rlanghash = sapply(out, rlang::hash)
-  )
-
-  pool::dbAppendTable(con, "tablevalidation", new_hashes)
-}
-
-
-
-
-# Clear environment and disconnect
-pool::poolClose(con)
+# Clear environment 
 rm(list = ls())
 
 
