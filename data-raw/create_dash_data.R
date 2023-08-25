@@ -1,5 +1,5 @@
 # Updates data from source and recompiles database
-
+try({
 
 # Load required packages & set options
 pkgload::load_all()
@@ -107,5 +107,5 @@ trycatch(
 rm(list = ls())
 
 
-
+})
 
