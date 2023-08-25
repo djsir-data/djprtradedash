@@ -1,4 +1,4 @@
-
+options(rsconnect.packrat = TRUE)
 
 # Write DB connection environment variables
 if(
