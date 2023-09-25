@@ -1,4 +1,4 @@
-options(rsconnect.packrat = TRUE)
+#options(rsconnect.packrat = TRUE)
 
 # Write DB connection environment variables
 if(
@@ -20,7 +20,8 @@ if(
 # Publish App
 rsconnect::deployApp(
   appName = "djprtradedash",
-  forceUpdate = TRUE
+  forceUpdate = TRUE,
+  envManagementR = NULL
 )
 
 
