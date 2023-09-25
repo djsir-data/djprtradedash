@@ -19,7 +19,7 @@ if(
 
 # Publish App
 rsconnect::deployApp(
-  appName = "djprtradedash",
+  appName = "djprtradedash-renv",
   forceUpdate = TRUE
 )
 
