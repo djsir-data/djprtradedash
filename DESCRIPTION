@@ -35,6 +35,7 @@ Imports:
     httr,
     lubridate,
     markdown,
+    pkgload,
     pool,
     purrr,
     readabs,
