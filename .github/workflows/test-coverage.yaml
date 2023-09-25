@@ -27,9 +27,9 @@ jobs:
           r-version: 'renv'
       - uses: r-lib/actions/setup-renv@v2
 
-      - uses: r-lib/actions/setup-r-dependencies@v2
-        with:
-          extra-packages: covr, any::XML
+      - name: Additional R packages
+        run: |
+         Rscript -e "renv::install('covr')"
 
       - name: Test coverage
         run: covr::codecov()

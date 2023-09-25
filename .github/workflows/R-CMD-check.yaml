@@ -27,10 +27,9 @@ jobs:
           r-version: 'renv'
       - uses: r-lib/actions/setup-renv@v2
 
-
-      - uses: r-lib/actions/setup-r-dependencies@v2
-        with:
-          extra-packages: any::rcmdcheck, any::XML
+      - name: Additional R packages
+        run: |
+         Rscript -e "renv::install('rcmdcheck')"
 
       - uses: r-lib/actions/check-r-package@v2
         with:
