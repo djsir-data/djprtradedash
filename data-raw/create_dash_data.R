@@ -71,7 +71,7 @@ if(length(hash_matches) > 0){
 
 
 # Error handling
-trycatch(
+tryCatch(
   {
     # Add data to database
     mapply(
@@ -81,29 +81,29 @@ trycatch(
       value     = out,
       overwrite = TRUE
     )
-    
+
     # Update hashes
     if(length(out) > 0){
-    
+
       new_hashes <- data.frame(
         name = names(out),
         timestamp = Sys.time(),
         rlanghash = sapply(out, rlang::hash)
       )
-    
+
       pool::dbAppendTable(con, "tablevalidation", new_hashes)
     }
 
     # Clear environment and disconnect
     pool::poolClose(con)
-    
+
   },
   error = function(e) warning(e)
 )
 
 
 
-# Clear environment 
+# Clear environment
 rm(list = ls())
 
 
