@@ -15,7 +15,7 @@ shinyapps:
   dataconnection:
     use_DBcache: FALSE
     dbname: "opendata"
-    host: 'sppdatarepo1.caz6tvdhkmqm.ap-southeast-2.rds.amazonaws.com'
+    host: 'Default-Base-NLB-67052e8837584997.elb.ap-southeast-2.amazonaws.com'
     user:  !expr Sys.getenv("PG_READ_OPEN_USER")
     password: !expr Sys.getenv("PG_READ_OPEN_PW")
     port: 5432
@@ -24,7 +24,7 @@ github:
   dataconnection:
     use_DBcache: FALSE
     dbname: "opendata"
-    host: 'sppdatarepo1.caz6tvdhkmqm.ap-southeast-2.rds.amazonaws.com'
+    host: 'Default-Base-NLB-67052e8837584997.elb.ap-southeast-2.amazonaws.com'
     user:  !expr Sys.getenv("PG_MASTER_USER")
     password: !expr Sys.getenv("PG_MASTER_PW")
     port: 5432
