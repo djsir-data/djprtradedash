@@ -1,5 +1,4 @@
 # Updates data from source and recompiles database
-try({
 
 # Load required packages & set options
 pkgload::load_all()
@@ -100,12 +99,3 @@ tryCatch(
   },
   error = function(e) warning(e)
 )
-
-
-
-# Clear environment
-rm(list = ls())
-
-
-})
-
