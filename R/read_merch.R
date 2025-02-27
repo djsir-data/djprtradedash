@@ -37,8 +37,6 @@ read_merch <- function(path = tempdir(),
 
   dest <- file.path(path, basename(url), fsep = .Platform$file.sep)
 
-  #download.file(url, dest, mode = "wb")
-
   resp <- httr::GET(url, httr::write_disk(dest, overwrite=TRUE))
   status <- httr::http_status(resp)
 
@@ -51,88 +49,34 @@ read_merch <- function(path = tempdir(),
     data.table = TRUE
   )
 
-  if (series == "export") {
+  # Helper - pick one or the other for exports/imports
+  series_switch <- function(export, import) {
+    switch(series, export=export, import=import)
+  }
 
-    data.table::setnames(
-      merch,
-      c(
-        "COMMODITY_SITC: Commodity by SITC",
-        "COUNTRY_DEST: Country of Destination",
-        "STATE_ORIGIN: State of Origin",
-        "TIME_PERIOD: Time Period",
-        "OBS_VALUE",
-        "UNIT_MULT: Unit of Multiplier"
-        ),
-      c(
-        "sitc",
-        "country_dest",
-        "origin",
-        "date",
-        "value",
-        "unit"
-      )
-      )
+  # This relies on lazy evaluation to avoid undefined column errors
+  merch <- merch[, .(
+    sitc = `Commodity by SITC`,
+    # placeholder name
+    country = series_switch(`Country of Destination`, `Country of Origin`),
+    # placeholder name
+    state = series_switch(`State of Origin`, `State of Destination`),
+    date = lubridate::ym(TIME_PERIOD),
+    value = OBS_VALUE,
+    unit = `Unit of Multiplier`,
+    sitc_code = COMMODITY_SITC,
+    country_code = series_switch(COUNTRY_DEST, COUNTRY_ORIGIN),
+    export_import = series
+  )]
+  merch[state == "Total", state := "Australia"]
+  data.table::setorder(merch, state, sitc, country, date)
+  merch <- merch[min_date <= date & date <= max_date]
+  merch <- unique(merch)
+  renamed <- series_switch(
+    c("country_dest", "origin"),
+    c("country_origin", "dest")
+  )
+  data.table::setnames(merch, c("country", "state"), renamed)
 
-    merch[, c("sitc_code", "sitc") := tstrsplit_factor(sitc, ": ")]
-    merch[, c("country_code", "country_dest") := tstrsplit_factor(country_dest, ": ")]
-    merch[, `:=`(
-      origin = tstrsplit_factor(origin, ": ")[[2]],
-      unit = tstrsplit_factor(unit, ": ")[[2]],
-      date = lubridate::ymd(paste0(date, "-01")),
-      export_import = series
-    )]
-    merch[origin == "Total", origin := "Australia"]
-    merch <- merch[order(origin,
-                   sitc,
-                   country_dest,
-                   date)]
-    merch <- merch[date >= min_date & date <= max_date]
-    merch <- unique(merch)
-    merch <- merch[, .(sitc, country_dest, origin, date, value, unit, sitc_code, country_code, export_import)]
-
-    }
-
-  if (series == "import") {
-
-    data.table::setnames(
-      merch,
-      c(
-        "COMMODITY_SITC: Commodity by SITC",
-        "COUNTRY_ORIGIN: Country of Origin",
-        "STATE_DEST: State of Destination",
-        "TIME_PERIOD: Time Period",
-        "OBS_VALUE",
-        "UNIT_MULT: Unit of Multiplier"
-      ),
-      c(
-        "sitc",
-        "country_origin",
-        "dest",
-        "date",
-        "value",
-        "unit"
-      )
-    )
-
-    merch[, c("sitc_code", "sitc") := tstrsplit_factor(sitc, ": ")]
-    merch[, c("country_code", "country_origin") := tstrsplit_factor(country_origin, ": ")]
-    merch[, `:=`(
-      dest = tstrsplit_factor(dest, ": ")[[2]],
-      unit = tstrsplit_factor(unit, ": ")[[2]],
-      date = lubridate::ymd(paste0(date, "-01")),
-      export_import = series
-    )]
-    merch[dest == "Total", dest := "Australia"]
-    merch <- merch[order(dest,
-                   sitc,
-                   country_origin,
-                   date)]
-    merch <- merch[date >= min_date & date <= max_date]
-    merch <- unique(merch)
-    merch <- merch[, .(sitc, country_origin, dest, date, value, unit, sitc_code, country_code, export_import)]
-
-    }
-
-  return(merch)
-
+  merch
 }
