@@ -1,8 +1,5 @@
 
 server <- function(input, output, session) {
-
-  load_tabs()
-
   set_hcharts_options()
 
   merch_last_12 <- merch_dates$max - months(12)

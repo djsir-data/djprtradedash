@@ -46,7 +46,12 @@ read_services <- function(...){
 
   # Download all
   mapply(
-    FUN      = download.file,
+    FUN      = function(url, destfile, ...) {
+      if(!file.exists(destfile) || config::get("force_redownload")) {
+        message("Downloading: ", destfile)
+        download.file(url=url, destfile=destfile, ...)
+      }
+    },
     url      = urls,
     destfile = dest_file,
     quiet    = TRUE,

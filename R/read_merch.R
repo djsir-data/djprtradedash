@@ -37,11 +37,14 @@ read_merch <- function(path = tempdir(),
 
   dest <- file.path(path, basename(url), fsep = .Platform$file.sep)
 
-  resp <- httr::GET(url, httr::write_disk(dest, overwrite=TRUE))
-  status <- httr::http_status(resp)
+  if(!file.exists(dest) || config::get("force_redownload")) {
+    message("Downloading: ", dest)
+    resp <- httr::GET(url, httr::write_disk(dest, overwrite=TRUE))
+    status <- httr::http_status(resp)
 
-  assertthat::assert_that(status$category == "Success",
-                          msg = glue('Download Failed with message: {status$message}'))
+    assertthat::assert_that(status$category == "Success",
+                            msg = glue('Download Failed with message: {status$message}'))
+  }
 
   merch <- data.table::fread(
     dest,

@@ -4,7 +4,7 @@ pkgload::load_all()
 
 
 # load data
-load_tabs()
+data_load()
 
 
 # Set highcharter options
@@ -152,9 +152,3 @@ out_path <- file.path("inst", paste0(names(to_eval), ".rds"))
 
 # Write files
 mapply(saveRDS, evaluated, out_path)
-
-
-# Exclude from git
-ignore <- readLines(".gitignore")
-ignore <- union(ignore, out_path)
-writeLines(ignore, ".gitignore")
