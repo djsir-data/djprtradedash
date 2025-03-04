@@ -1,0 +1,31 @@
+name: Deploy to Shiny (optional branch suffix)
+on:
+  workflow_dispatch:
+
+# Cancel in-progress runs
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  main:
+    runs-on: ubuntu-latest
+    container: ghcr.io/rocker-org/shiny-verse:latest
+    env:
+      RENV_CONFIG_SANDBOX_ENABLED: 'FALSE'
+    steps:
+      - uses: actions/checkout@v4
+      - uses: r-lib/actions/setup-renv@v2
+      - name: Refesh data
+        run: Rscript 'data-raw/create_dash_data.R'
+      - name: Generate charts
+        run: Rscript 'data-raw/generate_static_content.R'
+      - name: Deploy
+        run: |
+          Rscript -e '
+            suffix <- Sys.getenv("GITHUB_REF_NAME", "main")
+            appName <- 'trade'
+            if(suffix != "main") appName <- paste0(appName, "-", suffix)
+
+            rsconnect::deployApp(appName = appName, forceUpdate = T)
+          '
