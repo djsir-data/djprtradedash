@@ -1,4 +1,5 @@
-name: Deploy to Shiny (optional branch suffix)
+# This workflow is intended to eventually replace the deploy-shiny workflow
+name: Update and deploy to Shiny (optional branch suffix)
 on:
   workflow_dispatch:
 
@@ -10,22 +11,43 @@ concurrency:
 jobs:
   main:
     runs-on: ubuntu-latest
-    container: ghcr.io/rocker-org/shiny-verse:latest
+    # Posit Package Manager doesn't support Debian trixie
+    container: rocker/r-ver:latest
     env:
       RENV_CONFIG_SANDBOX_ENABLED: 'FALSE'
     steps:
       - uses: actions/checkout@v4
+
+      - name: Additional system dependencies
+        run: |
+          apt-get update && \
+            apt-get install -y --no-install-recommends libglpk-dev libssl-dev
+
       - uses: r-lib/actions/setup-renv@v2
-      - name: Refesh data
-        run: Rscript 'data-raw/create_dash_data.R'
+
+      - name: Refresh data
+        # Give some progress by echoing statements
+        run: Rscript -e 'source("data-raw/create_dash_data.R", echo=T)'
+
       - name: Generate charts
         run: Rscript 'data-raw/generate_static_content.R'
+
+         Rscript -e "rsconnect::setAccountInfo(name = 'djpr-spp', token = '${{secrets.SHINYAPPS_TOKEN}}', secret = '${{secrets.SHINYAPPS_SECRET}}')"
+
       - name: Deploy
         run: |
           Rscript -e '
-            suffix <- Sys.getenv("GITHUB_REF_NAME", "main")
-            appName <- 'trade'
-            if(suffix != "main") appName <- paste0(appName, "-", suffix)
+            branch <- Sys.getenv("GITHUB_REF_NAME", "main")
+            appName <- "trade"
+            if(branch != "main") appName <- paste0(appName, "-", branch)
 
+            rsconnect::setAccountInfo(
+              name = "djpr-spp"
+              ,token = Sys.getenv("SHINYAPPS_TOKEN")
+              ,secret = Sys.getenv("SHINYAPPS_SECRET")
+            )
             rsconnect::deployApp(appName = appName, forceUpdate = T)
           '
+        env:
+          SHINYAPPS_TOKEN: ${{ secrets.SHINYAPPS_TOKEN }}
+          SHINYAPPS_SECRET: ${{ secrets.SHINYAPPS_SECRET }}

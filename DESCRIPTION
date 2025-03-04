@@ -23,13 +23,13 @@ Suggests:
     covr,
     rmarkdown,
     testthat (>= 3.0.0),
-    rlang,
-    rsconnect
+    rlang
 Imports:
     arrow,
     data.table,
     dplyr,
     DT,
+    future,
     highcharter,
     httr,
     lubridate,
@@ -37,6 +37,7 @@ Imports:
     pkgload,
     purrr,
     readxl,
+    rsconnect,
     scales,
     shiny,
     shinycssloaders,

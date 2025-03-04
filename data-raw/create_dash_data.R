@@ -1,15 +1,32 @@
 # Updates data from source and recompiles database
 
-# Load required packages & set options
-pkgload::load_all()
-options(timeout = 60 * 10)
+future::plan("multisession")
+fs <- list(
+  # Merchandise trade data
+  future::future({
+    pkgload::load_all()
+    read_merch(series = "export") |> data_save("merch")
+    NULL
+  })
+  ,future::future({
+    pkgload::load_all()
+    read_merch(series = "import") |> data_save("merch_imp")
+    NULL
+  })
 
-# Merchandise trade data
-read_merch(series = "export") |> data_save("merch")
-read_merch(series = "import") |> data_save("merch_imp")
+  # Service data
+  ,future::future({
+    pkgload::load_all()
+    read_services() |> data_save("service_trade")
+    NULL
+  })
 
-# Service data
-read_services() |> data_save("service_trade")
+  # ABS Balance of Payments
+  ,future::future({
+    pkgload::load_all()
+    read_bop() |> data_save("bop")
+    NULL
+  })
+)
 
-# ABS Balance of Payments
-read_bop() |> data_save("bop")
+invisible(future::resolve(fs))
