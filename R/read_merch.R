@@ -7,7 +7,7 @@
 #' ABS.Stat API. For this reason, you cannot download more than 1 year at a
 #' time worth of data using this function, as this is around the point at which
 #' the 1m row limit is reached.
-#' @param path Path to directory where CSV files are extracted and stored
+#' @param path Ignored
 #' @param min_date The minimum date to include in your data
 #' @param max_date The maximum date to include in your data
 #' @param series Selects whether import or export merchandise data is downloaded
@@ -22,35 +22,13 @@
 #' @return A tibble containing merchandise export data
 
 
-read_merch <- function(path = tempdir(),
+read_merch <- function(path = stop("ignored"),
                        max_date = Sys.Date(),
                        min_date = as.Date("2000-01-01"),
                        series = c("export","import")) {
 
   series <- match.arg(series)
-
-  url <- switch(
-    series,
-    export = "https://api.data.abs.gov.au/files/ABS_MERCH_EXP_1.0.0.csv",
-    import = "https://api.data.abs.gov.au/files/ABS_MERCH_IMP_1.0.0.csv"
-    )
-
-  dest <- file.path(path, basename(url), fsep = .Platform$file.sep)
-
-  if(!file.exists(dest) || config::get("force_redownload")) {
-    message("Downloading: ", dest)
-    resp <- httr::GET(url, httr::write_disk(dest, overwrite=TRUE))
-    status <- httr::http_status(resp)
-
-    assertthat::assert_that(status$category == "Success",
-                            msg = glue('Download Failed with message: {status$message}'))
-  }
-
-  merch <- data.table::fread(
-    dest,
-    stringsAsFactors = TRUE,
-    data.table = TRUE
-  )
+  merch <- with_fileset(series, data.table::fread, stringsAsFactors=TRUE)
 
   # Helper - pick one or the other for exports/imports
   series_switch <- function(export, import) {

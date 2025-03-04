@@ -7,4 +7,5 @@
 rsconnect/*
 app-cache
 DBcache.rData
-inst/*
+inst/*.rds
+inst/**/*.feather

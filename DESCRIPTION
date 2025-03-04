@@ -27,8 +27,6 @@ Suggests:
     rsconnect
 Imports:
     arrow,
-    assertthat,
-    config,
     data.table,
     dplyr,
     DT,
@@ -38,7 +36,6 @@ Imports:
     markdown,
     pkgload,
     purrr,
-    readabs,
     readxl,
     scales,
     shiny,

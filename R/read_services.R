@@ -2,78 +2,20 @@
 #'
 #' Downloads, parses and cleans the latest service trade data
 #'
-#' @param ... unused
-#'
 #' @return data.frame
 #' @export
 
-read_services <- function(...){
-
-  # Read in service table URLs
-  urls <- purrr::map_df(
-    c(
-      "international-trade-supplementary-information-calendar-year",
-      "international-trade-supplementary-information-financial-year"
-    ),
-    readabs::get_available_files
-  )
-
-  # Error handling for when labels don't work
-  urls <- if(any(is.na(urls$label))){
-    urls %>%
-      dplyr::filter(
-        file %in% c(
-          "536805500303.xlsx",
-          "536805500304.xlsx",
-          "536805500403.xlsx",
-          "536805500404.xlsx"
-        )
-      ) %>%
-      dplyr::pull(url)
-  } else {
-    urls %>%
-      dplyr::filter(
-        stringr::str_detect(label, "services|Services"),
-        stringr::str_detect(label, "State|state")
-      ) %>%
-      dplyr::pull(url)
-  }
-
-  # Create destinations
-  temp_dir <- tempdir()
-  dest_file <- file.path(temp_dir, basename(urls))
-
-
-  # Download all
-  mapply(
-    FUN      = function(url, destfile, ...) {
-      if(!file.exists(destfile) || config::get("force_redownload")) {
-        message("Downloading: ", destfile)
-        download.file(url=url, destfile=destfile, ...)
-      }
-    },
-    url      = urls,
-    destfile = dest_file,
-    quiet    = TRUE,
-    mode     = "wb"
-  )
-
-
-  # Ensure file cleanup
-  on.exit(unlink(temp_dir))
-
-
-  # Find all applicable sheets
-  table_index <- data.frame(file = dest_file) %>%
-    dplyr::group_by(file) %>%
-    dplyr::reframe(
-      sheet = readxl::excel_sheets(file) %>%
-        stringr::str_subset("Table")
+read_services <- function(){
+  table_index <- with_fileset("services", \(dest_file) {
+    # Find all applicable sheets
+    table_index <- data.frame(file = dest_file) %>%
+      dplyr::group_by(file) %>%
+      dplyr::reframe(
+        sheet = readxl::excel_sheets(file) %>%
+          stringr::str_subset("Table")
       )
 
-
-  # Get tables
-  suppressMessages(
+    # Load just titles
     table_index <- table_index %>%
       dplyr::mutate(
         title = mapply(
@@ -81,41 +23,37 @@ read_services <- function(...){
           path      = file,
           sheet     = sheet,
           range     = "A4",
+          .name_repair = "unique_quiet",
           col_names = FALSE
         ) %>%
           unlist()
       )
-  )
 
-
-
-  # Extract information from table titles
-  table_index <- table_index %>%
-    dplyr::mutate(
-      flow = stringr::str_extract(title, "Credit|Debit") %>%
-        dplyr::recode(Credit = "Export", Debit = "Import"),
-      period = stringr::str_extract(title, "Financial Year|Calendar Year"),
-      state = stringr::str_extract(
-        title,
-        "NSW|Vic.|Qld|SA|WA|Tas.|NT|ACT|Aust."
+    # Extract information from table titles
+    table_index <- table_index %>%
+      dplyr::mutate(
+        flow = stringr::str_extract(title, "Credit|Debit") %>%
+          dplyr::recode(Credit = "Export", Debit = "Import"),
+        period = stringr::str_extract(title, "Financial Year|Calendar Year"),
+        state = stringr::str_extract(
+          title,
+          "NSW|Vic.|Qld|SA|WA|Tas.|NT|ACT|Aust."
         )
-    )
+      )
 
-
-
-  # Parse data
-  table_index <- table_index %>%
-    dplyr::group_by(dplyr::across(everything())) %>%
-    dplyr::reframe(
-      readxl::read_excel(file, sheet, readxl::cell_rows(6:53)) %>%
-        dplyr::select(-1) %>%
-        dplyr::bind_cols(service_hierarchy) %>%
-        tidyr::pivot_longer(
-          -dplyr::all_of(names(service_hierarchy)),
-          names_to = "date"
+    # Parse data
+    table_index <- table_index %>%
+      dplyr::group_by(dplyr::across(everything())) %>%
+      dplyr::reframe(
+        readxl::read_excel(file, sheet, readxl::cell_rows(6:53)) %>%
+          dplyr::select(-1) %>%
+          dplyr::bind_cols(service_hierarchy) %>%
+          tidyr::pivot_longer(
+            -dplyr::all_of(names(service_hierarchy)),
+            names_to = "date"
           )
-    )
-
+      )
+  })
 
   # Clean data classes
   table_index <- table_index %>%
@@ -137,16 +75,12 @@ read_services <- function(...){
       date = as.Date(date)
     )
 
-
-
   # Remove superfluous cols
   table_index <- table_index %>%
     dplyr::select(-file, -sheet, -title)
 
-
   # Return
   return(table_index)
-
 }
 
 

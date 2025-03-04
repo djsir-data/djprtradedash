@@ -1,0 +1,9 @@
+﻿set,url
+export,https://api.data.abs.gov.au/files/ABS_MERCH_EXP_1.0.0.csv
+import,https://api.data.abs.gov.au/files/ABS_MERCH_IMP_1.0.0.csv
+services,https://www.abs.gov.au/statistics/economy/international-trade/international-trade-supplementary-information-financial-year/latest-release/536805500303.xlsx
+services,https://www.abs.gov.au/statistics/economy/international-trade/international-trade-supplementary-information-financial-year/latest-release/536805500304.xlsx
+services,https://www.abs.gov.au/statistics/economy/international-trade/international-trade-supplementary-information-calendar-year/latest-release/536805500403.xlsx
+services,https://www.abs.gov.au/statistics/economy/international-trade/international-trade-supplementary-information-calendar-year/latest-release/536805500404.xlsx
+credits,https://www.abs.gov.au/statistics/economy/international-trade/balance-payments-and-international-investment-position-australia/latest-release/5302021.xlsx
+debits,https://www.abs.gov.au/statistics/economy/international-trade/balance-payments-and-international-investment-position-australia/latest-release/5302022.xlsx
